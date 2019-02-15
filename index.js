@@ -23,6 +23,7 @@ function start_express_server() {
 
     app.post(`/${group_id}`, function (req, res) {
       logger.info(req);
+      res.send('60df2360');
     });
     //
     // app.post(`/${tomorrow_token}`, function (req, res) {
