@@ -1,0 +1,5 @@
+/.idea
+config/development.json
+certs
+newrelic_agent.log
+*.log

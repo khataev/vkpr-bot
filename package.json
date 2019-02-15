@@ -1,0 +1,24 @@
+{
+  "name": "vkpr-bot",
+  "version": "1.0.0",
+  "description": "PR chat bot for vk.com",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "keywords": [
+    "chat",
+    "bot",
+    "vk"
+  ],
+  "author": "Andrey Khataev <khataev@yandex.ru>",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "convict": "^4.4.1",
+    "express": "^4.16.4",
+    "luxon": "^1.11.2",
+    "node-vk-bot-api": "^2.4.8"
+  }
+}
