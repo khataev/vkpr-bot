@@ -49,10 +49,30 @@ const config = convict({
   credentials: {
     bot: {
       access_token: {
-        doc: "Bot api token for today notifications",
+        doc: "Access token for bot",
         format: String,
         default: "",
-        env: "CREDENTIALS_TELEGRAM_BOT_TODAY_API_KEY"
+        env: "CREDENTIALS_BOT_ACCESS_TOKEN"
+      },
+      use_webhooks: {
+        doc: "Webhooks or Long polling (default)",
+        format: Boolean,
+        default: false,
+        env: "CREDENTIALS_BOT_USE_WEBHOOKS"
+      }
+    },
+    vk: {
+      group_id: {
+        doc: "Id of a Group bot is bound to",
+        format: String,
+        default: "",
+        env: "CREDENTIALS_VK_GROUP_ID"
+      },
+      secret: {
+        doc: "Secret key",
+        format: String,
+        default: "",
+        env: "CREDENTIALS_VK_SECRET"
       }
     }
   },
