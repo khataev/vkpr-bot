@@ -133,7 +133,8 @@ function configure_bot_webhooks(app, group_id) {
   let bot = new VkBot({
     token: settings.get('credentials.bot.access_token'),
     group_id: settings.get('credentials.vk.group_id'),
-    secret: settings.get('credentials.vk.secret')
+    secret: settings.get('credentials.vk.secret'),
+    confirmation: settings.get('credentials.vk.confirmation')
   });
   configure_bot(bot);
 

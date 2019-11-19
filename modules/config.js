@@ -1,4 +1,4 @@
-const convict = require('convict');
+const convict = require("convict");
 
 // Define a schema
 const config = convict({
@@ -73,6 +73,12 @@ const config = convict({
         format: String,
         default: "",
         env: "CREDENTIALS_VK_SECRET"
+      },
+      confirmation: {
+        doc: "Confirmation",
+        format: String,
+        default: "",
+        env: "CREDENTIALS_VK_CONFIRMATION"
       }
     }
   },
@@ -81,30 +87,30 @@ const config = convict({
       doc: "Log level",
       format: function check(val) {
         regexp = /debug|info|warn|error|fatal/i;
-        if(!regexp.test(val)) {
+        if (!regexp.test(val)) {
           throw new Error(`Unpermitted log level: ${val}`);
         }
       },
-      default: 'info',
+      default: "info",
       env: "DEBUG_LOG_LEVEL"
     }
   }
 });
 
 // Load environment dependent configuration
-let env = config.get('env');
-config.loadFile('./config/' + env + '.json');
+let env = config.get("env");
+config.loadFile("./config/" + env + ".json");
 
 // Perform validation
-config.validate({allowed: 'strict'});
+config.validate({ allowed: "strict" });
 
 // custom functions
 config.isProductionEnv = function() {
-  return this.get('env') === 'production';
+  return this.get("env") === "production";
 };
 
 config.isDevelopmentEnv = function() {
-  return this.get('env') === 'development';
+  return this.get("env") === "development";
 };
 
 module.exports = config;
