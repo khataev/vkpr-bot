@@ -130,6 +130,25 @@ function cmd_check_text() {
   return "Здесь будут результаты проверки";
 }
 
+function cmd_roulette() {
+  const text = `
+  🎰 Добро пожаловать в раздел 'Рулетки'.
+  📃 В данном разделе Вы можете приобрести различные рулетки с выигрышем в VK Coin!
+  Список текущих рулеток:
+  · 🤑 Low Coin — 25 ₽.
+  ❓ Возможный выигрыш: от 5000000 VK Coins до 50000000 VK Coins.
+  💭 Желаете дешево наполнить свой кошелек VK Coin до границ ? Эта рулетка для вас!
+
+  · 💳 Medium Coin — 100 ₽.
+  ❓ Возможный выигрыш: от 50000000 VK Coins до 150000000 VK Coins.
+  💭 Богатство - не предел, с помощью этой рулетки вы сможете разбогатеть в один миг!
+
+  ✅ Для приобретения рулетки нажмите кнопку на клавиатуре снизу.
+  `;
+
+  return text;
+}
+
 function configure_bot_webhooks(app, group_id) {
   let bot = new VkBot({
     token: settings.get("credentials.bot.access_token"),
@@ -182,13 +201,12 @@ function configure_bot(bot) {
   //   ctx.reply(cmd_check_text());
   // });
 
-  bot.on(ctx => {
-    console.log(ctx);
+  bot.command("начать", ctx => {
     ctx.reply(
       "Добро пожаловать, для взаимодействия с ботом, используйте отправленную нижу клавиатуру. Инструкция - https://vk.com/@vkcoinqitix-instrukciya-po-pokupkeprodazhe-vkcoin",
       null,
       Markup.keyboard([
-        [Markup.button("🎰 Рулетка", "secondary")],
+        [Markup.button("🎰 Рулетка", "secondary", { button: "roulette" })],
         [
           Markup.button("💶 Пополнить VK Coin", "positive"),
           Markup.button("💶 Пополнить RUB", "positive")
@@ -203,9 +221,22 @@ function configure_bot(bot) {
         ],
         [
           Markup.button("💰 Баланс", "secondary"),
-          Markup.button("📊 Курс/Информация", "secondary")
+          Markup.button("📊 Курс / Информация", "secondary")
         ],
         [Markup.button("💸 Резерв", "primary")]
+      ])
+    );
+  });
+
+  bot.on(ctx => {
+    console.log(ctx);
+    ctx.reply(
+      cmd_roulette(),
+      null,
+      Markup.keyboard([
+        Markup.button("🤑 Low Coin", "positive"),
+        Markup.button("💳 Medium...", "negative"),
+        Markup.button("📤 Назад", "primary")
       ])
     );
   });
