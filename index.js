@@ -1,26 +1,27 @@
-const express = require('express');
-const bodyParser = require('body-parser');
+const express = require("express");
+const bodyParser = require("body-parser");
 
 // local files
-const constants = require('./modules/constants');
-const logger = require('./modules/logger');
-const settings = require('./modules/config');
-const packageInfo = require('./package.json');
-const VkBot = require('node-vk-bot-api');
+const constants = require("./modules/constants");
+const logger = require("./modules/logger");
+const settings = require("./modules/config");
+const packageInfo = require("./package.json");
+const VkBot = require("node-vk-bot-api");
+const Markup = require("node-vk-bot-api/lib/markup");
 
 let bot;
 
 function start_express_server() {
-  if (settings.get('env') === 'production') {
-    logger.warn('start_express_server');
+  if (settings.get("env") === "production") {
+    logger.warn("start_express_server");
     let app = express(),
-      group_id = settings.get('credentials.vk.group_id');
+      group_id = settings.get("credentials.vk.group_id");
 
     //Here we are configuring express to use body-parser as middle-ware.
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json());
 
-    app.get('/', function (req, res) {
+    app.get("/", function(req, res) {
       res.json({ version: packageInfo.version });
     });
 
@@ -34,16 +35,15 @@ function start_express_server() {
     //   handleSeizeButton(req, res, 'tomorrow');
     // });
 
-    if (settings.get('credentials.bot.use_webhooks')) {
-      logger.info('BOT mode: webhooks');
+    if (settings.get("credentials.bot.use_webhooks")) {
+      logger.info("BOT mode: webhooks");
       bot = configure_bot_webhooks(app, group_id);
-    }
-    else {
-      logger.info('BOT mode: long polling');
+    } else {
+      logger.info("BOT mode: long polling");
       bot = configure_bot_polling(app, group_id);
     }
 
-    let server = app.listen(process.env.PORT || 8888, function () {
+    let server = app.listen(process.env.PORT || 8888, function() {
       let host = server.address().address;
       let port = server.address().port;
 
@@ -57,21 +57,22 @@ function run() {
 }
 
 function process_event(event_data) {
-  if (!processable_event(event_data))
-    return;
+  if (!processable_event(event_data)) return;
 
   let text = event_data.object.text.toLowerCase().trim();
-  if (text == 'начать') {
+  if (text == "начать") {
     bot_menu();
   }
 }
 
 function processable_event(event_data) {
-  logger.debug('Checking event source');
-  return event_data &&
+  logger.debug("Checking event source");
+  return (
+    event_data &&
     event_data.object &&
-    event_data.group_id == settings.get('credentials.vk.group_id') &&
-    event_data.secret === settings.get('credentials.vk.secret');
+    event_data.group_id == settings.get("credentials.vk.group_id") &&
+    event_data.secret === settings.get("credentials.vk.secret")
+  );
 }
 
 function cmd_menu_text() {
@@ -88,7 +89,7 @@ function cmd_menu_text() {
 }
 
 function cmd_list_text() {
-  return 'Здесь будет список';
+  return "Здесь будет список";
 }
 
 function cmd_rules_text() {
@@ -118,23 +119,23 @@ function cmd_rules_text() {
 }
 
 function cmd_groups_text() {
-  return 'Здесь будет список групп';
+  return "Здесь будет список групп";
 }
 
 function cmd_stats_text() {
-  return 'Здесь будет статистика';
+  return "Здесь будет статистика";
 }
 
 function cmd_check_text() {
-  return 'Здесь будут результаты проверки';
+  return "Здесь будут результаты проверки";
 }
 
 function configure_bot_webhooks(app, group_id) {
   let bot = new VkBot({
-    token: settings.get('credentials.bot.access_token'),
-    group_id: settings.get('credentials.vk.group_id'),
-    secret: settings.get('credentials.vk.secret'),
-    confirmation: settings.get('credentials.vk.confirmation')
+    token: settings.get("credentials.bot.access_token"),
+    group_id: settings.get("credentials.vk.group_id"),
+    secret: settings.get("credentials.vk.secret"),
+    confirmation: settings.get("credentials.vk.confirmation")
   });
   configure_bot(bot);
 
@@ -146,8 +147,8 @@ function configure_bot_webhooks(app, group_id) {
 
 function configure_bot_polling(app, group_id) {
   let bot = new VkBot({
-    token: settings.get('credentials.bot.access_token'),
-    group_id: settings.get('credentials.vk.group_id')
+    token: settings.get("credentials.bot.access_token"),
+    group_id: settings.get("credentials.vk.group_id")
   });
 
   configure_bot(bot);
@@ -157,32 +158,56 @@ function configure_bot_polling(app, group_id) {
 }
 
 function configure_bot(bot) {
-  bot.command('/меню', (ctx) => {
-    ctx.reply(cmd_menu_text());
-  });
+  // bot.command('/меню', (ctx) => {
+  //   ctx.reply(cmd_menu_text());
+  // });
 
-  bot.command('/список', (ctx) => {
-    ctx.reply(cmd_list_text());
-  });
+  // bot.command('/список', (ctx) => {
+  //   ctx.reply(cmd_list_text());
+  // });
 
-  bot.command('/правила', (ctx) => {
-    ctx.reply(cmd_rules_text());
-  });
+  // bot.command('/правила', (ctx) => {
+  //   ctx.reply(cmd_rules_text());
+  // });
 
-  bot.command('/группы', (ctx) => {
-    ctx.reply(cmd_groups_text());
-  });
+  // bot.command('/группы', (ctx) => {
+  //   ctx.reply(cmd_groups_text());
+  // });
 
-  bot.command('/стата', (ctx) => {
-    ctx.reply(cmd_stats_text());
-  });
+  // bot.command('/стата', (ctx) => {
+  //   ctx.reply(cmd_stats_text());
+  // });
 
-  bot.command('/проверка', (ctx) => {
-    ctx.reply(cmd_check_text());
-  });
+  // bot.command('/проверка', (ctx) => {
+  //   ctx.reply(cmd_check_text());
+  // });
 
-  bot.on((ctx) => {
-    ctx.reply('Узнать, чем могу быть полезен можно командой /меню');
+  bot.on(ctx => {
+    console.log(ctx);
+    ctx.reply(
+      "Добро пожаловать, для взаимодействия с ботом, используйте отправленную нижу клавиатуру. Инструкция - https://vk.com/@vkcoinqitix-instrukciya-po-pokupkeprodazhe-vkcoin",
+      null,
+      Markup.keyboard([
+        [Markup.button("🎰 Рулетка", "secondary")],
+        [
+          Markup.button("💶 Пополнить VK Coin", "positive"),
+          Markup.button("💶 Пополнить RUB", "positive")
+        ],
+        [
+          Markup.button("📤 Вывести VK Coin", "negative"),
+          Markup.button("📤 Вывести RUB", "negative")
+        ],
+        [
+          Markup.button("💱 Обменять VK Coin", "primary"),
+          Markup.button("💱 Обменять RUB", "primary")
+        ],
+        [
+          Markup.button("💰 Баланс", "secondary"),
+          Markup.button("📊 Курс/Информация", "secondary")
+        ],
+        [Markup.button("💸 Резерв", "primary")]
+      ])
+    );
   });
 }
 
