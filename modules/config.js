@@ -80,6 +80,18 @@ const config = convict({
         default: "",
         env: "CREDENTIALS_VK_CONFIRMATION"
       }
+    },
+    qiwi: {
+      account_number: {
+        doc: "Account (phone number 7XXXXXXXXXX)",
+        format: function check(val) {
+          if (!/^7\d{10}$/.test(val)) {
+            throw new Error("Номер телефона должен быть в формате 7XXXXXXXXXX");
+          }
+        },
+        default: "",
+        env: "QIWI_ACCOUNT_NUMBER"
+      }
     }
   },
   debug: {
