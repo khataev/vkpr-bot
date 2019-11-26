@@ -6,6 +6,7 @@ class LowCoinOption extends MenuOption {
     if (this.ctx.isPositiveBalance()) {
       const price = 25; // todo: into settings
       const prize = Math.random() * 100_000_000;
+      // TODO: check influence of text indent
       return `
   🎰 Происходит открытие рулетки 🤑 Low Coin за ${price} ₽, ожидайте!
   

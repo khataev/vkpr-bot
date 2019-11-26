@@ -4,15 +4,9 @@ class Context {
     this.replies = {};
   }
 
-  // get bot() {
-  //   return bot;
-  // }
   isPositiveBalance() {
     return false;
   }
-  // get replies() {
-  //   return this.replies;
-  // }
 
   payloadButton(botCtx) {
     return (

@@ -23,10 +23,6 @@ class BackMenuOption extends MenuOption {
     // TODO: refactor double parent into handy method
     return this.parent.parent.markup;
   }
-
-  // activate() {
-  //   this.parent.activate();
-  // }
 }
 
 module.exports = BackMenuOption;

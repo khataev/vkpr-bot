@@ -40,10 +40,6 @@ class MenuOption {
     throw Error("Must be implemented in child class");
   }
 
-  // activate() {
-  //   this.chatMessage;
-  // }
-
   // command() {
   //   this.ctx.bot.command(this.command, botCtx => {
   //     botCtx.reply(this.reply);
