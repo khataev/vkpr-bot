@@ -1,5 +1,6 @@
 // const Markup = require("node-vk-bot-api/lib/markup");
 const RootOption = require("./root/index");
+const Context = require("./context");
 
 let startCommandText = function(ctx) {
   return "Добро пожаловать, для взаимодействия с ботом, используйте отправленную нижу клавиатуру. Инструкция - https://vk.com/@vkcoinqitix-instrukciya-po-pokupkeprodazhe-vkcoin";
@@ -37,7 +38,7 @@ let rootMenuMarkup = function(parent) {
 };
 
 const BotNavigation = function(bot) {
-  let context = { bot: bot };
+  let context = new Context(bot);
   let rootOption = new RootOption(context);
 
   bot.command("начать", ctx => {
@@ -86,6 +87,18 @@ const BotNavigation = function(bot) {
   //     ])
   //   );
   // });
+
+  rootOption.registerReplies();
+
+  bot.on(ctx => {
+    const reply = context.findReply(ctx);
+    if (reply) {
+      console.log("bot navigation. found reply", reply);
+      ctx.reply(...reply);
+    }
+  });
+
+  // console.log(context);
 };
 
 module.exports = BotNavigation;

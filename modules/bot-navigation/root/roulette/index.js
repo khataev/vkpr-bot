@@ -23,15 +23,21 @@ class RouletteOption extends MenuOption {
   }
 
   get buttonMarkup() {
-    return Markup.button("🎰 Рулетка", "secondary", { button: "roulette" });
+    return Markup.button("🎰 Рулетка", "secondary", {
+      button: this.triggerButton
+    });
   }
 
   get menu() {
     return [
-      new LowCoinOption(ctx, this),
-      new MediumCoinOption(ctx, this),
-      new BackMenuOption(ctx, this)
+      new LowCoinOption(this.ctx, this),
+      new MediumCoinOption(this.ctx, this),
+      new BackMenuOption(this.ctx, this)
     ];
+  }
+
+  get triggerButton() {
+    return "roulette";
   }
 }
 

@@ -9,6 +9,10 @@ class RootOption extends MenuOption {
   get menu() {
     return [[new RouletteOption(this.ctx, this)]];
   }
+
+  get triggerButton() {
+    return "root_button";
+  }
 }
 
 module.exports = RootOption;

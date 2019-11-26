@@ -238,4 +238,14 @@ function configure_bot(bot) {
   nav = new BotNavigation(bot);
 }
 
+function debug_run() {
+  bot = new VkBot({
+    token: settings.get("credentials.bot.access_token"),
+    group_id: settings.get("credentials.vk.group_id")
+  });
+  nav = new BotNavigation(bot);
+}
+
+// debug_run();
+
 run();
