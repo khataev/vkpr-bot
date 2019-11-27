@@ -41,10 +41,7 @@ const BotNavigation = function(bot) {
 
   bot.on(ctx => {
     const reply = context.findReply(ctx);
-    if (reply) {
-      console.log("bot navigation. found reply", reply);
-      ctx.reply(...reply);
-    }
+    if (reply) ctx.reply(...reply);
   });
 
   // console.log(context);

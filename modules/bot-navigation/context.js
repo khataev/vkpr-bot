@@ -18,7 +18,7 @@ class Context {
   }
 
   findReply(botCtx) {
-    console.log("Context#findReply. botCtx:", botCtx);
+    // console.log("Context#findReply. botCtx:", botCtx);
     console.log(
       "Context#findReply. payloadButton:",
       this.payloadButton(botCtx)
@@ -42,11 +42,7 @@ class Context {
       throw new Error(error);
     }
 
-    console.log(
-      `Context#registerReply. registered:`,
-      menuOption.triggerButton,
-      menuOption.reply
-    );
+    console.log(`Context#registerReply. registered:`, menuOption.triggerButton);
     this.replies[menuOption.triggerButton] = menuOption.reply;
   }
 }
