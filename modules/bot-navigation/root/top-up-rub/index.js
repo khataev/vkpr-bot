@@ -1,5 +1,7 @@
 const Markup = require("node-vk-bot-api/lib/markup");
-const MenuOption = require("../menu-option");
+const MenuOption = require("../../menu-option");
+const CheckPaymentOption = require("./check-payment-option");
+const BackMenuOption = require("./back-menu-option");
 
 class TopUpRubOption extends MenuOption {
   get chatMessage() {
@@ -24,6 +26,13 @@ class TopUpRubOption extends MenuOption {
     return Markup.button("💶 Пополнить RUB", "positive", {
       button: this.triggerButton
     });
+  }
+
+  get menu() {
+    return [
+      [new CheckPaymentOption(this.ctx, this)],
+      [new BackMenuOption(this.ctx, this)]
+    ];
   }
 
   get triggerButton() {
