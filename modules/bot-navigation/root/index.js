@@ -6,6 +6,8 @@ const WithdrawCoinOption = require("./withdraw-coin-option");
 const WithdrawRubOption = require("./withdraw-rub-option");
 const ExchangeCoinOption = require("./exchange-coin-option");
 const ExchangeRubOption = require("./exchange-rub-option");
+const BalanceCoinOption = require("./balance-option");
+const InfoOption = require("./info-option");
 
 class RootOption extends MenuOption {
   get chatMessage() {
@@ -24,7 +26,8 @@ class RootOption extends MenuOption {
       [
         new ExchangeCoinOption(this.ctx, this),
         new ExchangeRubOption(this.ctx, this)
-      ]
+      ],
+      [new BalanceCoinOption(this.ctx, this), new InfoOption(this.ctx, this)]
     ];
   }
 
