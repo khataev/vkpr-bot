@@ -1,3 +1,6 @@
+const models = require("./../../db/models");
+const Account = models.Account;
+
 class Context {
   constructor(bot) {
     this.bot = bot;
@@ -6,6 +9,20 @@ class Context {
 
   isPositiveBalance() {
     return false;
+  }
+
+  hasAccount(botCtx) {
+    const userId = this.getUserId(botCtx);
+    return Account.findOne({ where: { vkId: userId } });
+  }
+
+  createAccount(botCtx) {
+    const userId = this.getUserId(botCtx);
+    return Account.create({ vkId: userId });
+  }
+
+  getUserId(botCtx) {
+    return botCtx && botCtx.message && botCtx.message.from_id;
   }
 
   payloadButton(botCtx) {
