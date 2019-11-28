@@ -10,13 +10,16 @@ module.exports = {
           type: Sequelize.INTEGER
         },
         vk_id: {
-          type: Sequelize.INTEGER
+          type: Sequelize.INTEGER,
+          allowNull: false
         },
         coin_amount: {
-          type: Sequelize.BIGINT
+          type: Sequelize.BIGINT,
+          allowNull: false
         },
         rub_amount: {
-          type: Sequelize.INTEGER
+          type: Sequelize.INTEGER,
+          allowNull: false
         },
         createdAt: {
           allowNull: false,

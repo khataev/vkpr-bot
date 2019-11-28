@@ -4,9 +4,21 @@ module.exports = (sequelize, DataTypes) => {
     "Account",
     {
       vkId: { field: "vk_id", type: DataTypes.INTEGER },
-      coinAmount: { field: "coin_amount", type: DataTypes.BIGINT },
-      rubAmount: { field: "rub_amount", type: DataTypes.INTEGER },
-      isSubscribed: { field: "is_subscribed", type: DataTypes.BOOLEAN }
+      coinAmount: {
+        field: "coin_amount",
+        type: DataTypes.BIGINT,
+        defaultValue: 0
+      },
+      rubAmount: {
+        field: "rub_amount",
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+      },
+      isSubscribed: {
+        field: "is_subscribed",
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
+      }
     },
     {}
   );

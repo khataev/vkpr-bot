@@ -3,7 +3,8 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.addColumn("Accounts", "is_subscribed", {
-      type: Sequelize.BOOLEAN
+      type: Sequelize.BOOLEAN,
+      allowNull: false
     });
     return queryInterface.addIndex("Accounts", {
       fields: ["is_subscribed"]

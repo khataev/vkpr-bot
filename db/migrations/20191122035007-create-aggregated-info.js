@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('AggregatedInfos', {
+    return queryInterface.createTable("AggregatedInfos", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -9,28 +9,36 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       users: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false
       },
       payments: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false
       },
       coins_deposited: {
-        type: Sequelize.BIGINT
+        type: Sequelize.BIGINT,
+        allowNull: false
       },
       rub_deposited: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false
       },
       coins_exchanged: {
-        type: Sequelize.BIGINT
+        type: Sequelize.BIGINT,
+        allowNull: false
       },
       rub_exchanged: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false
       },
       coins_withdrawed: {
-        type: Sequelize.BIGINT
+        type: Sequelize.BIGINT,
+        allowNull: false
       },
       rub_withdrawed: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false
       },
       createdAt: {
         allowNull: false,
@@ -43,6 +51,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('AggregatedInfos');
+    return queryInterface.dropTable("AggregatedInfos");
   }
 };

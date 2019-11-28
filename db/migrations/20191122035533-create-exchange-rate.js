@@ -10,16 +10,20 @@ module.exports = {
           type: Sequelize.INTEGER
         },
         date: {
-          type: Sequelize.DATE
+          type: Sequelize.DATE,
+          allowNull: false
         },
         coin_amount: {
-          type: Sequelize.BIGINT
+          type: Sequelize.BIGINT,
+          allowNull: false
         },
         sell_rate: {
-          type: Sequelize.INTEGER
+          type: Sequelize.INTEGER,
+          allowNull: false
         },
         buy_rate: {
-          type: Sequelize.INTEGER
+          type: Sequelize.INTEGER,
+          allowNull: false
         },
         createdAt: {
           allowNull: false,
