@@ -2,7 +2,7 @@ const Markup = require("node-vk-bot-api/lib/markup");
 const MenuOption = require("../menu-option");
 
 class InfoOption extends MenuOption {
-  get chatMessage() {
+  chatMessage(botCtx) {
     // TODO:
     return `
     📊 Действительный курс на 26.11.2019:

@@ -2,7 +2,7 @@ const Markup = require("node-vk-bot-api/lib/markup");
 const MenuOption = require("../menu-option");
 
 class WithdrawCoinOption extends MenuOption {
-  get chatMessage() {
+  chatMessage(botCtx) {
     // TODO:
     return "💶 Ваш баланс равен 0 VK Coins.";
   }

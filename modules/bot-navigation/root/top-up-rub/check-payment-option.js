@@ -2,7 +2,7 @@ const Markup = require("node-vk-bot-api/lib/markup");
 const MenuOption = require("../../menu-option");
 
 class CheckPaymentOption extends MenuOption {
-  get chatMessage() {
+  chatMessage(botCtx) {
     // TODO
     return "❗ Мы не нашли новых платежей.";
   }

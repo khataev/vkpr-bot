@@ -11,7 +11,7 @@ const InfoOption = require("./info-option");
 const ReserveOption = require("./reserve-option");
 
 class RootOption extends MenuOption {
-  get chatMessage() {
+  chatMessage(botCtx) {
     return "✌ Вы находитесь в главном меню.";
   }
 

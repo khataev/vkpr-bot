@@ -10,7 +10,7 @@ class MenuOption {
     return !this.parent;
   }
 
-  get chatMessage() {
+  chatMessage(botCtx) {
     throw Error("Must be implemented in child class");
   }
 
@@ -22,9 +22,9 @@ class MenuOption {
     return;
   }
 
-  get commandText() {
-    throw Error("Must be implemented in child class");
-  }
+  // get commandText() {
+  //   throw Error("Must be implemented in child class");
+  // }
 
   // TODO: rename to childMarkup
   get markup() {
@@ -32,8 +32,8 @@ class MenuOption {
     return Markup.keyboard(this.buildMarkup(this.menu));
   }
 
-  get reply() {
-    return [this.chatMessage, null, this.markup];
+  reply(botCtx) {
+    return [this.chatMessage(botCtx), null, this.markup];
   }
 
   get triggerButton() {

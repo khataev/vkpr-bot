@@ -2,7 +2,7 @@ const Markup = require("node-vk-bot-api/lib/markup");
 const MenuOption = require("../menu-option");
 
 class WithdrawRubOption extends MenuOption {
-  get chatMessage() {
+  chatMessage(botCtx) {
     // TODO:
     return "💶 Ваш баланс меньше 1 ₽, вывод на QIWI доступен от 1 ₽.";
   }

@@ -2,7 +2,7 @@ const Markup = require("node-vk-bot-api/lib/markup");
 const MenuOption = require("../../menu-option");
 
 class MediumCoinOption extends MenuOption {
-  get chatMessage() {
+  chatMessage(botCtx) {
     if (this.ctx.isPositiveBalance()) {
       const price = 100; // TODO: into settings
       const prize = Math.random() * 400_000_000;

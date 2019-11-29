@@ -42,7 +42,9 @@ class Context {
     );
     if (this.replies[this.payloadButton(botCtx)])
       console.log("Context#findReply. reply found");
-    return this.replies[this.payloadButton(botCtx)];
+
+    const replyMenuItem = this.replies[this.payloadButton(botCtx)];
+    return replyMenuItem.reply(botCtx);
   }
 
   registerReply(menuOption) {
@@ -60,7 +62,7 @@ class Context {
     }
 
     console.log(`Context#registerReply. registered:`, menuOption.triggerButton);
-    this.replies[menuOption.triggerButton] = menuOption.reply;
+    this.replies[menuOption.triggerButton] = menuOption;
   }
 }
 

@@ -2,8 +2,8 @@ const Markup = require("node-vk-bot-api/lib/markup");
 const MenuOption = require("./../../menu-option");
 
 class BackMenuOption extends MenuOption {
-  get chatMessage() {
-    return this.parent.parent.chatMessage;
+  chatMessage(botCtx) {
+    return this.parent.parent.chatMessage(botCtx);
   }
 
   // TODO: refactor

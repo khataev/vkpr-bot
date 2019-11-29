@@ -2,7 +2,7 @@ const Markup = require("node-vk-bot-api/lib/markup");
 const MenuOption = require("../menu-option");
 
 class ExchangeRubOption extends MenuOption {
-  get chatMessage() {
+  chatMessage(botCtx) {
     // TODO:
     return "❗ У Вас на балансе 0 RUB.";
   }

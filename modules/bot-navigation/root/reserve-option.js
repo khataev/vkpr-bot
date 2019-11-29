@@ -2,7 +2,7 @@ const Markup = require("node-vk-bot-api/lib/markup");
 const MenuOption = require("../menu-option");
 
 class ReserveOption extends MenuOption {
-  get chatMessage() {
+  chatMessage(botCtx) {
     // TODO:
     return `
     💸 Резерв QIWI: 3073.43 ₽

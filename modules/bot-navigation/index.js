@@ -6,7 +6,7 @@ const BotNavigation = function(bot) {
   let rootOption = new RootOption(context);
 
   bot.command("начать", async ctx => {
-    ctx.reply(...rootOption.reply);
+    ctx.reply(...rootOption.reply(ctx));
     if (!(await context.hasAccount(ctx))) await context.createAccount(ctx);
   });
 
