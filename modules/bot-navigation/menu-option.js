@@ -32,8 +32,8 @@ class MenuOption {
     return Markup.keyboard(this.buildMarkup(this.menu));
   }
 
-  reply(botCtx) {
-    return [this.chatMessage(botCtx), null, this.markup];
+  async reply(botCtx) {
+    return [await this.chatMessage(botCtx), null, this.markup];
   }
 
   get triggerButton() {

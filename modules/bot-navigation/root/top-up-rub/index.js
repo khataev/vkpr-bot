@@ -5,12 +5,12 @@ const CheckPaymentOption = require("./check-payment-option");
 const BackMenuOption = require("./back-menu-option");
 
 class TopUpRubOption extends MenuOption {
-  chatMessage(botCtx) {
+  async chatMessage(botCtx) {
     // TODO: generate link and VK ID
     // TODO: divide into 2 messages?
     console.log("TopUpRubOption#chatMessage", this);
     const userId = this.ctx.getUserId(botCtx);
-    const topUpUrl = utils.getPaymentLink(userId);
+    const topUpUrl = await utils.getPaymentUrl(userId);
 
     return `
     🔗 Для пополнения баланса, используйте данную ссылку: ${topUpUrl}

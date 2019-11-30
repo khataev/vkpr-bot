@@ -6,15 +6,15 @@ const BotNavigation = function(bot) {
   let rootOption = new RootOption(context);
 
   bot.command("начать", async ctx => {
-    ctx.reply(...rootOption.reply(ctx));
+    ctx.reply(...(await rootOption.reply(ctx)));
     if (!(await context.hasAccount(ctx))) await context.createAccount(ctx);
   });
 
   rootOption.registerReplies();
 
-  bot.on(ctx => {
+  bot.on(async ctx => {
     const reply = context.findReply(ctx);
-    if (reply) ctx.reply(...reply);
+    if (reply) ctx.reply(...(await reply));
   });
 
   // console.log(context);
