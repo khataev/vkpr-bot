@@ -1,5 +1,6 @@
 const RootOption = require("./root/index");
 const Context = require("./context");
+const utils = require("./../utils");
 
 const BotNavigation = function(bot) {
   let context = new Context(bot);
@@ -16,6 +17,18 @@ const BotNavigation = function(bot) {
     const reply = context.findReply(ctx);
     if (reply) ctx.reply(...(await reply));
   });
+
+  this.getUrl = async function() {
+    const ctx = {
+      message: { payload: JSON.stringify({ button: "top_up_rub_button" }) }
+    };
+    const reply = context.findReply(ctx);
+    const [chatMessage, ...rest] = await reply;
+    console.log("chatMessage:", chatMessage);
+
+    // const url = await utils.getPaymentUrl("http:/ya.ru");
+    // console.log(url);
+  };
 
   // console.log(context);
 };

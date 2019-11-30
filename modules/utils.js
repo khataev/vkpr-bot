@@ -21,15 +21,22 @@ let Utils = function() {
 
   this.getShortUrl = async function(url) {
     try {
+      const access_token = settings.get("credentials.bot.access_token");
+      data = qs.stringify({
+        url: url,
+        v: "5.103",
+        access_token: access_token
+      });
       const response = await axios.post(
         "https://api.vk.com/method/utils.getShortLink",
-        {
-          url: url,
-          v: "5.103",
-          access_token: settings.get("credentials.bot.access_token")
-        }
+        data
       );
-      return response.short_url;
+      if (response.data.error)
+        throw new Error(
+          `${response.data.error.error_code}: ${response.data.error.error_msg}`
+        );
+
+      return response.data.response.short_url;
     } catch (error) {
       console.error(error);
       return url;
