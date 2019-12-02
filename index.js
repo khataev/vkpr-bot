@@ -16,7 +16,7 @@ function start_express_server() {
   if (settings.get("env") === "production") {
     logger.warn("start_express_server");
     let app = express(),
-      group_id = settings.get("credentials.vk.group_id");
+      groupId = settings.get("credentials.vk.group_id");
 
     //Here we are configuring express to use body-parser as middle-ware.
     app.use(bodyParser.urlencoded({ extended: false }));
@@ -25,6 +25,8 @@ function start_express_server() {
     app.get("/", function(req, res) {
       res.json({ version: packageInfo.version });
     });
+
+    configureQiwiHook(app, groupId);
 
     // app.post(`/${group_id}`, function (req, res) {
     //   logger.info(req.body);
@@ -38,10 +40,10 @@ function start_express_server() {
 
     if (settings.get("credentials.bot.use_webhooks")) {
       logger.info("BOT mode: webhooks");
-      bot = configure_bot_webhooks(app, group_id);
+      bot = configure_bot_webhooks(app, groupId);
     } else {
       logger.info("BOT mode: long polling");
-      bot = configure_bot_polling(app, group_id);
+      bot = configure_bot_polling(app, groupId);
     }
 
     let server = app.listen(process.env.PORT || 8888, function() {
@@ -123,6 +125,30 @@ function configure_bot_polling(app, group_id) {
 function configure_bot(bot) {
   // TODO: refactor start: constructor to method call
   nav = new BotNavigation(bot);
+}
+
+function configureQiwiHook(app, groupId) {
+  app.post(`/${groupId}/handler`, async function(req, res) {
+    logger.debug("handler action");
+    console.dir(req.body);
+    res.sendStatus(200);
+
+    // const { private_hash: privateHash, order_id: orderId } = req.body;
+    // if (privateHash && orderId) {
+    //   try {
+    //     await models.Payment.confirmPayment(orderId, privateHash);
+    //     res.sendStatus(200);
+    //   } catch (error) {
+    //     logger.error(`/${token}/handler. ${error.message}`);
+    //     res.sendStatus(422);
+    //   }
+    // } else {
+    //   logger.error(
+    //     `/${token}/handler. invalid private hash: ${privateHash} or order id: ${orderId}`
+    //   );
+    //   res.sendStatus(400);
+    // }
+  });
 }
 
 async function debug_run() {
