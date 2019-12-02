@@ -2,7 +2,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface
-      .createTable("RubTransaction", {
+      .createTable("RubTransactions", {
         id: {
           allowNull: false,
           autoIncrement: true,
@@ -32,13 +32,13 @@ module.exports = {
         }
       })
       .then(() =>
-        queryInterface.addIndex("RubTransaction", {
+        queryInterface.addIndex("RubTransactions", {
           unique: false,
           fields: ["vk_id", "checked"]
         })
       )
       .then(() =>
-        queryInterface.addIndex("RubTransaction", {
+        queryInterface.addIndex("RubTransactions", {
           unique: true,
           fields: ["txn_id"]
         })

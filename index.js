@@ -9,6 +9,7 @@ const packageInfo = require("./package.json");
 const VkBot = require("node-vk-bot-api");
 // const Markup = require("node-vk-bot-api/lib/markup");
 const BotNavigation = require("./modules/bot-navigation");
+const models = require("./db/models");
 
 let bot;
 
@@ -130,10 +131,33 @@ function configure_bot(bot) {
 function configureQiwiHook(app, groupId) {
   app.post(`/${groupId}/handler`, async function(req, res) {
     logger.debug("handler action");
-    console.dir(req.body);
-    res.sendStatus(200);
+    console.log(req.body);
+    // res.sendStatus(200);
 
-    // const { private_hash: privateHash, order_id: orderId } = req.body;
+    const { test } = req.body;
+
+    if (test) {
+      res.sendStatus(200);
+    } else {
+      try {
+        const {
+          payment: { type, status, txnId, comment: vkId }
+        } = req.body;
+
+        if (type === "IN" && status === "SUCCESS")
+          await models.RubTransaction.create({
+            vkId: vkId,
+            txnId: txnId,
+            hookInfo: req.body
+          });
+
+        res.sendStatus(200);
+      } catch (error) {
+        logger.error(`/${groupId}/handler. ${error.message}`);
+        res.sendStatus(422);
+      }
+    }
+
     // if (privateHash && orderId) {
     //   try {
     //     await models.Payment.confirmPayment(orderId, privateHash);
