@@ -9,7 +9,8 @@ const packageInfo = require("./package.json");
 const VkBot = require("node-vk-bot-api");
 // const Markup = require("node-vk-bot-api/lib/markup");
 const BotNavigation = require("./modules/bot-navigation");
-const models = require("./db/models");
+const RubFinances = require("./modules/rub-finances");
+const rubFinances = new RubFinances(logger);
 
 let bot;
 
@@ -134,44 +135,9 @@ function configureQiwiHook(app, groupId) {
     console.log(req.body);
     // res.sendStatus(200);
 
-    const { test } = req.body;
-
-    if (test) {
-      res.sendStatus(200);
-    } else {
-      try {
-        const {
-          payment: { type, status, txnId, comment: vkId }
-        } = req.body;
-
-        if (type === "IN" && status === "SUCCESS")
-          await models.RubTransaction.create({
-            vkId: vkId,
-            txnId: txnId,
-            hookInfo: req.body
-          });
-
-        res.sendStatus(200);
-      } catch (error) {
-        logger.error(`/${groupId}/handler. ${error.message}`);
-        res.sendStatus(422);
-      }
-    }
-
-    // if (privateHash && orderId) {
-    //   try {
-    //     await models.Payment.confirmPayment(orderId, privateHash);
-    //     res.sendStatus(200);
-    //   } catch (error) {
-    //     logger.error(`/${token}/handler. ${error.message}`);
-    //     res.sendStatus(422);
-    //   }
-    // } else {
-    //   logger.error(
-    //     `/${token}/handler. invalid private hash: ${privateHash} or order id: ${orderId}`
-    //   );
-    //   res.sendStatus(400);
-    // }
+    const success = await rubFinances.processWebHook(req.body);
+    if (success) res.sendStatus(200);
+    else res.sendStatus(422);
   });
 }
 
