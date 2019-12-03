@@ -25,21 +25,26 @@ class RubFinances {
 
         // TODO: add flag for success processed transaction hook;
         // separate processing of hook info insert + account update (different transactions)
-        if (type === "IN" && status === "SUCCESS") {
+        if (type !== "IN") return;
+
+        await RubTransaction.create({
+          vkId: vkId,
+          txnId: txnId,
+          hookInfo: hookInfo
+        });
+
+        if (status === "SUCCESS") {
           RubTransaction.sequelize.transaction({}, async transaction => {
-            await RubTransaction.create(
+            await RubTransaction.update(
               {
-                vkId: vkId,
-                txnId: txnId,
-                hookInfo: hookInfo
+                isProcessed: true
               },
-              { transaction: transaction }
+              { where: { txnId: txnId }, transaction: transaction }
             );
 
-            const account = await Account.findOne({ where: { vkId: vkId } });
-            await account.update(
-              { rubAmount: account.rubAmount + amount },
-              { transaction: transaction }
+            await Account.increment(
+              { rubAmount: amount },
+              { where: { vkId: vkId }, transaction: transaction }
             );
           });
         }
