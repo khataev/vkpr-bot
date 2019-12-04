@@ -8,7 +8,7 @@ const BotNavigation = function(bot) {
 
   bot.command("начать", async ctx => {
     ctx.reply(...(await rootOption.reply(ctx)));
-    if (!(await context.hasAccount(ctx))) await context.createAccount(ctx);
+    await context.findOrCreateAccount(ctx);
   });
 
   rootOption.registerReplies();
