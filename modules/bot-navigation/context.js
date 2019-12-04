@@ -16,8 +16,15 @@ class Context {
     return Account.findOne({ where: { vkId: userId } });
   }
 
+  async findOrCreateAccount(botCtx) {
+    return (
+      (await this.hasAccount(botCtx)) || (await this.createAccount(botCtx))
+    );
+  }
+
   createAccount(botCtx) {
     const userId = this.getUserId(botCtx);
+    console.debug(`Account for userId ${userId} created`);
     return Account.create({ vkId: userId });
   }
 

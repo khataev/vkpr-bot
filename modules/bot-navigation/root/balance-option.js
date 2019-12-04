@@ -2,12 +2,13 @@ const Markup = require("node-vk-bot-api/lib/markup");
 const MenuOption = require("../menu-option");
 
 class BalanceOption extends MenuOption {
-  chatMessage(botCtx) {
-    // TODO:
+  async chatMessage(botCtx) {
+    const account = await this.ctx.findOrCreateAccount(botCtx);
+
     return `
     💰 Ваш баланс:
-    ➕ 0 VK Coins
-    ➕ 0 ₽
+    ➕ ${account.coinAmount} VK Coins
+    ➕ ${account.rubAmount} ₽
     `;
   }
 
