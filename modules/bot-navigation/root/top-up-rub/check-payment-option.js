@@ -6,9 +6,7 @@ const rubFinances = new RubFinances(null);
 class CheckPaymentOption extends MenuOption {
   async chatMessage(botCtx) {
     const vkId = this.ctx.getUserId(botCtx);
-    console.log("vkId:", vkId);
     const [txnIds, totalIncome] = await rubFinances.checkIncomePayment(vkId);
-    console.log("[txnIds, totalIncome]:", [txnIds, totalIncome]);
     let message;
 
     if (txnIds.length == 0) message = "❗ Мы не нашли новых платежей.";

@@ -58,27 +58,25 @@ class RubFinances {
   }
 
   async checkIncomePayment(vkId) {
+    const filter = { vkId: vkId, isProcessed: true, isChecked: false };
     const transactions = await RubTransaction.findAll({
-      where: { vkId: vkId, isProcessed: true, isChecked: false }
+      where: filter
     });
 
     const totalIncome = transactions.reduce(
-      acc,
-      tr => {
-        acc + tr.payment.sum.amount;
-      },
+      (acc, tr) => acc + tr.hookInfo.payment.sum.amount,
       0 // initial value of acc
     );
 
     const txnIds = transactions.reduce(
-      acc,
-      tr => {
-        acc.push(tr.payment.txnId);
+      (acc, tr) => {
+        acc.push(tr.hookInfo.payment.txnId);
+        return acc;
       },
       [] // initial value of acc
     );
 
-    await transactions.update({ isChecked: true });
+    await RubTransaction.update({ isChecked: true }, { where: filter });
 
     return [txnIds, totalIncome];
   }
