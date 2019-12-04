@@ -1,10 +1,11 @@
+const gLogger = require("./logger"); // TODO: get from context
 const models = require("./../db/models");
 const RubTransaction = models.RubTransaction;
 const Account = models.Account;
 
 class RubFinances {
   constructor(logger) {
-    this.logger = logger;
+    this.logger = logger || gLogger;
   }
 
   async processWebHook(hookInfo) {
@@ -23,8 +24,6 @@ class RubFinances {
           }
         } = hookInfo;
 
-        // TODO: add flag for success processed transaction hook;
-        // separate processing of hook info insert + account update (different transactions)
         if (type !== "IN") return;
 
         await RubTransaction.create({
@@ -56,6 +55,32 @@ class RubFinances {
         return false;
       }
     }
+  }
+
+  async checkIncomePayment(vkId) {
+    const transactions = await RubTransaction.findAll({
+      where: { vkId: vkId, isProcessed: true, isChecked: false }
+    });
+
+    const totalIncome = transactions.reduce(
+      acc,
+      tr => {
+        acc + tr.payment.sum.amount;
+      },
+      0 // initial value of acc
+    );
+
+    const txnIds = transactions.reduce(
+      acc,
+      tr => {
+        acc.push(tr.payment.txnId);
+      },
+      [] // initial value of acc
+    );
+
+    await transactions.update({ isChecked: true });
+
+    return [txnIds, totalIncome];
   }
 }
 
