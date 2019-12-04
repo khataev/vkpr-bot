@@ -19,7 +19,7 @@ module.exports = {
           type: Sequelize.JSONB,
           allowNull: false
         },
-        checked: {
+        is_checked: {
           type: Sequelize.BOOLEAN
         },
         createdAt: {
@@ -34,7 +34,7 @@ module.exports = {
       .then(() =>
         queryInterface.addIndex("RubTransactions", {
           unique: false,
-          fields: ["vk_id", "checked"]
+          fields: ["vk_id", "is_checked"]
         })
       )
       .then(() =>
