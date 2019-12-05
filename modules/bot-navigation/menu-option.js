@@ -10,8 +10,16 @@ class MenuOption {
     return !this.parent;
   }
 
-  chatMessage(botCtx) {
+  async chatMessage(botCtx) {
     throw Error("Must be implemented in child class");
+  }
+
+  forbiddenTransitionChatMessage(botCtx) {
+    throw Error("Must be implemented in child class");
+  }
+
+  async transitionAllowed(botCtx) {
+    return true;
   }
 
   get buttonMarkup() {

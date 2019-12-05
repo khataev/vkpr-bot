@@ -41,19 +41,19 @@ class Context {
     );
   }
 
-  findReply(botCtx) {
-    // console.log("Context#findReply. botCtx:", botCtx);
+  findResponsibleItem(botCtx) {
+    // console.log("Context#findResponsibleItem. botCtx:", botCtx);
     console.log(
-      "Context#findReply. payloadButton:",
+      "Context#findResponsibleItem. payloadButton:",
       this.payloadButton(botCtx)
     );
     if (this.replies[this.payloadButton(botCtx)])
-      console.log("Context#findReply. reply found");
+      console.log("Context#findResponsibleItem. item found");
 
-    const replyMenuItem = this.replies[this.payloadButton(botCtx)];
-    return replyMenuItem.reply(botCtx);
+    return this.replies[this.payloadButton(botCtx)];
   }
 
+  // TODO: rename to registerMenuOption
   registerReply(menuOption) {
     let error;
 
