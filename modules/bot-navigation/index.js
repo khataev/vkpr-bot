@@ -20,7 +20,9 @@ const BotNavigation = function(bot) {
     const transitionAllowed = await menuItem.transitionAllowed(ctx);
     if (transitionAllowed) ctx.reply(...(await menuItem.reply(ctx)));
     else {
-      menuItem.forbiddenTransitionChatMessage(ctx);
+      // HINT: negative scenario could be played via negative reply?
+      const vkId = context.getUserId(ctx);
+      bot.sendMessage(vkId, menuItem.forbiddenTransitionChatMessage(ctx));
     }
   });
 
