@@ -4,7 +4,7 @@ const BackMenuOption = require("./back-menu-option");
 
 class WithdrawRubOption extends MenuOption {
   async chatMessage(botCtx) {
-    return "✔ Отлично, теперь введите номер QIWI кошелька в формате";
+    return "✔ Отлично, теперь введите номер QIWI кошелька в формате 79991111111";
   }
 
   forbiddenTransitionChatMessage(botCtx) {
@@ -15,6 +15,10 @@ class WithdrawRubOption extends MenuOption {
     const account = await this.ctx.findOrCreateAccount(botCtx);
 
     return account.rubAmount >= 1;
+  }
+
+  async beforeReply(botCtx) {
+    botCtx.session.chattedContext = { chatAllowed: true, withdrawRub: true };
   }
 
   get buttonMarkup() {

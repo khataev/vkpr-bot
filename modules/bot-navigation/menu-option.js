@@ -22,6 +22,8 @@ class MenuOption {
     return true;
   }
 
+  async beforeReply(botCtx) {}
+
   get buttonMarkup() {
     throw Error("Must be implemented in child class");
   }

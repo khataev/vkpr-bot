@@ -14,14 +14,47 @@ const BotNavigation = function(bot) {
   rootOption.registerReplies();
 
   bot.on(async ctx => {
+    const vkId = context.getUserId(ctx);
+    // check for chat message reply from user
+    const chattedContext = ctx.session.chattedContext || {};
+    if (chattedContext.chatAllowed) {
+      if (chattedContext.withdrawRub) {
+        const phoneNumber = ctx && ctx.message && ctx.message.text;
+        if (/^79\d{9}$/.test(phoneNumber)) {
+          // TODO: withdraw to QIWI
+          // TODO: put response url in settings
+          const account = await context.findOrCreateAccount(ctx);
+          const message = `
+          ✔ Мы отправили на QIWI кошелёк +${phoneNumber} ${account.rubAmount} ₽!
+
+          📈 Оставьте свой отзыв: vk.com/topic-xxxxxxxxx
+          `;
+          bot.sendMessage(vkId, message);
+
+          // TODO: save phone number for further withdraw?
+
+          // reset chatted context after processing it
+          ctx.session.chattedContext = {};
+
+          // ❗ Произошла ошибка при выводе средств, свяжитесь с администратором.
+        } else {
+          bot.sendMessage(vkId, "Неверный формат телефона");
+        }
+      }
+
+      return;
+    }
+
+    // menu navigation response
     const menuItem = context.findResponsibleItem(ctx);
     if (!menuItem) return;
 
     const transitionAllowed = await menuItem.transitionAllowed(ctx);
-    if (transitionAllowed) ctx.reply(...(await menuItem.reply(ctx)));
-    else {
+    if (transitionAllowed) {
+      await menuItem.beforeReply(ctx);
+      ctx.reply(...(await menuItem.reply(ctx)));
+    } else {
       // HINT: negative scenario could be played via negative reply?
-      const vkId = context.getUserId(ctx);
       bot.sendMessage(vkId, menuItem.forbiddenTransitionChatMessage(ctx));
     }
   });

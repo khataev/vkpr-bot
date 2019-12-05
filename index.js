@@ -7,7 +7,7 @@ const logger = require("./modules/logger");
 const settings = require("./modules/config");
 const packageInfo = require("./package.json");
 const VkBot = require("node-vk-bot-api");
-// const Markup = require("node-vk-bot-api/lib/markup");
+const Session = require("node-vk-bot-api/lib/session");
 const BotNavigation = require("./modules/bot-navigation");
 const RubFinances = require("./modules/rub-finances");
 const rubFinances = new RubFinances(logger);
@@ -126,6 +126,8 @@ function configure_bot_polling(app, group_id) {
 
 function configure_bot(bot) {
   // TODO: refactor start: constructor to method call
+  const session = new Session();
+  bot.use(session.middleware());
   nav = new BotNavigation(bot);
 }
 
