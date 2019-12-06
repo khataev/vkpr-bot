@@ -79,6 +79,12 @@ const config = convict({
         format: String,
         default: "",
         env: "CREDENTIALS_VK_CONFIRMATION"
+      },
+      utils_short_link_url: {
+        doc: "Payment url",
+        format: "url",
+        default: "",
+        env: "CREDENTIALS_VK_UTILS_SHORT_LINK_URL"
       }
     },
     qiwi: {
@@ -90,7 +96,25 @@ const config = convict({
           }
         },
         default: "",
-        env: "QIWI_ACCOUNT_NUMBER"
+        env: "CREDENTIALS_QIWI_ACCOUNT_NUMBER"
+      },
+      access_token: {
+        doc: "Access token for Qiwi payment API",
+        format: String,
+        default: "",
+        env: "CREDENTIALS_QIWI_ACCESS_TOKEN"
+      },
+      payment_url: {
+        doc: "Payment url",
+        format: "url",
+        default: "",
+        env: "CREDENTIALS_QIWI_PAYMENT_URL"
+      },
+      withdraw_url: {
+        doc: "Withdraw url",
+        format: "url",
+        default: "",
+        env: "CREDENTIALS_QIWI_WITHDRAW_URL"
       }
     }
   },
@@ -105,6 +129,12 @@ const config = convict({
       },
       default: "info",
       env: "DEBUG_LOG_LEVEL"
+    },
+    url: {
+      doc: "Debug url",
+      format: "url",
+      default: "http://localhost:9001",
+      env: "DEBUG_URL"
     }
   }
 });

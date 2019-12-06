@@ -5,13 +5,13 @@ const settings = require("./config");
 
 let Utils = function() {
   this.getQiwiPaymentUrl = function(userId) {
-    const baseUrl = "https://qiwi.com/payment/form/99";
-    const account_number = settings.get("credentials.qiwi.account_number");
+    const baseUrl = settings.get("credentials.qiwi.payment_url");
+    const accountNumber = settings.get("credentials.qiwi.account_number");
 
     params = qs.stringify({
       currency: "RUB",
       amountFraction: 0,
-      extra: { "'comment'": userId, "'account'": account_number },
+      extra: { "'comment'": userId, "'account'": accountNumber },
       amountInteger: 5,
       blocked: ["comment", "account"]
     });
@@ -21,16 +21,14 @@ let Utils = function() {
 
   this.getShortUrl = async function(url) {
     try {
-      const access_token = settings.get("credentials.bot.access_token");
+      const accessToken = settings.get("credentials.bot.access_token");
+      const shortLinkUrl = settings.get("credentials.vk.utils_short_link_url");
       data = qs.stringify({
         url: url,
         v: "5.103",
-        access_token: access_token
+        access_token: accessToken
       });
-      const response = await axios.post(
-        "https://api.vk.com/method/utils.getShortLink",
-        data
-      );
+      const response = await axios.post(shortLinkUrl, data);
       if (response.data.error)
         throw new Error(
           `${response.data.error.error_code}: ${response.data.error.error_msg}`

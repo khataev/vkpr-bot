@@ -1,5 +1,7 @@
 const RootOption = require("./root/index");
 const Context = require("./context");
+const RubFinances = require("./../rub-finances");
+const rubFinances = new RubFinances(null);
 const utils = require("./../utils");
 
 const BotNavigation = function(bot) {
@@ -13,6 +15,7 @@ const BotNavigation = function(bot) {
 
   rootOption.registerReplies();
 
+  // TODO: refactor
   bot.on(async ctx => {
     const vkId = context.getUserId(ctx);
     // check for chat message reply from user
@@ -24,17 +27,29 @@ const BotNavigation = function(bot) {
           // TODO: withdraw to QIWI
           // TODO: put response url in settings
           const account = await context.findOrCreateAccount(ctx);
-          const message = `
-          ✔ Мы отправили на QIWI кошелёк +${phoneNumber} ${account.rubAmount} ₽!
+          const accountBalance = account.rubAmount;
+          const isWithdrawSucceeded = await rubFinances.withdrawMoney(
+            account,
+            phoneNumber
+          );
 
-          📈 Оставьте свой отзыв: vk.com/topic-xxxxxxxxx
-          `;
-          bot.sendMessage(vkId, message);
+          if (isWithdrawSucceeded) {
+            const message = `
+            ✔ Мы отправили на QIWI кошелёк +${phoneNumber} ${accountBalance} ₽!
+
+            📈 Оставьте свой отзыв: vk.com/topic-xxxxxxxxx
+            `;
+            bot.sendMessage(vkId, message);
+            // reset chatted context after processing it
+            ctx.session.chattedContext = {};
+          } else {
+            const message = `
+            ❗ Произошла ошибка при выводе средств, свяжитесь с администратором.
+            `;
+            bot.sendMessage(vkId, message);
+          }
 
           // TODO: save phone number for further withdraw?
-
-          // reset chatted context after processing it
-          ctx.session.chattedContext = {};
 
           // ❗ Произошла ошибка при выводе средств, свяжитесь с администратором.
         } else {

@@ -1,4 +1,7 @@
+const axios = require("axios");
+
 const gLogger = require("./logger"); // TODO: get from context
+const gSettings = require("./config");
 const models = require("./../db/models");
 const RubTransaction = models.RubTransaction;
 const Account = models.Account;
@@ -79,6 +82,37 @@ class RubFinances {
     await RubTransaction.update({ isChecked: true }, { where: filter });
 
     return [txnIds, totalIncome];
+  }
+
+  // TODO:
+  async withdrawMoney(account, destinationPhoneNumber) {
+    const url = gSettings.get("credentials.qiwi.withdraw_url");
+    const accessToken = gSettings.get("credentials.qiwi.access_token");
+    const transactionId = new Date().getTime();
+    const comment = "Выплата ТестБотОбменник";
+    const params = {
+      id: transactionId.toString(),
+      sum: { amount: account.rubAmount, currency: "643" },
+      paymentMethod: {
+        type: "Account",
+        accountId: "643"
+      },
+      comment: comment,
+      fields: { account: `+${destinationPhoneNumber}` }
+    };
+
+    try {
+      await axios.post(url, params, {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      });
+      await account.update({ rubAmount: 0 });
+
+      return true;
+    } catch (error) {
+      console.error(error.message);
+
+      return false;
+    }
   }
 }
 

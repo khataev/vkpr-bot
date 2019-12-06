@@ -144,12 +144,17 @@ function configureQiwiHook(app, groupId) {
 }
 
 async function debug_run() {
+  const Account = require("./db/models").Account;
+
   bot = new VkBot({
     token: settings.get("credentials.bot.access_token"),
     group_id: settings.get("credentials.vk.group_id")
   });
   nav = new BotNavigation(bot);
   // await nav.getUrl();
+
+  // const account = await Account.findOne({ where: { vkId: "" } });
+  // await rubFinances.withdrawMoney(account, "");
 }
 
 // debug_run();
