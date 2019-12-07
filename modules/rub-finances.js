@@ -5,6 +5,7 @@ const gSettings = require("./config");
 const models = require("./../db/models");
 const RubTransaction = models.RubTransaction;
 const Account = models.Account;
+const ExchangeRate = models.ExchangeRate;
 
 class RubFinances {
   constructor(logger) {
@@ -113,6 +114,25 @@ class RubFinances {
 
       return false;
     }
+  }
+
+  async exchangeRubToCoins(account) {
+    const rate = await ExchangeRate.findOne({
+      limit: 1,
+      order: [["id", "DESC"]]
+    });
+
+    // HINT: * 100 - store in coin copecks (* 1000??)
+    const coins = Math.round(
+      (account.rubAmountInRub() / rate.sellRate) * rate.coinAmount * 100
+    );
+
+    await account.increment({
+      rubAmount: -account.rubAmount,
+      coinAmount: coins
+    });
+
+    return coins / 100;
   }
 }
 

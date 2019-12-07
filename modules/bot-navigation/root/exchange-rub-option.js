@@ -1,10 +1,21 @@
 const Markup = require("node-vk-bot-api/lib/markup");
 const MenuOption = require("../menu-option");
+const RubFinances = require("./../../rub-finances");
+// TODO: add logger to MenuOption
+const rubFinances = new RubFinances(null);
 
 class ExchangeRubOption extends MenuOption {
-  chatMessage(botCtx) {
-    // TODO:
-    return "❗ У Вас на балансе 0 RUB.";
+  async chatMessage(botCtx) {
+    const account = await this.ctx.findOrCreateAccount(botCtx);
+    const currentRubAmount = account.rubAmountInRub();
+    if (account.rubAmount == 0) {
+      return "❗ У Вас на балансе 0 RUB.";
+    } else {
+      const coins = await rubFinances.exchangeRubToCoins(account);
+      return `
+      💱 Вы успешно обменяли ${currentRubAmount} RUB на ${coins} VK Coin!
+      `;
+    }
   }
 
   get buttonMarkup() {
