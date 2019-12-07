@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BIGINT,
         defaultValue: 0
       },
+      // В копейках
       rubAmount: {
         field: "rub_amount",
         type: DataTypes.INTEGER,
@@ -25,5 +26,10 @@ module.exports = (sequelize, DataTypes) => {
   Account.associate = function(models) {
     // associations can be defined here
   };
+  // В рублях
+  Account.prototype.rubAmountInRub = function() {
+    return this.rubAmount / 100;
+  };
+
   return Account;
 };

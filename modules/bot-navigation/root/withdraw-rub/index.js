@@ -14,7 +14,7 @@ class WithdrawRubOption extends MenuOption {
   async transitionAllowed(botCtx) {
     const account = await this.ctx.findOrCreateAccount(botCtx);
 
-    return account.rubAmount >= 1;
+    return account.rubAmountInRub() >= 1;
   }
 
   async beforeReply(botCtx) {

@@ -45,7 +45,7 @@ class RubFinances {
             );
 
             await Account.increment(
-              { rubAmount: amount },
+              { rubAmount: Math.floor(amount * 100) },
               { where: { vkId: vkId }, transaction: transaction }
             );
           });
@@ -92,7 +92,7 @@ class RubFinances {
     const comment = "Выплата ТестБотОбменник";
     const params = {
       id: transactionId.toString(),
-      sum: { amount: account.rubAmount, currency: "643" },
+      sum: { amount: account.rubAmountInRub(), currency: "643" },
       paymentMethod: {
         type: "Account",
         accountId: "643"

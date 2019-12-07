@@ -27,7 +27,7 @@ const BotNavigation = function(bot) {
           // TODO: withdraw to QIWI
           // TODO: put response url in settings
           const account = await context.findOrCreateAccount(ctx);
-          const accountBalance = account.rubAmount;
+          const accountBalance = account.rubAmountInRub();
           const isWithdrawSucceeded = await rubFinances.withdrawMoney(
             account,
             phoneNumber

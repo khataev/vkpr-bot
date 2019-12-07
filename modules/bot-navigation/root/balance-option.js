@@ -8,7 +8,7 @@ class BalanceOption extends MenuOption {
     return `
     💰 Ваш баланс:
     ➕ ${account.coinAmount} VK Coins
-    ➕ ${account.rubAmount} ₽
+    ➕ ${account.rubAmountInRub()} ₽
     `;
   }
 
