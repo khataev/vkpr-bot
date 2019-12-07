@@ -18,11 +18,11 @@ module.exports = {
           allowNull: false
         },
         sell_rate: {
-          type: Sequelize.INTEGER,
+          type: Sequelize.DECIMAL(3, 2),
           allowNull: false
         },
         buy_rate: {
-          type: Sequelize.INTEGER,
+          type: Sequelize.DECIMAL(3, 2),
           allowNull: false
         },
         createdAt: {
