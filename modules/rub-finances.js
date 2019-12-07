@@ -134,6 +134,25 @@ class RubFinances {
 
     return coins / 100;
   }
+
+  async exchangeCoinsToRub(account) {
+    const rate = await ExchangeRate.findOne({
+      limit: 1,
+      order: [["id", "DESC"]]
+    });
+
+    // HINT: * 100 - store in coin copecks (* 1000??)
+    const rubs = Math.round(
+      (account.coinAmountInCoin() / rate.buyRate) * rate.rubAmount * 100
+    );
+
+    await account.increment({
+      coinAmount: -account.coinAmount,
+      rubAmount: rubs
+    });
+
+    return rubs / 100;
+  }
 }
 
 module.exports = RubFinances;
