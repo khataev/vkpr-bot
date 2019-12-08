@@ -116,6 +116,36 @@ const config = convict({
         default: "",
         env: "CREDENTIALS_QIWI_WITHDRAW_URL"
       }
+    },
+    vk_coin: {
+      account_number: {
+        doc: "Account (vk id)",
+        format: function check(val) {
+          if (!/^\d+$/.test(val)) {
+            throw new Error("некорректный Vkontakte id");
+          }
+        },
+        default: "",
+        env: "CREDENTIALS_VK_COIN_ACCOUNT_NUMBER"
+      },
+      access_token: {
+        doc: "Access token for vk coin payment API",
+        format: String,
+        default: "",
+        env: "CREDENTIALS_VK_COIN_ACCESS_TOKEN"
+      },
+      payment_url: {
+        doc: "Payment url",
+        format: "url",
+        default: "",
+        env: "CREDENTIALS_VK_COIN_PAYMENT_URL"
+      },
+      withdraw_url: {
+        doc: "Withdraw url",
+        format: "url",
+        default: "",
+        env: "CREDENTIALS_VK_COIN_WITHDRAW_URL"
+      }
     }
   },
   debug: {
