@@ -1,8 +1,10 @@
+const qs = require("qs");
 const axios = require("axios");
 
 const gLogger = require("./logger"); // TODO: get from context
 const gSettings = require("./config");
 const models = require("./../db/models");
+const utils = require("./utils");
 const RubTransaction = models.RubTransaction;
 const Account = models.Account;
 const ExchangeRate = models.ExchangeRate;
@@ -10,6 +12,26 @@ const ExchangeRate = models.ExchangeRate;
 class RubFinances {
   constructor(logger) {
     this.logger = logger || gLogger;
+  }
+
+  getQiwiPaymentUrl(userId) {
+    const baseUrl = gSettings.get("credentials.qiwi.payment_url");
+    const accountNumber = gSettings.get("credentials.qiwi.account_number");
+
+    const params = qs.stringify({
+      currency: "RUB",
+      amountFraction: 0,
+      extra: { "'comment'": userId, "'account'": accountNumber },
+      amountInteger: 5,
+      blocked: ["comment", "account"]
+    });
+
+    return `${baseUrl}?${params}`;
+  }
+
+  async getShortQiwiPaymentUrl(userId) {
+    const url = this.getQiwiPaymentUrl(userId);
+    return await utils.shortenUrl(url);
   }
 
   async processWebHook(hookInfo) {
@@ -54,7 +76,7 @@ class RubFinances {
 
         return true;
       } catch (error) {
-        this.logger.error(`webhook handler error. ${error.message}`);
+        this.logger.error(`RUB webhook handler error. ${error.message}`);
 
         return false;
       }
@@ -86,7 +108,7 @@ class RubFinances {
   }
 
   // TODO:
-  async withdrawMoney(account, destinationPhoneNumber) {
+  async withdrawRub(account, destinationPhoneNumber) {
     const url = gSettings.get("credentials.qiwi.withdraw_url");
     const accessToken = gSettings.get("credentials.qiwi.access_token");
     const transactionId = new Date().getTime();
@@ -122,9 +144,9 @@ class RubFinances {
       order: [["id", "DESC"]]
     });
 
-    // HINT: * 100 - store in coin copecks (* 1000??)
+    // TODO: floor
     const coins = Math.round(
-      (account.rubAmountInRub() / rate.sellRate) * rate.coinAmount * 100
+      (account.rubAmount / rate.sellRate) * rate.coinAmount
     );
 
     await account.increment({
@@ -132,26 +154,8 @@ class RubFinances {
       coinAmount: coins
     });
 
-    return coins / 100;
-  }
-
-  async exchangeCoinsToRub(account) {
-    const rate = await ExchangeRate.findOne({
-      limit: 1,
-      order: [["id", "DESC"]]
-    });
-
-    // HINT: * 100 - store in coin copecks (* 1000??)
-    const rubs = Math.round(
-      (account.coinAmountInCoin() / rate.buyRate) * rate.rubAmount * 100
-    );
-
-    await account.increment({
-      coinAmount: -account.coinAmount,
-      rubAmount: rubs
-    });
-
-    return rubs / 100;
+    // HINT: coin copecks to whole coins
+    return coins / 1000;
   }
 }
 

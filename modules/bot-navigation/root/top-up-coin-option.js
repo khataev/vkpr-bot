@@ -1,9 +1,14 @@
 const Markup = require("node-vk-bot-api/lib/markup");
 const MenuOption = require("../menu-option");
+const CoinFinances = require("./../../coin-finances");
+const coinFinances = new CoinFinances(null);
 
 class TopUpCoinOption extends MenuOption {
   chatMessage(botCtx) {
-    return "🔗 Для пополнения баланса, используйте данную ссылку: https://vk.com/coin#x552428793_1000_-1987794042_1";
+    const url = coinFinances.getVkCoinPaymentUrl();
+    return `
+    🔗 Для пополнения баланса, используйте данную ссылку: ${url}
+    `;
   }
 
   get buttonMarkup() {

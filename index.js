@@ -11,6 +11,8 @@ const Session = require("node-vk-bot-api/lib/session");
 const BotNavigation = require("./modules/bot-navigation");
 const RubFinances = require("./modules/rub-finances");
 const rubFinances = new RubFinances(logger);
+const CoinFinances = require("./modules/coin-finances");
+const coinFinances = new CoinFinances(logger);
 
 let bot;
 
@@ -29,6 +31,7 @@ function start_express_server() {
     });
 
     configureQiwiHook(app, groupId);
+    configureVkCoinHook(app, groupId);
 
     // app.post(`/${group_id}`, function (req, res) {
     //   logger.info(req.body);
@@ -132,12 +135,24 @@ function configure_bot(bot) {
 }
 
 function configureQiwiHook(app, groupId) {
-  app.post(`/${groupId}/handler`, async function(req, res) {
+  app.post(`/${groupId}/rubHandler`, async function(req, res) {
     logger.debug("handler action");
     console.log(req.body);
     // res.sendStatus(200);
 
     const success = await rubFinances.processWebHook(req.body);
+    if (success) res.sendStatus(200);
+    else res.sendStatus(422);
+  });
+}
+
+function configureVkCoinHook(app, groupId) {
+  app.post(`/${groupId}/coinHandler`, async function(req, res) {
+    logger.debug("handler action");
+    console.log(req.body);
+    // res.sendStatus(200);
+
+    const success = await coinFinances.processWebHook(req.body);
     if (success) res.sendStatus(200);
     else res.sendStatus(422);
   });

@@ -28,7 +28,7 @@ const BotNavigation = function(bot) {
           // TODO: put response url in settings
           const account = await context.findOrCreateAccount(ctx);
           const accountBalance = account.rubAmountInRub();
-          const isWithdrawSucceeded = await rubFinances.withdrawMoney(
+          const isWithdrawSucceeded = await rubFinances.withdrawRub(
             account,
             phoneNumber
           );

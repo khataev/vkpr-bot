@@ -3,14 +3,15 @@ const Markup = require("node-vk-bot-api/lib/markup");
 const MenuOption = require("../../menu-option");
 const CheckPaymentOption = require("./check-payment-option");
 const BackMenuOption = require("./back-menu-option");
+const RubFinances = require("./../../../rub-finances");
+const rubFinances = new RubFinances(null);
 
 class TopUpRubOption extends MenuOption {
   async chatMessage(botCtx) {
     // TODO: generate link and VK ID
     // TODO: divide into 2 messages?
-    console.log("TopUpRubOption#chatMessage", this);
     const userId = this.ctx.getUserId(botCtx);
-    const topUpUrl = await utils.getPaymentUrl(userId);
+    const topUpUrl = await rubFinances.getShortQiwiPaymentUrl(userId);
 
     return `
     🔗 Для пополнения баланса, используйте данную ссылку: ${topUpUrl}

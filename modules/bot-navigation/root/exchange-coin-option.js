@@ -1,8 +1,8 @@
 const Markup = require("node-vk-bot-api/lib/markup");
 const MenuOption = require("../menu-option");
-const RubFinances = require("./../../rub-finances");
+const CoinFinances = require("./../../coin-finances");
 // TODO: add logger to MenuOption
-const rubFinances = new RubFinances(null);
+const coinFinances = new CoinFinances(null);
 
 class ExchangeCoinOption extends MenuOption {
   async chatMessage(botCtx) {
@@ -11,7 +11,7 @@ class ExchangeCoinOption extends MenuOption {
     if (account.coinAmount == 0) {
       return "❗ У Вас на балансе 0 VK Coin.";
     } else {
-      const rubs = await rubFinances.exchangeCoinsToRub(account);
+      const rubs = await coinFinances.exchangeCoinsToRub(account);
       return `
       💱 Вы успешно обменяли ${currentCoinAmount} VK Coin на ${rubs} RUB!
       `;

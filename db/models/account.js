@@ -31,5 +31,10 @@ module.exports = (sequelize, DataTypes) => {
     return this.rubAmount / 100;
   };
 
+  // В целых коинах
+  Account.prototype.coinAmountInCoin = function() {
+    return this.coinAmount / 1000;
+  };
+
   return Account;
 };
