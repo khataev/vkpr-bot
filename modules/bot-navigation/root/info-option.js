@@ -1,25 +1,30 @@
 const Markup = require("node-vk-bot-api/lib/markup");
 const MenuOption = require("../menu-option");
+const models = require("./../../../db/models");
+const AggregatedInfo = models.AggregatedInfo;
+const ExchangeRate = models.ExchangeRate;
 
 class InfoOption extends MenuOption {
-  chatMessage(botCtx) {
-    // TODO:
+  async chatMessage(botCtx) {
+    const rate = await ExchangeRate.currentRate();
+    const info = await AggregatedInfo.findOne({});
+    const now = new Date();
     return `
-    📊 Действительный курс на 26.11.2019:
-    💲 Продажа VKCoin: 1.000.000 - 0.95р.
-    💱 Скупка VKCoin: 1.000.000 - 0.83р.
+    📊 Действительный курс на ${now.getDate()}.${now.getMonth()}.${now.getFullYear()}:
+    💲 Продажа VKCoin: 1.000.000 - ${rate.sellRate}коп.
+    💱 Скупка VKCoin: 1.000.000 - ${rate.buyRate}коп.
 
-    👥 Всего пользователей: 19032
-    💶 Всего платежей: 2825
+    👥 Всего пользователей: ${info.users}
+    💶 Всего платежей: ${info.payments}
 
-    📥 Всего вложено VK Coin: 185116844650.23
-    📥 Всего вложено RUB: 76883.48
+    📥 Всего вложено VK Coin: ${info.coinsDeposited / 1000}
+    📥 Всего вложено RUB: ${info.rubDeposited / 100}
 
-    💱 Обменено VK Coin на RUB: 124380508771.94
-    💱 Обменено RUB на VK Coin: 79401.32
+    💱 Обменено VK Coin на RUB: ${info.coinsExchanged / 1000}
+    💱 Обменено RUB на VK Coin: ${info.rubExchanged / 100}
 
-    📤 Всего выведено VK Coin: 159775000967.93
-    📤 Всего выведено RUB: 79140.85
+    📤 Всего выведено VK Coin: ${info.coinsWithdrawed / 1000}
+    📤 Всего выведено RUB: ${info.rubWithdrawed / 100}
     `;
   }
 

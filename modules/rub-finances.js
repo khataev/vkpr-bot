@@ -8,6 +8,7 @@ const utils = require("./utils");
 const RubTransaction = models.RubTransaction;
 const Account = models.Account;
 const ExchangeRate = models.ExchangeRate;
+const AggregatedInfo = models.AggregatedInfo;
 
 class RubFinances {
   constructor(logger) {
@@ -71,6 +72,11 @@ class RubFinances {
               { rubAmount: Math.floor(amount * 100) },
               { where: { vkId: vkId }, transaction: transaction }
             );
+
+            await AggregatedInfo.increment(
+              { payments: 1, rubDeposited: amount * 100 },
+              { where: {}, transaction: transaction }
+            );
           });
         }
 
@@ -113,6 +119,7 @@ class RubFinances {
     const accessToken = gSettings.get("credentials.qiwi.access_token");
     const transactionId = new Date().getTime();
     const comment = "Выплата ТестБотОбменник";
+    const amount = account.rubAmount;
     const params = {
       id: transactionId.toString(),
       sum: { amount: account.rubAmountInRub(), currency: "643" },
@@ -128,7 +135,14 @@ class RubFinances {
       await axios.post(url, params, {
         headers: { Authorization: `Bearer ${accessToken}` }
       });
-      await account.update({ rubAmount: 0 });
+
+      AggregatedInfo.sequelize.transaction({}, async transaction => {
+        await account.update({ rubAmount: 0 }, { transaction: transaction });
+        await AggregatedInfo.increment(
+          { rubWithdrawed: amount },
+          { where: {}, transaction: transaction }
+        );
+      });
 
       return true;
     } catch (error) {
@@ -139,21 +153,28 @@ class RubFinances {
   }
 
   async exchangeRubToCoins(account) {
+    // TODO: make function currentRate
     const rate = await ExchangeRate.findOne({
       limit: 1,
       order: [["id", "DESC"]]
     });
 
+    const rubAmount = account.rubAmount;
     // TODO: floor
     const coins = Math.round(
       (account.rubAmount / rate.sellRate) * rate.coinAmount
     );
 
-    await account.increment({
-      rubAmount: -account.rubAmount,
-      coinAmount: coins
+    AggregatedInfo.sequelize.transaction({}, async transaction => {
+      await account.increment({
+        rubAmount: -account.rubAmount,
+        coinAmount: coins
+      });
+      await AggregatedInfo.increment(
+        { rubExchanged: rubAmount },
+        { where: {}, transaction: transaction }
+      );
     });
-
     // HINT: coin copecks to whole coins
     return coins / 1000;
   }

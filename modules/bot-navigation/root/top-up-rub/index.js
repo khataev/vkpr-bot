@@ -1,4 +1,4 @@
-const utils = require("./../../../utils");
+const settings = require("./../../../config");
 const Markup = require("node-vk-bot-api/lib/markup");
 const MenuOption = require("../../menu-option");
 const CheckPaymentOption = require("./check-payment-option");
@@ -12,6 +12,7 @@ class TopUpRubOption extends MenuOption {
     // TODO: divide into 2 messages?
     const userId = this.ctx.getUserId(botCtx);
     const topUpUrl = await rubFinances.getShortQiwiPaymentUrl(userId);
+    const accountNumber = settings.get("credentials.qiwi.account_number");
 
     return `
     🔗 Для пополнения баланса, используйте данную ссылку: ${topUpUrl}
@@ -19,7 +20,7 @@ class TopUpRubOption extends MenuOption {
     ❗ Для корректной формы используйте браузер.
     
     ▪РУЧНОЙ ПЕРЕВОД СРЕДСТВ▪
-    👐 При ручном переводе(с приложения QIWI и.тд) переводить на номер: +79042067031
+    👐 При ручном переводе(с приложения QIWI и.тд) переводить на номер: +${accountNumber}
     💭 Комментарий к платежу указать этот: ${userId}
 
     ❗ Без комментария Ваш платёж не обработается, будьте бдительны.

@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
   };
 
   ExchangeRate.currentRate = function() {
-    this.findOne({
+    return this.findOne({
       limit: 1,
       order: [["id", "DESC"]]
     });

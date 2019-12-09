@@ -6,6 +6,7 @@ const models = require("../db/models");
 const CoinTransaction = models.CoinTransaction;
 const Account = models.Account;
 const ExchangeRate = models.ExchangeRate;
+const AggregatedInfo = models.AggregatedInfo;
 
 class CoinFinances {
   constructor(logger) {
@@ -45,6 +46,11 @@ class CoinFinances {
           { coinAmount: amount },
           { where: { vkId: vkId }, transaction: transaction }
         );
+
+        await AggregatedInfo.increment(
+          { payments: 1, coinsDeposited: amount },
+          { where: {}, transaction: transaction }
+        );
       });
 
       return true;
@@ -83,6 +89,7 @@ class CoinFinances {
     const url = gSettings.get("credentials.vk_coin.withdraw_url");
     const accessToken = gSettings.get("credentials.vk_coin.access_token");
     const merchantId = gSettings.get("credentials.vk_coin.account_number");
+    const amount = account.coinAmount;
     const params = {
       merchantId: merchantId,
       key: accessToken,
@@ -92,7 +99,14 @@ class CoinFinances {
 
     try {
       await axios.post(url, params);
-      await account.update({ coinAmount: 0 });
+
+      AggregatedInfo.sequelize.transaction({}, async transaction => {
+        await account.update({ coinAmount: 0 }, { transaction: transaction });
+        await AggregatedInfo.increment(
+          { coinsWithdrawed: amount },
+          { where: {}, transaction: transaction }
+        );
+      });
 
       return true;
     } catch (error) {
@@ -108,16 +122,22 @@ class CoinFinances {
       order: [["id", "DESC"]]
     });
 
+    const coinAmount = account.coinAmount;
     // TODO: floor
     const rubs = Math.round(
       (account.coinAmount / rate.coinAmount) * rate.buyRate
     );
 
-    await account.increment({
-      coinAmount: -account.coinAmount,
-      rubAmount: rubs
+    AggregatedInfo.sequelize.transaction({}, async transaction => {
+      await account.increment({
+        coinAmount: -account.coinAmount,
+        rubAmount: rubs
+      });
+      await AggregatedInfo.increment(
+        { coinsExchanged: coinAmount },
+        { where: {}, transaction: transaction }
+      );
     });
-
     // HINT: copecks to rub (we should do it in specific standalone function)
     return rubs / 100;
   }

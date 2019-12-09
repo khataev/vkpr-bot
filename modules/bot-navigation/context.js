@@ -1,5 +1,6 @@
 const models = require("./../../db/models");
 const Account = models.Account;
+const AggregatedInfo = models.AggregatedInfo;
 
 class Context {
   constructor(bot) {
@@ -22,10 +23,18 @@ class Context {
     );
   }
 
-  createAccount(botCtx) {
+  async createAccount(botCtx) {
     const userId = this.getUserId(botCtx);
-    console.debug(`Account for userId ${userId} created`);
-    return Account.create({ vkId: userId });
+    let account;
+    await Account.sequelize.transaction({}, async transaction => {
+      account = await Account.create(
+        { vkId: userId },
+        { transaction: transaction }
+      );
+      await AggregatedInfo.increment({ users: 1 }, { where: {} });
+      console.debug(`Account for userId ${userId} created`);
+    });
+    return account;
   }
 
   getUserId(botCtx) {
