@@ -62,27 +62,6 @@ class CoinFinances {
   }
 
   // async checkIncomePayment(vkId) {
-  //   const filter = { vkId: vkId, isProcessed: true, isChecked: false };
-  //   const transactions = await RubTransaction.findAll({
-  //     where: filter
-  //   });
-
-  //   const totalIncome = transactions.reduce(
-  //     (acc, tr) => acc + tr.hookInfo.payment.sum.amount,
-  //     0 // initial value of acc
-  //   );
-
-  //   const txnIds = transactions.reduce(
-  //     (acc, tr) => {
-  //       acc.push(tr.hookInfo.payment.txnId);
-  //       return acc;
-  //     },
-  //     [] // initial value of acc
-  //   );
-
-  //   await RubTransaction.update({ isChecked: true }, { where: filter });
-
-  //   return [txnIds, totalIncome];
   // }
 
   async withdrawCoin(account) {
@@ -113,6 +92,27 @@ class CoinFinances {
       console.error(error.message);
 
       return false;
+    }
+  }
+
+  async getBalance() {
+    const url = gSettings.get("credentials.vk_coin.balance_url");
+    const accessToken = gSettings.get("credentials.vk_coin.access_token");
+    const merchantId = gSettings.get("credentials.vk_coin.account_number");
+    const params = {
+      merchantId: merchantId,
+      key: accessToken,
+      userIds: [merchantId]
+    };
+
+    try {
+      const response = await axios.post(url, params);
+
+      return response.data.response[merchantId];
+    } catch (error) {
+      console.error(error.message);
+
+      return 0;
     }
   }
 

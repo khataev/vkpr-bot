@@ -113,7 +113,6 @@ class RubFinances {
     return [txnIds, totalIncome];
   }
 
-  // TODO:
   async withdrawRub(account, destinationPhoneNumber) {
     const url = gSettings.get("credentials.qiwi.withdraw_url");
     const accessToken = gSettings.get("credentials.qiwi.access_token");
@@ -152,12 +151,27 @@ class RubFinances {
     }
   }
 
+  async getBalance() {
+    const baseUrl = gSettings.get("credentials.qiwi.balance_url");
+    const accountNumber = gSettings.get("credentials.qiwi.account_number");
+    const url = `${baseUrl}/${accountNumber}/accounts`;
+    const accessToken = gSettings.get("credentials.qiwi.access_token");
+
+    try {
+      const response = await axios.get(url, {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      });
+
+      return response.data.accounts[0].balance.amount * 100;
+    } catch (error) {
+      console.error(error.message);
+
+      return 0;
+    }
+  }
+
   async exchangeRubToCoins(account) {
-    // TODO: make function currentRate
-    const rate = await ExchangeRate.findOne({
-      limit: 1,
-      order: [["id", "DESC"]]
-    });
+    const rate = await ExchangeRate.currentRate();
 
     const rubAmount = account.rubAmount;
     // TODO: floor

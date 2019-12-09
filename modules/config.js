@@ -115,6 +115,12 @@ const config = convict({
         format: "url",
         default: "",
         env: "CREDENTIALS_QIWI_WITHDRAW_URL"
+      },
+      balance_url: {
+        doc: "Balance url",
+        format: "url",
+        default: "",
+        env: "CREDENTIALS_QIWI_BALANCE_URL"
       }
     },
     vk_coin: {
@@ -145,6 +151,12 @@ const config = convict({
         format: "url",
         default: "",
         env: "CREDENTIALS_VK_COIN_WITHDRAW_URL"
+      },
+      balance_url: {
+        doc: "Balance (score) url",
+        format: "url",
+        default: "",
+        env: "CREDENTIALS_VK_COIN_BALANCE_URL"
       }
     }
   },
