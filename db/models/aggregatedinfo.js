@@ -1,15 +1,43 @@
-'use strict';
+"use strict";
 module.exports = (sequelize, DataTypes) => {
-  const AggregatedInfo = sequelize.define('AggregatedInfo', {
-    users: DataTypes.INTEGER,
-    payments: DataTypes.INTEGER,
-    coins_deposited: DataTypes.BIGINT,
-    rub_deposited: DataTypes.INTEGER,
-    coins_exchanged: DataTypes.BIGINT,
-    rub_exchanged: DataTypes.INTEGER,
-    coins_withdrawed: DataTypes.BIGINT,
-    rub_withdrawed: DataTypes.INTEGER
-  }, {});
+  const AggregatedInfo = sequelize.define(
+    "AggregatedInfo",
+    {
+      users: { type: DataTypes.INTEGER, defaultValue: 0 },
+      payments: { type: DataTypes.INTEGER, defaultValue: 0 },
+      coinsDeposited: {
+        field: "coins_deposited",
+        type: DataTypes.BIGINT,
+        defaultValue: 0
+      },
+      rubDeposited: {
+        field: "rub_deposited",
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+      },
+      coinsExchanged: {
+        field: "coins_exchanged",
+        type: DataTypes.BIGINT,
+        defaultValue: 0
+      },
+      rubExchanged: {
+        field: "rub_exchanged",
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+      },
+      coinsWithdrawed: {
+        field: "coins_withdrawed",
+        type: DataTypes.BIGINT,
+        defaultValue: 0
+      },
+      rubWithdrawed: {
+        field: "rub_withdrawed",
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+      }
+    },
+    {}
+  );
   AggregatedInfo.associate = function(models) {
     // associations can be defined here
   };
