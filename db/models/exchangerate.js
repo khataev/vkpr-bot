@@ -13,5 +13,13 @@ module.exports = (sequelize, DataTypes) => {
   ExchangeRate.associate = function(models) {
     // associations can be defined here
   };
+
+  ExchangeRate.currentRate = function() {
+    this.findOne({
+      limit: 1,
+      order: [["id", "DESC"]]
+    });
+  };
+
   return ExchangeRate;
 };
