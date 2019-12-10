@@ -3,6 +3,8 @@ const Context = require("./context");
 const RubFinances = require("./../rub-finances");
 const rubFinances = new RubFinances(null);
 const settings = require("./../config"); // get from context
+const models = require("./../../db/models");
+const ExchangeRate = models.ExchangeRate;
 
 const BotNavigation = function(bot) {
   let context = new Context(bot);
@@ -17,6 +19,15 @@ const BotNavigation = function(bot) {
 
   // TODO: refactor
   bot.on(async ctx => {
+    // HINT: beforeReply FIRST (maybe could improve?)
+    // in order to cancel chat (back button)
+    const menuItem = context.findResponsibleItem(ctx);
+    let transitionAllowed;
+    if (menuItem) {
+      transitionAllowed = await menuItem.transitionAllowed(ctx);
+      if (transitionAllowed) await menuItem.beforeProcess(ctx);
+    }
+
     const vkId = context.getUserId(ctx);
     // check for chat message reply from user
     const chattedContext = ctx.session.chattedContext || {};
@@ -62,6 +73,7 @@ const BotNavigation = function(bot) {
         if (!rawText) bot.sendMessage(vkId, "Не передано значение курса");
 
         const tokens = rawText.split("/");
+        console.log("TOKENS LENGTH:", tokens.length);
         if (!tokens.length === 2)
           bot.sendMessage(vkId, "Неверный формат курса");
 
@@ -76,6 +88,8 @@ const BotNavigation = function(bot) {
               vkId,
               "Обычно курс продажи должен превышать курс покупки, иначе это экономически не выгодно"
             );
+          } else {
+            canProceed = true;
           }
 
           if (canProceed) {
@@ -96,10 +110,10 @@ const BotNavigation = function(bot) {
     }
 
     // menu navigation response
-    const menuItem = context.findResponsibleItem(ctx);
+    // const menuItem = context.findResponsibleItem(ctx);
     if (!menuItem) return;
 
-    const transitionAllowed = await menuItem.transitionAllowed(ctx);
+    // const transitionAllowed = await menuItem.transitionAllowed(ctx);
     if (transitionAllowed) {
       await menuItem.beforeReply(ctx);
       ctx.reply(...(await menuItem.reply(ctx)));

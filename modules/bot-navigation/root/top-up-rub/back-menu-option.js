@@ -6,7 +6,7 @@ class BackMenuOption extends MenuOption {
     return this.parent.parent.chatMessage(botCtx);
   }
 
-  async beforeReply(botCtx) {
+  async beforeProcess(botCtx) {
     // TODO: shared function clearChattedContext
     botCtx.session.chattedContext = {};
   }

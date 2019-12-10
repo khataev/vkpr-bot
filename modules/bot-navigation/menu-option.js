@@ -22,6 +22,7 @@ class MenuOption {
     return true;
   }
 
+  async beforeProcess(botCtx) {}
   async beforeReply(botCtx) {}
 
   get buttonMarkup() {

@@ -6,7 +6,8 @@ class SetExchangeRateOption extends MenuOption {
   async chatMessage(botCtx) {
     return `
     Введите новый курс в формате XX/YY,
-    где xx - курс Продажи, yy - курс Скупки (в копейках)
+    где xx - курс Продажи, yy - курс Скупки (в копейках).
+    Пример: 90/80
     `;
   }
 
