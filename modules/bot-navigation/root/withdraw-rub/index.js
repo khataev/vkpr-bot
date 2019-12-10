@@ -27,7 +27,7 @@ class WithdrawRubOption extends MenuOption {
     });
   }
 
-  get menu() {
+  menu(botCtx) {
     return [[new BackMenuOption(this.ctx, this)]];
   }
 

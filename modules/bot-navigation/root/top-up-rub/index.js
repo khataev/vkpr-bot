@@ -35,7 +35,7 @@ class TopUpRubOption extends MenuOption {
     });
   }
 
-  get menu() {
+  menu(botCtx) {
     return [
       [new CheckPaymentOption(this.ctx, this)],
       [new BackMenuOption(this.ctx, this)]

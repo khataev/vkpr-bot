@@ -6,6 +6,11 @@ class BackMenuOption extends MenuOption {
     return this.parent.parent.chatMessage(botCtx);
   }
 
+  markup(botCtx) {
+    // TODO: refactor double parent into handy method
+    return this.parent.parent.markup(botCtx);
+  }
+
   // TODO: refactor
   get buttonMarkup() {
     return Markup.button("✌ Назад", "primary", {
@@ -16,11 +21,6 @@ class BackMenuOption extends MenuOption {
   // TODO: possibly, need to override (for different back buttons)
   get triggerButton() {
     return "return_to_root_2_button";
-  }
-
-  get markup() {
-    // TODO: refactor double parent into handy method
-    return this.parent.parent.markup;
   }
 }
 

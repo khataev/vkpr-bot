@@ -29,7 +29,7 @@ class MenuOption {
     throw Error("Must be implemented in child class");
   }
 
-  get menu() {
+  menu(botCtx) {
     return;
   }
 
@@ -38,13 +38,13 @@ class MenuOption {
   // }
 
   // TODO: rename to childMarkup
-  get markup() {
-    if (!this.menu) return;
-    return Markup.keyboard(this.buildMarkup(this.menu));
+  markup(botCtx) {
+    if (!this.menu(botCtx)) return;
+    return Markup.keyboard(this.buildMarkup(this.menu(botCtx)));
   }
 
   async reply(botCtx) {
-    return [await this.chatMessage(botCtx), null, this.markup];
+    return [await this.chatMessage(botCtx), null, this.markup(botCtx)];
   }
 
   get triggerButton() {
@@ -57,28 +57,28 @@ class MenuOption {
   //   });
   // }
 
-  registerReplies() {
+  registerReplies(botCtx) {
     if (!this.isRoot) return;
 
-    this.registerReply(this);
+    this.registerReply(this, botCtx);
   }
 
-  registerReply(menuOption) {
+  registerReply(menuOption, botCtx) {
     // console.log("MenuOption#registerReply:", menuOption);
     if (menuOption instanceof MenuOption) {
       // console.log(
       //   `MenuOption#registerReply, register: ${menuOption.triggerButton}`
       // );
       this.ctx.registerReply(menuOption);
-      this.registerReplyForMenuArray(menuOption.menu);
+      this.registerReplyForMenuArray(menuOption.menu(botCtx), botCtx);
     }
   }
 
-  registerReplyForMenuArray(array) {
+  registerReplyForMenuArray(array, botCtx) {
     if (array instanceof Array) {
       array.forEach(el => {
-        if (el instanceof Array) this.registerReplyForMenuArray(el);
-        else this.registerReply(el);
+        if (el instanceof Array) this.registerReplyForMenuArray(el, botCtx);
+        else this.registerReply(el, botCtx);
       });
     }
   }

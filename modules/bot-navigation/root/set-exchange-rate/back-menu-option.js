@@ -6,6 +6,11 @@ class BackMenuOption extends MenuOption {
     return this.parent.parent.chatMessage(botCtx);
   }
 
+  markup(botCtx) {
+    // TODO: refactor double parent into handy method
+    return this.parent.parent.markup(botCtx);
+  }
+
   async beforeProcess(botCtx) {
     // TODO: shared function clearChattedContext
     botCtx.session.chattedContext = {};
@@ -21,11 +26,6 @@ class BackMenuOption extends MenuOption {
   // TODO: possibly, need to override (for different back buttons)
   get triggerButton() {
     return "return_to_root_3_button";
-  }
-
-  get markup() {
-    // TODO: refactor double parent into handy method
-    return this.parent.parent.markup;
   }
 }
 

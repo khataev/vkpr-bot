@@ -13,9 +13,10 @@ const BotNavigation = function(bot) {
   bot.command("начать", async ctx => {
     ctx.reply(...(await rootOption.reply(ctx)));
     await context.findOrCreateAccount(ctx);
+    rootOption.registerReplies(ctx);
   });
 
-  rootOption.registerReplies();
+  // rootOption.registerReplies();
 
   // TODO: refactor
   bot.on(async ctx => {

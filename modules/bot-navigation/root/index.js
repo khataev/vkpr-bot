@@ -17,7 +17,7 @@ class RootOption extends MenuOption {
   }
 
   // TODO: do we need 2 params in ctor: (this.ctx, this)?
-  get menu() {
+  menu(botCtx) {
     return [
       // [new RouletteOption(this.ctx, this)],
       [new TopUpCoinOption(this.ctx, this), new TopUpRubOption(this.ctx, this)],

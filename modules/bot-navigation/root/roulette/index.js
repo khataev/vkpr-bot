@@ -28,7 +28,7 @@ class RouletteOption extends MenuOption {
     });
   }
 
-  get menu() {
+  menu(botCtx) {
     return [
       new LowCoinOption(this.ctx, this),
       new MediumCoinOption(this.ctx, this),
