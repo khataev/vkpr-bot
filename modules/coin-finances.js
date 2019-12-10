@@ -77,7 +77,12 @@ class CoinFinances {
     };
 
     try {
-      await axios.post(url, params);
+      const response = await axios.post(url, params);
+      if (response.data && response.data.error) {
+        const code = response.data.error.code;
+        const message = response.data.error.message;
+        throw new Error(`code: ${code}, message: ${message}`);
+      }
 
       AggregatedInfo.sequelize.transaction({}, async transaction => {
         await account.update({ coinAmount: 0 }, { transaction: transaction });
