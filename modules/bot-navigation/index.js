@@ -40,7 +40,7 @@ const BotNavigation = function(bot) {
           // TODO: put response url in settings
           const account = await context.findOrCreateAccount(ctx);
           const accountBalance = account.rubAmountInRub();
-          const feedbackUrl = settings.get("credentials.vk.feedback_url");
+          const feedbackUrl = settings.get("shared.feedback_url");
           const isWithdrawSucceeded = await rubFinances.withdrawRub(
             account,
             phoneNumber

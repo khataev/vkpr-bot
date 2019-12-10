@@ -1,6 +1,7 @@
 const models = require("./../../db/models");
 const Account = models.Account;
 const AggregatedInfo = models.AggregatedInfo;
+const settings = require("./../config"); // TODO: global settings in context
 
 class Context {
   constructor(bot) {
@@ -39,6 +40,11 @@ class Context {
 
   getUserId(botCtx) {
     return botCtx && botCtx.message && botCtx.message.from_id;
+  }
+
+  isAdmin(botCtx) {
+    const admins = settings.get("shared.admins");
+    return admins.includes(this.getUserId(botCtx).toString());
   }
 
   payloadButton(botCtx) {

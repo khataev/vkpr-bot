@@ -12,7 +12,7 @@ class WithdrawCoinOption extends MenuOption {
     if (accountBalance === 0) {
       return "💶 Ваш баланс равен 0 VK Coins.";
     } else {
-      const feedbackUrl = settings.get("credentials.vk.feedback_url");
+      const feedbackUrl = settings.get("shared.feedback_url");
       const isWithdrawSucceeded = await coinFinances.withdrawCoin(account);
 
       if (isWithdrawSucceeded) {
