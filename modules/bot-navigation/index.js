@@ -56,6 +56,40 @@ const BotNavigation = function(bot) {
         } else {
           bot.sendMessage(vkId, "Неверный формат телефона");
         }
+      } else if (chattedContext.setExchangeRate) {
+        let canProceed = false;
+        const rawText = ctx && ctx.message && ctx.message.text;
+        if (!rawText) bot.sendMessage(vkId, "Не передано значение курса");
+
+        const tokens = rawText.split("/");
+        if (!tokens.length === 2)
+          bot.sendMessage(vkId, "Неверный формат курса");
+
+        try {
+          const sellRate = parseInt(tokens[0]);
+          const buyRate = parseInt(tokens[1]);
+          if (Number.isNaN(sellRate) || Number.isNaN(buyRate))
+            bot.sendMessage(vkId, "Передано некорректное число");
+          else if (sellRate <= buyRate) {
+            canProceed = true;
+            bot.sendMessage(
+              vkId,
+              "Обычно курс продажи должен превышать курс покупки, иначе это экономически не выгодно"
+            );
+          }
+
+          if (canProceed) {
+            const isSuccess = await ExchangeRate.setExchangeRate(
+              sellRate,
+              buyRate
+            );
+            if (isSuccess) bot.sendMessage(vkId, "Курс успешно установлен");
+            else bot.sendMessage(vkId, "Произошла ошибка при установке курса");
+          }
+        } catch (error) {
+          console.error(error.message);
+          bot.sendMessage(vkId, "Произошла ошибка при установке курса");
+        }
       }
 
       return;
