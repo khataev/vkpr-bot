@@ -32,6 +32,7 @@ function start_express_server() {
 
     configureQiwiHook(app, groupId);
     configureVkCoinHook(app, groupId);
+    // configureRootHook(app, groupId);
 
     // app.post(`/${group_id}`, function (req, res) {
     //   logger.info(req.body);
@@ -155,6 +156,15 @@ function configureVkCoinHook(app, groupId) {
     const success = await coinFinances.processWebHook(req.body);
     if (success) res.sendStatus(200);
     else res.sendStatus(422);
+  });
+}
+
+// for debug. use it for debugging vk api messages
+function configureRootHook(app, groupId) {
+  app.post(`/${groupId}`, async function(req, res) {
+    logger.debug("root handler action");
+    console.log(req.body);
+    res.sendStatus(200);
   });
 }
 
