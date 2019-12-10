@@ -81,10 +81,17 @@ const config = convict({
         env: "CREDENTIALS_VK_CONFIRMATION"
       },
       utils_short_link_url: {
-        doc: "Payment url",
+        doc: "Short link url api",
         format: "url",
         default: "",
         env: "CREDENTIALS_VK_UTILS_SHORT_LINK_URL"
+      },
+      // TODO: move to another place
+      feedback_url: {
+        doc: "Short link url api",
+        format: "url",
+        default: "",
+        env: "CREDENTIALS_VK_FEEDBACK_URL"
       }
     },
     qiwi: {

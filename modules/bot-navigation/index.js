@@ -2,7 +2,7 @@ const RootOption = require("./root/index");
 const Context = require("./context");
 const RubFinances = require("./../rub-finances");
 const rubFinances = new RubFinances(null);
-const utils = require("./../utils");
+const settings = require("./../config"); // get from context
 
 const BotNavigation = function(bot) {
   let context = new Context(bot);
@@ -28,6 +28,7 @@ const BotNavigation = function(bot) {
           // TODO: put response url in settings
           const account = await context.findOrCreateAccount(ctx);
           const accountBalance = account.rubAmountInRub();
+          const feedbackUrl = settings.get("credentials.vk.feedback_url");
           const isWithdrawSucceeded = await rubFinances.withdrawRub(
             account,
             phoneNumber
@@ -37,7 +38,7 @@ const BotNavigation = function(bot) {
             const message = `
             ✔ Мы отправили на QIWI кошелёк +${phoneNumber} ${accountBalance} ₽!
 
-            📈 Оставьте свой отзыв: vk.com/topic-xxxxxxxxx
+            📈 Оставьте свой отзыв: ${feedbackUrl}
             `;
             bot.sendMessage(vkId, message);
             // reset chatted context after processing it
