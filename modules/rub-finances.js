@@ -9,6 +9,8 @@ const RubTransaction = models.RubTransaction;
 const Account = models.Account;
 const ExchangeRate = models.ExchangeRate;
 const AggregatedInfo = models.AggregatedInfo;
+const BalanceManager = require("./balance-manager");
+const balanceManager = new BalanceManager(null);
 
 class RubFinances {
   constructor(logger) {
@@ -151,23 +153,15 @@ class RubFinances {
     }
   }
 
-  async getBalance() {
-    const baseUrl = gSettings.get("credentials.qiwi.balance_url");
-    const accountNumber = gSettings.get("credentials.qiwi.account_number");
-    const url = `${baseUrl}/${accountNumber}/accounts`;
-    const accessToken = gSettings.get("credentials.qiwi.access_token");
+  async isEnoughCoinForExchange(account) {
+    const rate = await ExchangeRate.currentRate();
+    const coinBalance = await balanceManager.getCoinBalance();
+    // TODO: Sync this with function exchangeRubToCoins or refactor
+    const coins = Math.round(
+      (account.rubAmount / rate.sellRate) * rate.coinAmount
+    );
 
-    try {
-      const response = await axios.get(url, {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      });
-
-      return response.data.accounts[0].balance.amount * 100;
-    } catch (error) {
-      console.error(error.message);
-
-      return 0;
-    }
+    return coinBalance >= coins;
   }
 
   async exchangeRubToCoins(account) {

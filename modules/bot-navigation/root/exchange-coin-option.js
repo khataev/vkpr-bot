@@ -14,12 +14,12 @@ class ExchangeCoinOption extends MenuOption {
       if (await coinFinances.isEnoughRubForExchange(account)) {
         const rubs = await coinFinances.exchangeCoinsToRub(account);
         return `
-      💱 Вы успешно обменяли ${currentCoinAmount} VK Coin на ${rubs} RUB!
-      `;
+        💱 Вы успешно обменяли ${currentCoinAmount} VK Coin на ${rubs} RUB!
+        `;
       } else {
         return `
-      💱 Недостаточно RUB в системе для обмена!
-      `;
+        💱 Недостаточно RUB в системе для обмена!
+        `;
       }
     }
   }

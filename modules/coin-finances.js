@@ -7,8 +7,8 @@ const CoinTransaction = models.CoinTransaction;
 const Account = models.Account;
 const ExchangeRate = models.ExchangeRate;
 const AggregatedInfo = models.AggregatedInfo;
-const RubFinances = require("./rub-finances");
-const rubFinances = new RubFinances(null); // TODO: remove circular dependency
+const BalanceManager = require("./balance-manager");
+const balanceManager = new BalanceManager(null);
 
 class CoinFinances {
   constructor(logger) {
@@ -102,30 +102,10 @@ class CoinFinances {
     }
   }
 
-  async getBalance() {
-    const url = gSettings.get("credentials.vk_coin.balance_url");
-    const accessToken = gSettings.get("credentials.vk_coin.access_token");
-    const merchantId = gSettings.get("credentials.vk_coin.account_number");
-    const params = {
-      merchantId: merchantId,
-      key: accessToken,
-      userIds: [merchantId]
-    };
-
-    try {
-      const response = await axios.post(url, params);
-
-      return response.data.response[merchantId];
-    } catch (error) {
-      console.error(error.message);
-
-      return 0;
-    }
-  }
-
   async isEnoughRubForExchange(account) {
     const rate = await ExchangeRate.currentRate();
-    const rubBalance = await rubFinances.getBalance();
+    const rubBalance = await balanceManager.getRubBalance();
+    // TODO: Sync this with function exchangeCoinsToRub or refactor
     const rubs = Math.round(
       (account.coinAmount / rate.coinAmount) * rate.buyRate
     );
@@ -135,19 +115,11 @@ class CoinFinances {
 
   async exchangeCoinsToRub(account) {
     const rate = await ExchangeRate.currentRate();
-    const rubBalance = await rubFinances.getBalance();
     const coinAmount = account.coinAmount;
     // TODO: floor
     const rubs = Math.round(
       (account.coinAmount / rate.coinAmount) * rate.buyRate
     );
-
-    if (rubBalance < rubs) {
-      console.log(
-        `Required RUB amount ${rubs} is greater than available balance ${rubBalance}`
-      );
-      return 0;
-    }
 
     AggregatedInfo.sequelize.transaction({}, async transaction => {
       await account.increment({

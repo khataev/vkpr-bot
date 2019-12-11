@@ -1,14 +1,12 @@
 const Markup = require("node-vk-bot-api/lib/markup");
 const MenuOption = require("../menu-option");
-const RubFinances = require("./../../rub-finances");
-const rubFinances = new RubFinances(null);
-const CoinFinances = require("./../../coin-finances");
-const coinFinances = new CoinFinances(null);
+const BalanceManager = require("./../../balance-manager");
+const balanceManager = new BalanceManager(null);
 
 class ReserveOption extends MenuOption {
   async chatMessage(botCtx) {
-    const rubBalance = (await rubFinances.getBalance()) / 100;
-    const coinBalance = (await coinFinances.getBalance()) / 1000;
+    const rubBalance = (await balanceManager.getRubBalance()) / 100;
+    const coinBalance = (await balanceManager.getCoinBalance()) / 1000;
     return `
     💸 Резерв QIWI: ${rubBalance} ₽
     💸 Резерв VK Coins: ${coinBalance}
