@@ -16,7 +16,9 @@ const BotNavigation = function(bot) {
     rootOption.registerReplies(ctx);
   });
 
-  // rootOption.registerReplies();
+  // TODO: refactor
+  const adminId = settings.get("shared.admins")[0] || 0;
+  rootOption.registerReplies({ message: { from_id: adminId } });
 
   // TODO: refactor
   bot.on(async ctx => {
