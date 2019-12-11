@@ -11,10 +11,16 @@ class ExchangeCoinOption extends MenuOption {
     if (account.coinAmount == 0) {
       return "❗ У Вас на балансе 0 VK Coin.";
     } else {
-      const rubs = await coinFinances.exchangeCoinsToRub(account);
-      return `
+      if (await coinFinances.isEnoughRubForExchange(account)) {
+        const rubs = await coinFinances.exchangeCoinsToRub(account);
+        return `
       💱 Вы успешно обменяли ${currentCoinAmount} VK Coin на ${rubs} RUB!
       `;
+      } else {
+        return `
+      💱 Недостаточно RUB в системе для обмена!
+      `;
+      }
     }
   }
 

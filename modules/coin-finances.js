@@ -7,6 +7,8 @@ const CoinTransaction = models.CoinTransaction;
 const Account = models.Account;
 const ExchangeRate = models.ExchangeRate;
 const AggregatedInfo = models.AggregatedInfo;
+const RubFinances = require("./rub-finances");
+const rubFinances = new RubFinances(null); // TODO: remove circular dependency
 
 class CoinFinances {
   constructor(logger) {
@@ -121,17 +123,31 @@ class CoinFinances {
     }
   }
 
-  async exchangeCoinsToRub(account) {
-    const rate = await ExchangeRate.findOne({
-      limit: 1,
-      order: [["id", "DESC"]]
-    });
+  async isEnoughRubForExchange(account) {
+    const rate = await ExchangeRate.currentRate();
+    const rubBalance = await rubFinances.getBalance();
+    const rubs = Math.round(
+      (account.coinAmount / rate.coinAmount) * rate.buyRate
+    );
 
+    return rubBalance >= rubs;
+  }
+
+  async exchangeCoinsToRub(account) {
+    const rate = await ExchangeRate.currentRate();
+    const rubBalance = await rubFinances.getBalance();
     const coinAmount = account.coinAmount;
     // TODO: floor
     const rubs = Math.round(
       (account.coinAmount / rate.coinAmount) * rate.buyRate
     );
+
+    if (rubBalance < rubs) {
+      console.log(
+        `Required RUB amount ${rubs} is greater than available balance ${rubBalance}`
+      );
+      return 0;
+    }
 
     AggregatedInfo.sequelize.transaction({}, async transaction => {
       await account.increment({
