@@ -33,8 +33,6 @@ class RootOption extends MenuOption {
       [new ReserveOption(this.ctx, this)]
     ];
 
-    console.log("IS ADMIN:", this.ctx.isAdmin(botCtx));
-
     if (this.ctx.isAdmin(botCtx))
       menu.push([new SetExchangeRateOption(this.ctx, this)]);
 

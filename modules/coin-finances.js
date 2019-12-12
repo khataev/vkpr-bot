@@ -36,7 +36,7 @@ class CoinFinances {
         isChecked: true // HINT: пока нет функционала проверки платежа
       });
 
-      CoinTransaction.sequelize.transaction({}, async transaction => {
+      await CoinTransaction.sequelize.transaction({}, async transaction => {
         await CoinTransaction.update(
           {
             isProcessed: true
@@ -86,7 +86,7 @@ class CoinFinances {
         throw new Error(`code: ${code}, message: ${message}`);
       }
 
-      AggregatedInfo.sequelize.transaction({}, async transaction => {
+      await AggregatedInfo.sequelize.transaction({}, async transaction => {
         await account.update({ coinAmount: 0 }, { transaction: transaction });
         await AggregatedInfo.increment(
           { coinsWithdrawed: amount },
@@ -121,7 +121,7 @@ class CoinFinances {
       (account.coinAmount / rate.coinAmount) * rate.buyRate
     );
 
-    AggregatedInfo.sequelize.transaction({}, async transaction => {
+    await AggregatedInfo.sequelize.transaction({}, async transaction => {
       await account.increment({
         coinAmount: -account.coinAmount,
         rubAmount: rubs

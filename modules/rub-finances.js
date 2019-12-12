@@ -62,7 +62,7 @@ class RubFinances {
         });
 
         if (status === "SUCCESS") {
-          RubTransaction.sequelize.transaction({}, async transaction => {
+          await RubTransaction.sequelize.transaction({}, async transaction => {
             await RubTransaction.update(
               {
                 isProcessed: true
@@ -137,7 +137,7 @@ class RubFinances {
         headers: { Authorization: `Bearer ${accessToken}` }
       });
 
-      AggregatedInfo.sequelize.transaction({}, async transaction => {
+      await AggregatedInfo.sequelize.transaction({}, async transaction => {
         await account.update({ rubAmount: 0 }, { transaction: transaction });
         await AggregatedInfo.increment(
           { rubWithdrawed: amount },
@@ -173,7 +173,7 @@ class RubFinances {
       (account.rubAmount / rate.sellRate) * rate.coinAmount
     );
 
-    AggregatedInfo.sequelize.transaction({}, async transaction => {
+    await AggregatedInfo.sequelize.transaction({}, async transaction => {
       await account.increment({
         rubAmount: -account.rubAmount,
         coinAmount: coins
