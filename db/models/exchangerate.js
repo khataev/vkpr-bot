@@ -27,8 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     date = new Date()
   ) {
     try {
-      // TODO: await??
-      ExchangeRate.sequelize.transaction({}, async transaction => {
+      await ExchangeRate.sequelize.transaction({}, async transaction => {
         await ExchangeRate.destroy({ where: {}, transaction: transaction });
         await ExchangeRate.create(
           {
@@ -39,10 +38,8 @@ module.exports = (sequelize, DataTypes) => {
           },
           { transaction: transaction }
         );
-        console.log("SET RATE 0");
       });
 
-      console.log("SET RATE 1");
       return true;
     } catch (error) {
       console.log(error.message);
