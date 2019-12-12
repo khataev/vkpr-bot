@@ -11,6 +11,11 @@ class BackMenuOption extends MenuOption {
     return this.parent.parent.markup(botCtx);
   }
 
+  async beforeProcess(botCtx) {
+    // TODO: shared function clearChattedContext
+    botCtx.session.chattedContext = {};
+  }
+
   // TODO: refactor
   get buttonMarkup() {
     return Markup.button("✌ Назад", "primary", {
