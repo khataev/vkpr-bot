@@ -5,10 +5,18 @@ const path = require("path");
 const Sequelize = require("sequelize");
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || "development";
+const settings = require("./../../modules/config");
 const config = require("./../../config/database")[env];
 const db = {};
 
-const sequelize = new Sequelize(config);
+const log_level = settings.get("debug.log_level");
+let sequelizeOptions = {};
+if (log_level == "debug") {
+  sequelizeOptions.logging = console.log;
+} else {
+  sequelizeOptions.logging = false;
+}
+const sequelize = new Sequelize(config, sequelizeOptions);
 
 fs.readdirSync(__dirname)
   .filter(file => {
