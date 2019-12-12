@@ -38,8 +38,6 @@ const BotNavigation = function(bot) {
       if (chattedContext.withdrawRub) {
         const phoneNumber = ctx && ctx.message && ctx.message.text;
         if (/^79\d{9}$/.test(phoneNumber)) {
-          // TODO: withdraw to QIWI
-          // TODO: put response url in settings
           const account = await context.findOrCreateAccount(ctx);
           const accountBalance = account.rubAmountInRub();
           const feedbackUrl = settings.get("shared.feedback_url");
@@ -76,7 +74,6 @@ const BotNavigation = function(bot) {
         if (!rawText) bot.sendMessage(vkId, "Не передано значение курса");
 
         const tokens = rawText.split("/");
-        console.log("TOKENS LENGTH:", tokens.length);
         if (!tokens.length === 2)
           bot.sendMessage(vkId, "Неверный формат курса");
 
