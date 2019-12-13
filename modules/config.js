@@ -1,4 +1,4 @@
-const convict = require('convict');
+const convict = require("convict");
 
 // Define a schema
 const config = convict({
@@ -46,6 +46,21 @@ const config = convict({
       env: "DATABASE_URL"
     }
   },
+  // TODO: rename?
+  shared: {
+    feedback_url: {
+      doc: "Short link url api",
+      format: "url",
+      default: "",
+      env: "SHARED_FEEDBACK_URL"
+    },
+    admins: {
+      doc: "List of admins vk ids",
+      format: Array,
+      default: [],
+      env: "SHARED_ADMINS"
+    }
+  },
   credentials: {
     bot: {
       access_token: {
@@ -73,6 +88,90 @@ const config = convict({
         format: String,
         default: "",
         env: "CREDENTIALS_VK_SECRET"
+      },
+      confirmation: {
+        doc: "Confirmation",
+        format: String,
+        default: "",
+        env: "CREDENTIALS_VK_CONFIRMATION"
+      },
+      utils_short_link_url: {
+        doc: "Short link url api",
+        format: "url",
+        default: "",
+        env: "CREDENTIALS_VK_UTILS_SHORT_LINK_URL"
+      }
+    },
+    qiwi: {
+      account_number: {
+        doc: "Account (phone number 7XXXXXXXXXX)",
+        format: function check(val) {
+          if (!/^7\d{10}$/.test(val)) {
+            throw new Error("Номер телефона должен быть в формате 7XXXXXXXXXX");
+          }
+        },
+        default: "",
+        env: "CREDENTIALS_QIWI_ACCOUNT_NUMBER"
+      },
+      access_token: {
+        doc: "Access token for Qiwi payment API",
+        format: String,
+        default: "",
+        env: "CREDENTIALS_QIWI_ACCESS_TOKEN"
+      },
+      payment_url: {
+        doc: "Payment url",
+        format: "url",
+        default: "",
+        env: "CREDENTIALS_QIWI_PAYMENT_URL"
+      },
+      withdraw_url: {
+        doc: "Withdraw url",
+        format: "url",
+        default: "",
+        env: "CREDENTIALS_QIWI_WITHDRAW_URL"
+      },
+      balance_url: {
+        doc: "Balance url",
+        format: "url",
+        default: "",
+        env: "CREDENTIALS_QIWI_BALANCE_URL"
+      }
+    },
+    vk_coin: {
+      account_number: {
+        doc: "Account (vk id)",
+        format: function check(val) {
+          if (!/^\d+$/.test(val)) {
+            throw new Error("некорректный Vkontakte id");
+          }
+        },
+        default: "",
+        env: "CREDENTIALS_VK_COIN_ACCOUNT_NUMBER"
+      },
+      access_token: {
+        doc: "Access token for vk coin payment API",
+        format: String,
+        default: "",
+        env: "CREDENTIALS_VK_COIN_ACCESS_TOKEN"
+      },
+      payment_url: {
+        doc: "Payment url",
+        format: "url",
+        default: "",
+        env: "CREDENTIALS_VK_COIN_PAYMENT_URL"
+      },
+      withdraw_url: {
+        doc: "Withdraw url",
+        format: "url",
+        default: "",
+        env: "CREDENTIALS_VK_COIN_WITHDRAW_URL"
+      },
+      balance_url: {
+        doc: "Balance (score) url",
+        format: "url",
+        default: "",
+        env: "CREDENTIALS_VK_COIN_BALANCE_URL"
       }
     }
   },
@@ -81,30 +180,36 @@ const config = convict({
       doc: "Log level",
       format: function check(val) {
         regexp = /debug|info|warn|error|fatal/i;
-        if(!regexp.test(val)) {
+        if (!regexp.test(val)) {
           throw new Error(`Unpermitted log level: ${val}`);
         }
       },
-      default: 'info',
+      default: "info",
       env: "DEBUG_LOG_LEVEL"
+    },
+    url: {
+      doc: "Debug url",
+      format: "url",
+      default: "http://localhost:9001",
+      env: "DEBUG_URL"
     }
   }
 });
 
 // Load environment dependent configuration
-let env = config.get('env');
-config.loadFile('./config/' + env + '.json');
+let env = config.get("env");
+config.loadFile("./config/" + env + ".json");
 
 // Perform validation
-config.validate({allowed: 'strict'});
+config.validate({ allowed: "strict" });
 
 // custom functions
 config.isProductionEnv = function() {
-  return this.get('env') === 'production';
+  return this.get("env") === "production";
 };
 
 config.isDevelopmentEnv = function() {
-  return this.get('env') === 'development';
+  return this.get("env") === "development";
 };
 
 module.exports = config;
