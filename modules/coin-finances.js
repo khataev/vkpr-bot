@@ -1,5 +1,6 @@
 const axios = require("axios");
 
+const constants = require("./constants");
 const gLogger = require("./logger"); // TODO: get from context
 const gSettings = require("./config");
 const models = require("../db/models");
@@ -7,6 +8,7 @@ const CoinTransaction = models.CoinTransaction;
 const Account = models.Account;
 const ExchangeRate = models.ExchangeRate;
 const AggregatedInfo = models.AggregatedInfo;
+const ExchangeTransaction = models.ExchangeTransaction;
 const BalanceManager = require("./balance-manager");
 const balanceManager = new BalanceManager(null);
 
@@ -103,10 +105,12 @@ class CoinFinances {
   }
 
   async isEnoughRubForExchange(account) {
+    return true; // TODO
+
     const rate = await ExchangeRate.currentRate();
     const rubBalance = await balanceManager.getRubBalance();
     // TODO: Sync this with function exchangeCoinsToRub or refactor
-    const rubs = Math.round(
+    const rubs = Math.floor(
       (account.coinAmount / rate.coinAmount) * rate.buyRate
     );
 
@@ -116,8 +120,7 @@ class CoinFinances {
   async exchangeCoinsToRub(account) {
     const rate = await ExchangeRate.currentRate();
     const coinAmount = account.coinAmount;
-    // TODO: floor
-    const rubs = Math.round(
+    const rubs = Math.floor(
       (account.coinAmount / rate.coinAmount) * rate.buyRate
     );
 
@@ -129,6 +132,16 @@ class CoinFinances {
       await AggregatedInfo.increment(
         { coinsExchanged: coinAmount },
         { where: {}, transaction: transaction }
+      );
+      await ExchangeTransaction.create(
+        {
+          vkId: account.vkId,
+          type: constants.EXCHANGE_SELL_COIN,
+          rate: rate.buyRate,
+          rubAmount: rubs,
+          coinAmount: coinAmount
+        },
+        { transaction: transaction }
       );
     });
     // HINT: copecks to rub (we should do it in specific standalone function)
