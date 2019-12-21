@@ -5,7 +5,7 @@ class NumberFormatter {
     this.locale = {
       delimiters: {
         thousands: " ",
-        decimal: ","
+        decimal: "."
       }
     };
 
