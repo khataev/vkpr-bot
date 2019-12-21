@@ -1,5 +1,6 @@
 const Markup = require("node-vk-bot-api/lib/markup");
 const MenuOption = require("../menu-option");
+const numberFormatter = require("./../../number-formatter");
 
 class BalanceOption extends MenuOption {
   async chatMessage(botCtx) {
@@ -7,8 +8,8 @@ class BalanceOption extends MenuOption {
 
     return `
     💰 Ваш баланс:
-    ➕ ${account.coinAmountInCoin()} VK Coins
-    ➕ ${account.rubAmountInRub()} ₽
+    ➕ ${numberFormatter.formatCoin(account.coinAmountInCoin())} VK Coins
+    ➕ ${numberFormatter.formatRub(account.rubAmountInRub())} ₽
     `;
   }
 

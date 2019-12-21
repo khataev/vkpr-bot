@@ -16,7 +16,10 @@ if (log_level == "debug") {
 } else {
   sequelizeOptions.logging = false;
 }
-const sequelize = new Sequelize(config, sequelizeOptions);
+let sequelize;
+if (process.NODE_ENV === "production")
+  sequelize = new Sequelize(config, sequelizeOptions);
+else sequelize = new Sequelize(config);
 
 fs.readdirSync(__dirname)
   .filter(file => {

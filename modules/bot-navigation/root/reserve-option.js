@@ -1,5 +1,6 @@
 const Markup = require("node-vk-bot-api/lib/markup");
 const MenuOption = require("../menu-option");
+const numberFormatter = require("./../../number-formatter");
 const BalanceManager = require("./../../balance-manager");
 const balanceManager = new BalanceManager(null);
 
@@ -8,8 +9,8 @@ class ReserveOption extends MenuOption {
     const rubBalance = (await balanceManager.getRubBalance()) / 100;
     const coinBalance = (await balanceManager.getCoinBalance()) / 1000;
     return `
-    💸 Резерв QIWI: ${rubBalance} ₽
-    💸 Резерв VK Coins: ${coinBalance}
+    💸 Резерв QIWI: ${numberFormatter.formatRub(rubBalance)} ₽
+    💸 Резерв VK Coins: ${numberFormatter.formatCoin(coinBalance)}
     `;
   }
 
