@@ -104,15 +104,17 @@ class CoinFinances {
     }
   }
 
+  coinToRub(coinAmount, rate) {
+    return Math.floor((coinAmount / rate.coinAmount) * rate.buyRate);
+  }
+
   async isEnoughRubForExchange(account) {
     return true; // TODO
 
     const rate = await ExchangeRate.currentRate();
     const rubBalance = await balanceManager.getRubBalance();
     // TODO: Sync this with function exchangeCoinsToRub or refactor
-    const rubs = Math.floor(
-      (account.coinAmount / rate.coinAmount) * rate.buyRate
-    );
+    const rubs = coinToRub(account.coinAmount, rate);
 
     return rubBalance >= rubs;
   }
@@ -120,9 +122,7 @@ class CoinFinances {
   async exchangeCoinsToRub(account) {
     const rate = await ExchangeRate.currentRate();
     const coinAmount = account.coinAmount;
-    const rubs = Math.floor(
-      (account.coinAmount / rate.coinAmount) * rate.buyRate
-    );
+    const rubs = coinToRub(account.coinAmount, rate);
 
     await AggregatedInfo.sequelize.transaction({}, async transaction => {
       await account.increment({
