@@ -12,20 +12,22 @@ class BalanceOption extends MenuOption {
     const account = await this.ctx.findOrCreateAccount(botCtx);
     const rate = await ExchangeRate.currentRate();
 
-    const coinAmount = numberFormatter.formatCoin(account.coinAmountInCoin());
-    const rubEquialentAmount = numberFormatter.formatRub(
+    const coinAmountStr = numberFormatter.formatCoin(
+      account.coinAmountInCoin()
+    );
+    const rubEquivAmountStr = numberFormatter.formatRub(
       coinFinances.coinToRub(account.coinAmount, rate) / 100
     );
 
-    const rubAmount = numberFormatter.formatRub(account.rubAmountInRub());
-    const coinEquialentAmount = numberFormatter.formatCoin(
+    const rubAmountStr = numberFormatter.formatRub(account.rubAmountInRub());
+    const coinEquivAmountStr = numberFormatter.formatCoin(
       rubFinances.rubToCoins(account.rubAmount, rate) / 1000
     );
 
     return `
     💰 Ваш баланс:
-    ➕ ${coinAmount} VK Coins (${rubEquialentAmount} ₽)
-    ➕ ${rubAmount} ₽ (${coinEquialentAmount} VK Coins)
+    ➕ ${coinAmountStr} VK Coins (${rubEquivAmountStr} ₽)
+    ➕ ${rubAmountStr} ₽ (${coinEquivAmountStr} VK Coins)
     `;
   }
 
