@@ -121,7 +121,7 @@ class RubFinances {
     const url = gSettings.get("credentials.qiwi.withdraw_url");
     const accessToken = gSettings.get("credentials.qiwi.access_token");
     const transactionId = new Date().getTime();
-    const comment = "Выплата ТестБотОбменник";
+    const comment = "Выплата VK Coin Биржа https://vk.com/club189652443";
     const amount = account.rubAmount;
     const params = {
       id: transactionId.toString(),
