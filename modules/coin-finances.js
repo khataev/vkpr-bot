@@ -114,7 +114,7 @@ class CoinFinances {
     const rate = await ExchangeRate.currentRate();
     const rubBalance = await balanceManager.getRubBalance();
     // TODO: Sync this with function exchangeCoinsToRub or refactor
-    const rubs = coinToRub(account.coinAmount, rate);
+    const rubs = this.coinToRub(account.coinAmount, rate);
 
     return rubBalance >= rubs;
   }
@@ -122,7 +122,7 @@ class CoinFinances {
   async exchangeCoinsToRub(account) {
     const rate = await ExchangeRate.currentRate();
     const coinAmount = account.coinAmount;
-    const rubs = coinToRub(account.coinAmount, rate);
+    const rubs = this.coinToRub(account.coinAmount, rate);
 
     await AggregatedInfo.sequelize.transaction({}, async transaction => {
       await account.increment({
