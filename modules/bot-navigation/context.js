@@ -86,6 +86,14 @@ class Context {
     console.log(`Context#registerReply. registered:`, menuOption.triggerButton);
     this.replies[menuOption.triggerButton] = menuOption;
   }
+
+  async sendMessageToAdmins(text) {
+    const admins = settings.get("shared.admins");
+    for (let index = 0; index < admins.length; index++) {
+      const vkId = admins[index];
+      await this.bot.sendMessage(vkId, text);
+    }
+  }
 }
 
 module.exports = Context;

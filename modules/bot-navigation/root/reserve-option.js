@@ -27,8 +27,8 @@ class ReserveOption extends MenuOption {
     );
 
     return `
-    💸 Резерв QIWI: ${rubBalanceStr} ₽ (${coinEquivStr} VK Coins)
     💸 Резерв VK Coins: ${coinBalanceStr} (${rubEquivStr} ₽)
+    💸 Резерв QIWI: ${rubBalanceStr} ₽ (${coinEquivStr} VK Coins)
     `;
   }
 
