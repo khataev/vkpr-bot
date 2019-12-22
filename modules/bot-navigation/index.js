@@ -3,6 +3,8 @@ const Context = require("./context");
 const RubFinances = require("./../rub-finances");
 const rubFinances = new RubFinances(null);
 const settings = require("./../config"); // get from context
+const BalanceManager = require("./../balance-manager");
+const balanceManager = new BalanceManager(null);
 const models = require("./../../db/models");
 const ExchangeRate = models.ExchangeRate;
 
@@ -40,6 +42,20 @@ const BotNavigation = function(bot) {
         if (/^79\d{9}$/.test(phoneNumber)) {
           const account = await context.findOrCreateAccount(ctx);
           const accountBalance = account.rubAmountInRub();
+
+          // Проверка на достаточное колиество денег в системе
+          const systemBalance = await balanceManager.getRubBalance();
+          if (systemBalance < account.rubAmount) {
+            context.sendMessageToAdmins(
+              `Недостаточно RUB для вывода ${accountBalance}`
+            );
+            message = `
+            💱 Недостаточно RUB в системе для вывода!
+            `;
+            bot.sendMessage(vkId, message);
+            return;
+          }
+
           const feedbackUrl = settings.get("shared.feedback_url");
           const isWithdrawSucceeded = await rubFinances.withdrawRub(
             account,
