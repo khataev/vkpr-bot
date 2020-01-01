@@ -1,7 +1,7 @@
 {
   "name": "vkcoin-exchange-bot",
   "version": "1.0.0",
-  "description": "VK Coin exchange bot for",
+  "description": "VK Coin exchange bot",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

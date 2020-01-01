@@ -32,17 +32,6 @@ function start_express_server() {
 
     configureQiwiHook(app, groupId);
     configureVkCoinHook(app, groupId);
-    // configureRootHook(app, groupId);
-
-    // app.post(`/${group_id}`, function (req, res) {
-    //   logger.info(req.body);
-    //   // process_event(req.body);
-    //   // res.send('60df2360');
-    // });
-    //
-    // app.post(`/${tomorrow_token}`, function (req, res) {
-    //   handleSeizeButton(req, res, 'tomorrow');
-    // });
 
     if (settings.get("credentials.bot.use_webhooks")) {
       logger.info("BOT mode: webhooks");
@@ -64,42 +53,6 @@ function start_express_server() {
 function run() {
   start_express_server();
 }
-
-function process_event(event_data) {
-  if (!processable_event(event_data)) return;
-
-  let text = event_data.object.text.toLowerCase().trim();
-  if (text == "начать") {
-    bot_menu();
-  }
-}
-
-function processable_event(event_data) {
-  logger.debug("Checking event source");
-  return (
-    event_data &&
-    event_data.object &&
-    event_data.group_id == settings.get("credentials.vk.group_id") &&
-    event_data.secret === settings.get("credentials.vk.secret")
-  );
-}
-
-// function cmd_menu_text() {
-//   let menu = `
-//     /список - получить актуальный список.
-//     /правила - получение правил списка.
-//     /группы - получить список групп для пиара предпоследнем сообщении в бесед".
-//     /стата - получить свою статистику (если можно то каждые 3 мин).
-//     /проверка - проверяет текущего пользователя на добавление всех участников списка.
-//     /меню - показать это меню.
-//   `;
-
-//   return menu;
-// }
-
-// function cmd_list_text() {
-//   return "Здесь будет список";
-// }
 
 function configure_bot_webhooks(app, group_id) {
   let bot = new VkBot({
@@ -156,15 +109,6 @@ function configureVkCoinHook(app, groupId) {
     const success = await coinFinances.processWebHook(req.body);
     if (success) res.sendStatus(200);
     else res.sendStatus(422);
-  });
-}
-
-// for debug. use it for debugging vk api messages
-function configureRootHook(app, groupId) {
-  app.post(`/${groupId}`, async function(req, res) {
-    logger.debug("root handler action");
-    console.log(req.body);
-    res.sendStatus(200);
   });
 }
 
