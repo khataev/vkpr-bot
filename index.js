@@ -7,10 +7,8 @@ const packageInfo = require("./package.json");
 const VkBot = require("node-vk-bot-api");
 const Session = require("node-vk-bot-api/lib/session");
 const BotNavigation = require("./modules/bot-navigation");
-const RubFinances = require("./modules/rub-finances");
-const rubFinances = new RubFinances();
-const CoinFinances = require("./modules/coin-finances");
-const coinFinances = new CoinFinances();
+const rubFinances = require("./modules/rub-finances");
+const coinFinances = require("./modules/coin-finances");
 
 let bot;
 

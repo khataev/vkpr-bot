@@ -1,12 +1,10 @@
 const Markup = require("node-vk-bot-api/lib/markup");
 const MenuOption = require("../menu-option");
 const numberFormatter = require("./../../number-formatter");
-const RubFinances = require("./../../rub-finances");
-const CoinFinances = require("./../../coin-finances");
+const rubFinances = require("./../../rub-finances");
+const coinFinances = require("./../../coin-finances");
 const models = require("./../../../db/models");
 const ExchangeRate = models.ExchangeRate;
-const rubFinances = new RubFinances();
-const coinFinances = new CoinFinances();
 class BalanceOption extends MenuOption {
   async chatMessage(botCtx) {
     const account = await this.ctx.findOrCreateAccount(botCtx);

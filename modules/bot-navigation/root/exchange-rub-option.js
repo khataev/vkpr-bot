@@ -1,7 +1,6 @@
 const Markup = require("node-vk-bot-api/lib/markup");
 const MenuOption = require("../menu-option");
-const RubFinances = require("./../../rub-finances");
-const rubFinances = new RubFinances();
+const rubFinances = require("./../../rub-finances");
 const numberFormatter = require("./../../number-formatter");
 
 class ExchangeRubOption extends MenuOption {

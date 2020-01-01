@@ -3,12 +3,9 @@ const MenuOption = require("../menu-option");
 const models = require("./../../../db/models");
 const ExchangeRate = models.ExchangeRate;
 const numberFormatter = require("./../../number-formatter");
-const BalanceManager = require("./../../balance-manager");
-const RubFinances = require("./../../rub-finances");
-const CoinFinances = require("./../../coin-finances");
-const balanceManager = new BalanceManager();
-const rubFinances = new RubFinances();
-const coinFinances = new CoinFinances();
+const balanceManager = require("./../../balance-manager");
+const rubFinances = require("./../../rub-finances");
+const coinFinances = require("./../../coin-finances");
 
 class ReserveOption extends MenuOption {
   async chatMessage(botCtx) {

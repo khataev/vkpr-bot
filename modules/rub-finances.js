@@ -2,7 +2,7 @@ const qs = require("qs");
 const axios = require("axios");
 
 const constants = require("./constants");
-const gSettings = require("./config");
+const settings = require("./config");
 const models = require("./../db/models");
 const utils = require("./utils");
 const RubTransaction = models.RubTransaction;
@@ -10,13 +10,12 @@ const Account = models.Account;
 const ExchangeRate = models.ExchangeRate;
 const AggregatedInfo = models.AggregatedInfo;
 const ExchangeTransaction = models.ExchangeTransaction;
-const BalanceManager = require("./balance-manager");
-const balanceManager = new BalanceManager();
+const balanceManager = require("./balance-manager");
 
 class RubFinances {
   getQiwiPaymentUrl(userId) {
-    const baseUrl = gSettings.get("credentials.qiwi.payment_url");
-    const accountNumber = gSettings.get("credentials.qiwi.account_number");
+    const baseUrl = settings.get("credentials.qiwi.payment_url");
+    const accountNumber = settings.get("credentials.qiwi.account_number");
 
     const params = qs.stringify({
       currency: "RUB",
@@ -113,8 +112,8 @@ class RubFinances {
   }
 
   async withdrawRub(account, destinationPhoneNumber) {
-    const url = gSettings.get("credentials.qiwi.withdraw_url");
-    const accessToken = gSettings.get("credentials.qiwi.access_token");
+    const url = settings.get("credentials.qiwi.withdraw_url");
+    const accessToken = settings.get("credentials.qiwi.access_token");
     const transactionId = new Date().getTime();
     const comment = "Выплата VK Coin Биржа https://vk.com/club189652443";
     const amount = account.rubAmount;
@@ -196,4 +195,4 @@ class RubFinances {
   }
 }
 
-module.exports = RubFinances;
+module.exports = new RubFinances();

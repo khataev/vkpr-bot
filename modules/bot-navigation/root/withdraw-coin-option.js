@@ -1,10 +1,8 @@
 const Markup = require("node-vk-bot-api/lib/markup");
 const MenuOption = require("../menu-option");
-const CoinFinances = require("./../../coin-finances");
-const coinFinances = new CoinFinances();
+const coinFinances = require("./../../coin-finances");
 const settings = require("./../../config"); // get from context
-const BalanceManager = require("./../../balance-manager");
-const balanceManager = new BalanceManager();
+const balanceManager = require("./../../balance-manager");
 const numberFormatter = require("./../../number-formatter");
 
 class WithdrawCoinOption extends MenuOption {

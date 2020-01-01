@@ -1,10 +1,8 @@
 const RootOption = require("./root/index");
 const Context = require("./context");
-const RubFinances = require("./../rub-finances");
-const rubFinances = new RubFinances();
+const rubFinances = require("./../rub-finances");
 const settings = require("./../config"); // get from context
-const BalanceManager = require("./../balance-manager");
-const balanceManager = new BalanceManager();
+const balanceManager = require("./../balance-manager");
 const models = require("./../../db/models");
 const ExchangeRate = models.ExchangeRate;
 const numberFormatter = require("./../number-formatter");
