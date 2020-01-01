@@ -4,7 +4,7 @@ const MenuOption = require("../../menu-option");
 const CheckPaymentOption = require("./check-payment-option");
 const BackMenuOption = require("./back-menu-option");
 const RubFinances = require("./../../../rub-finances");
-const rubFinances = new RubFinances(null);
+const rubFinances = new RubFinances();
 
 class TopUpRubOption extends MenuOption {
   async chatMessage(botCtx) {

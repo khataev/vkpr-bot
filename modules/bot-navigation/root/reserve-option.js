@@ -6,9 +6,9 @@ const numberFormatter = require("./../../number-formatter");
 const BalanceManager = require("./../../balance-manager");
 const RubFinances = require("./../../rub-finances");
 const CoinFinances = require("./../../coin-finances");
-const balanceManager = new BalanceManager(null);
-const rubFinances = new RubFinances(null);
-const coinFinances = new CoinFinances(null);
+const balanceManager = new BalanceManager();
+const rubFinances = new RubFinances();
+const coinFinances = new CoinFinances();
 
 class ReserveOption extends MenuOption {
   async chatMessage(botCtx) {

@@ -5,8 +5,8 @@ const RubFinances = require("./../../rub-finances");
 const CoinFinances = require("./../../coin-finances");
 const models = require("./../../../db/models");
 const ExchangeRate = models.ExchangeRate;
-const rubFinances = new RubFinances(null);
-const coinFinances = new CoinFinances(null);
+const rubFinances = new RubFinances();
+const coinFinances = new CoinFinances();
 class BalanceOption extends MenuOption {
   async chatMessage(botCtx) {
     const account = await this.ctx.findOrCreateAccount(botCtx);

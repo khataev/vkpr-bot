@@ -1,7 +1,6 @@
 const axios = require("axios");
 
 const constants = require("./constants");
-const gLogger = require("./logger"); // TODO: get from context
 const gSettings = require("./config");
 const models = require("../db/models");
 const CoinTransaction = models.CoinTransaction;
@@ -10,13 +9,9 @@ const ExchangeRate = models.ExchangeRate;
 const AggregatedInfo = models.AggregatedInfo;
 const ExchangeTransaction = models.ExchangeTransaction;
 const BalanceManager = require("./balance-manager");
-const balanceManager = new BalanceManager(null);
+const balanceManager = new BalanceManager();
 
 class CoinFinances {
-  constructor(logger) {
-    this.logger = logger || gLogger;
-  }
-
   getVkCoinPaymentUrl() {
     const baseUrl = gSettings.get("credentials.vk_coin.payment_url");
     const accountNumber = gSettings.get("credentials.vk_coin.account_number");
@@ -59,7 +54,7 @@ class CoinFinances {
 
       return true;
     } catch (error) {
-      this.logger.error(`COIN webhook handler error. ${error.message}`);
+      console.error(`COIN webhook handler error. ${error.message}`);
 
       return false;
     }

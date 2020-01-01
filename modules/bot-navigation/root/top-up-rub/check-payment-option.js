@@ -1,7 +1,7 @@
 const Markup = require("node-vk-bot-api/lib/markup");
 const MenuOption = require("../../menu-option");
 const RubFinances = require("./../../../rub-finances");
-const rubFinances = new RubFinances(null);
+const rubFinances = new RubFinances();
 
 class CheckPaymentOption extends MenuOption {
   async chatMessage(botCtx) {

@@ -1,13 +1,7 @@
 const axios = require("axios");
-
-const gLogger = require("./logger"); // TODO: get from context
 const gSettings = require("./config");
 
 class BalanceManager {
-  constructor(logger) {
-    this.logger = logger || gLogger;
-  }
-
   async getRubBalance() {
     const baseUrl = gSettings.get("credentials.qiwi.balance_url");
     const accountNumber = gSettings.get("credentials.qiwi.account_number");

@@ -1,7 +1,7 @@
 const Markup = require("node-vk-bot-api/lib/markup");
 const MenuOption = require("../menu-option");
 const CoinFinances = require("./../../coin-finances");
-const coinFinances = new CoinFinances(null);
+const coinFinances = new CoinFinances();
 
 class TopUpCoinOption extends MenuOption {
   chatMessage(botCtx) {

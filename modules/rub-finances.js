@@ -2,7 +2,6 @@ const qs = require("qs");
 const axios = require("axios");
 
 const constants = require("./constants");
-const gLogger = require("./logger"); // TODO: get from context
 const gSettings = require("./config");
 const models = require("./../db/models");
 const utils = require("./utils");
@@ -12,13 +11,9 @@ const ExchangeRate = models.ExchangeRate;
 const AggregatedInfo = models.AggregatedInfo;
 const ExchangeTransaction = models.ExchangeTransaction;
 const BalanceManager = require("./balance-manager");
-const balanceManager = new BalanceManager(null);
+const balanceManager = new BalanceManager();
 
 class RubFinances {
-  constructor(logger) {
-    this.logger = logger || gLogger;
-  }
-
   getQiwiPaymentUrl(userId) {
     const baseUrl = gSettings.get("credentials.qiwi.payment_url");
     const accountNumber = gSettings.get("credentials.qiwi.account_number");
@@ -86,7 +81,7 @@ class RubFinances {
 
         return true;
       } catch (error) {
-        this.logger.error(`RUB webhook handler error. ${error.message}`);
+        console.error(`RUB webhook handler error. ${error.message}`);
 
         return false;
       }

@@ -1,12 +1,13 @@
 const RootOption = require("./root/index");
 const Context = require("./context");
 const RubFinances = require("./../rub-finances");
-const rubFinances = new RubFinances(null);
+const rubFinances = new RubFinances();
 const settings = require("./../config"); // get from context
 const BalanceManager = require("./../balance-manager");
-const balanceManager = new BalanceManager(null);
+const balanceManager = new BalanceManager();
 const models = require("./../../db/models");
 const ExchangeRate = models.ExchangeRate;
+const numberFormatter = require("./../number-formatter");
 
 const BotNavigation = function(bot) {
   let context = new Context(bot);
@@ -47,7 +48,9 @@ const BotNavigation = function(bot) {
           const systemBalance = await balanceManager.getRubBalance();
           if (systemBalance < account.rubAmount) {
             context.sendMessageToAdmins(
-              `Недостаточно RUB для вывода ${accountBalance}`
+              `Недостаточно RUB для вывода ${numberFormatter.formatRub(
+                accountBalance
+              )}`
             );
             message = `
             💱 Недостаточно RUB в системе для вывода!
@@ -64,7 +67,9 @@ const BotNavigation = function(bot) {
 
           if (isWithdrawSucceeded) {
             const message = `
-            ✔ Мы отправили на QIWI кошелёк +${phoneNumber} ${accountBalance} ₽!
+            ✔ Мы отправили на QIWI кошелёк +${phoneNumber} ${numberFormatter.formatRub(
+              accountBalance
+            )} ₽!
 
             📈 Оставьте свой отзыв: ${feedbackUrl}
             `;
