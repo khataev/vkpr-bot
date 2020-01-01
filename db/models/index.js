@@ -12,12 +12,14 @@ const db = {};
 const log_level = settings.get("debug.log_level");
 let sequelizeOptions = {};
 if (log_level == "debug") {
+  console.log("Sequelize logging is ON");
   sequelizeOptions.logging = console.log;
 } else {
+  console.log("Sequelize logging is OFF");
   sequelizeOptions.logging = false;
 }
 let sequelize;
-if (process.NODE_ENV === "production")
+if (process.env.NODE_ENV === "production")
   sequelize = new Sequelize(config, sequelizeOptions);
 else sequelize = new Sequelize(config);
 
