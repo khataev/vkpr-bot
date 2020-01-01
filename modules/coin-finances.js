@@ -107,7 +107,6 @@ class CoinFinances {
 
     const rate = await ExchangeRate.currentRate();
     const rubBalance = await balanceManager.getRubBalance();
-    // TODO: Sync this with function exchangeCoinsToRub or refactor
     const rubs = this.coinToRub(account.coinAmount, rate);
 
     return rubBalance >= rubs;

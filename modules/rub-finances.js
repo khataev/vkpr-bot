@@ -158,7 +158,6 @@ class RubFinances {
 
     const rate = await ExchangeRate.currentRate();
     const coinBalance = await balanceManager.getCoinBalance();
-    // TODO: Sync this with function exchangeRubToCoins or refactor
     const coins = this.rubToCoins(rubAmount, rate);
 
     return coinBalance >= coins;

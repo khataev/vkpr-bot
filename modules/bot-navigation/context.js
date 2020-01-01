@@ -1,7 +1,7 @@
 const models = require("./../../db/models");
 const Account = models.Account;
 const AggregatedInfo = models.AggregatedInfo;
-const settings = require("./../config"); // TODO: global settings in context
+const settings = require("./../config");
 
 class Context {
   constructor(bot) {
