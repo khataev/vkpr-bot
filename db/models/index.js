@@ -12,11 +12,16 @@ const db = {};
 const log_level = settings.get("debug.log_level");
 let sequelizeOptions = {};
 if (log_level == "debug") {
+  console.log("Sequelize logging is ON");
   sequelizeOptions.logging = console.log;
 } else {
+  console.log("Sequelize logging is OFF");
   sequelizeOptions.logging = false;
 }
-const sequelize = new Sequelize(config, sequelizeOptions);
+let sequelize;
+if (process.env.NODE_ENV === "production")
+  sequelize = new Sequelize(config, sequelizeOptions);
+else sequelize = new Sequelize(config);
 
 fs.readdirSync(__dirname)
   .filter(file => {

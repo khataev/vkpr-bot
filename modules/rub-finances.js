@@ -1,25 +1,21 @@
 const qs = require("qs");
 const axios = require("axios");
 
-const gLogger = require("./logger"); // TODO: get from context
-const gSettings = require("./config");
+const constants = require("./constants");
+const settings = require("./config");
 const models = require("./../db/models");
 const utils = require("./utils");
 const RubTransaction = models.RubTransaction;
 const Account = models.Account;
 const ExchangeRate = models.ExchangeRate;
 const AggregatedInfo = models.AggregatedInfo;
-const BalanceManager = require("./balance-manager");
-const balanceManager = new BalanceManager(null);
+const ExchangeTransaction = models.ExchangeTransaction;
+const balanceManager = require("./balance-manager");
 
 class RubFinances {
-  constructor(logger) {
-    this.logger = logger || gLogger;
-  }
-
   getQiwiPaymentUrl(userId) {
-    const baseUrl = gSettings.get("credentials.qiwi.payment_url");
-    const accountNumber = gSettings.get("credentials.qiwi.account_number");
+    const baseUrl = settings.get("credentials.qiwi.payment_url");
+    const accountNumber = settings.get("credentials.qiwi.account_number");
 
     const params = qs.stringify({
       currency: "RUB",
@@ -84,7 +80,7 @@ class RubFinances {
 
         return true;
       } catch (error) {
-        this.logger.error(`RUB webhook handler error. ${error.message}`);
+        console.error(`RUB webhook handler error. ${error.message}`);
 
         return false;
       }
@@ -116,10 +112,10 @@ class RubFinances {
   }
 
   async withdrawRub(account, destinationPhoneNumber) {
-    const url = gSettings.get("credentials.qiwi.withdraw_url");
-    const accessToken = gSettings.get("credentials.qiwi.access_token");
+    const url = settings.get("credentials.qiwi.withdraw_url");
+    const accessToken = settings.get("credentials.qiwi.access_token");
     const transactionId = new Date().getTime();
-    const comment = "Выплата ТестБотОбменник";
+    const comment = "Выплата VK Coin Биржа https://vk.com/club189652443";
     const amount = account.rubAmount;
     const params = {
       id: transactionId.toString(),
@@ -153,13 +149,16 @@ class RubFinances {
     }
   }
 
+  rubToCoins(rubAmount, rate) {
+    return Math.floor((rubAmount / rate.sellRate) * rate.coinAmount);
+  }
+
   async isEnoughCoinForExchange(account) {
+    return true; // TODO
+
     const rate = await ExchangeRate.currentRate();
     const coinBalance = await balanceManager.getCoinBalance();
-    // TODO: Sync this with function exchangeRubToCoins or refactor
-    const coins = Math.round(
-      (account.rubAmount / rate.sellRate) * rate.coinAmount
-    );
+    const coins = this.rubToCoins(rubAmount, rate);
 
     return coinBalance >= coins;
   }
@@ -168,10 +167,7 @@ class RubFinances {
     const rate = await ExchangeRate.currentRate();
 
     const rubAmount = account.rubAmount;
-    // TODO: floor
-    const coins = Math.round(
-      (account.rubAmount / rate.sellRate) * rate.coinAmount
-    );
+    const coins = this.rubToCoins(rubAmount, rate);
 
     await AggregatedInfo.sequelize.transaction({}, async transaction => {
       await account.increment({
@@ -182,10 +178,20 @@ class RubFinances {
         { rubExchanged: rubAmount },
         { where: {}, transaction: transaction }
       );
+      await ExchangeTransaction.create(
+        {
+          vkId: account.vkId,
+          type: constants.EXCHANGE_BUY_COIN,
+          rate: rate.sellRate,
+          rubAmount: rubAmount,
+          coinAmount: coins
+        },
+        { transaction: transaction }
+      );
     });
     // HINT: coin copecks to whole coins
     return coins / 1000;
   }
 }
 
-module.exports = RubFinances;
+module.exports = new RubFinances();

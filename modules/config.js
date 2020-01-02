@@ -46,7 +46,6 @@ const config = convict({
       env: "DATABASE_URL"
     }
   },
-  // TODO: rename?
   shared: {
     feedback_url: {
       doc: "Short link url api",

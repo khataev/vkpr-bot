@@ -1,23 +1,19 @@
 const axios = require("axios");
 
-const gLogger = require("./logger"); // TODO: get from context
-const gSettings = require("./config");
+const constants = require("./constants");
+const settings = require("./config");
 const models = require("../db/models");
 const CoinTransaction = models.CoinTransaction;
 const Account = models.Account;
 const ExchangeRate = models.ExchangeRate;
 const AggregatedInfo = models.AggregatedInfo;
-const BalanceManager = require("./balance-manager");
-const balanceManager = new BalanceManager(null);
+const ExchangeTransaction = models.ExchangeTransaction;
+const balanceManager = require("./balance-manager");
 
 class CoinFinances {
-  constructor(logger) {
-    this.logger = logger || gLogger;
-  }
-
   getVkCoinPaymentUrl() {
-    const baseUrl = gSettings.get("credentials.vk_coin.payment_url");
-    const accountNumber = gSettings.get("credentials.vk_coin.account_number");
+    const baseUrl = settings.get("credentials.vk_coin.payment_url");
+    const accountNumber = settings.get("credentials.vk_coin.account_number");
     const max = 2000000000;
     const min = -2000000000;
     const randomNumber = Math.round(Math.random() * (max - min) + min);
@@ -57,7 +53,7 @@ class CoinFinances {
 
       return true;
     } catch (error) {
-      this.logger.error(`COIN webhook handler error. ${error.message}`);
+      console.error(`COIN webhook handler error. ${error.message}`);
 
       return false;
     }
@@ -67,9 +63,9 @@ class CoinFinances {
   // }
 
   async withdrawCoin(account) {
-    const url = gSettings.get("credentials.vk_coin.withdraw_url");
-    const accessToken = gSettings.get("credentials.vk_coin.access_token");
-    const merchantId = gSettings.get("credentials.vk_coin.account_number");
+    const url = settings.get("credentials.vk_coin.withdraw_url");
+    const accessToken = settings.get("credentials.vk_coin.access_token");
+    const merchantId = settings.get("credentials.vk_coin.account_number");
     const amount = account.coinAmount;
     const params = {
       merchantId: merchantId,
@@ -102,13 +98,16 @@ class CoinFinances {
     }
   }
 
+  coinToRub(coinAmount, rate) {
+    return Math.floor((coinAmount / rate.coinAmount) * rate.buyRate);
+  }
+
   async isEnoughRubForExchange(account) {
+    return true; // TODO
+
     const rate = await ExchangeRate.currentRate();
     const rubBalance = await balanceManager.getRubBalance();
-    // TODO: Sync this with function exchangeCoinsToRub or refactor
-    const rubs = Math.round(
-      (account.coinAmount / rate.coinAmount) * rate.buyRate
-    );
+    const rubs = this.coinToRub(account.coinAmount, rate);
 
     return rubBalance >= rubs;
   }
@@ -116,10 +115,7 @@ class CoinFinances {
   async exchangeCoinsToRub(account) {
     const rate = await ExchangeRate.currentRate();
     const coinAmount = account.coinAmount;
-    // TODO: floor
-    const rubs = Math.round(
-      (account.coinAmount / rate.coinAmount) * rate.buyRate
-    );
+    const rubs = this.coinToRub(account.coinAmount, rate);
 
     await AggregatedInfo.sequelize.transaction({}, async transaction => {
       await account.increment({
@@ -130,10 +126,20 @@ class CoinFinances {
         { coinsExchanged: coinAmount },
         { where: {}, transaction: transaction }
       );
+      await ExchangeTransaction.create(
+        {
+          vkId: account.vkId,
+          type: constants.EXCHANGE_SELL_COIN,
+          rate: rate.buyRate,
+          rubAmount: rubs,
+          coinAmount: coinAmount
+        },
+        { transaction: transaction }
+      );
     });
     // HINT: copecks to rub (we should do it in specific standalone function)
     return rubs / 100;
   }
 }
 
-module.exports = CoinFinances;
+module.exports = new CoinFinances();

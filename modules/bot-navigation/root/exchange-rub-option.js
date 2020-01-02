@@ -1,8 +1,7 @@
 const Markup = require("node-vk-bot-api/lib/markup");
 const MenuOption = require("../menu-option");
-const RubFinances = require("./../../rub-finances");
-// TODO: add logger to MenuOption
-const rubFinances = new RubFinances(null);
+const rubFinances = require("./../../rub-finances");
+const numberFormatter = require("./../../number-formatter");
 
 class ExchangeRubOption extends MenuOption {
   async chatMessage(botCtx) {
@@ -14,7 +13,9 @@ class ExchangeRubOption extends MenuOption {
       if (await rubFinances.isEnoughCoinForExchange(account)) {
         const coins = await rubFinances.exchangeRubToCoins(account);
         return `
-        💱 Вы успешно обменяли ${currentRubAmount} RUB на ${coins} VK Coin!
+        💱 Вы успешно обменяли ${numberFormatter.formatRub(
+          currentRubAmount
+        )} RUB на ${numberFormatter.formatCoin(coins)} VK Coin!
         `;
       } else {
         return `

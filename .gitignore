@@ -1,6 +1,8 @@
 /.idea
+/.vscode
 config/development.json
 certs
+sql
 newrelic_agent.log
 *.log
 node_modules

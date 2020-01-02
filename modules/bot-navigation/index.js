@@ -1,10 +1,11 @@
 const RootOption = require("./root/index");
 const Context = require("./context");
-const RubFinances = require("./../rub-finances");
-const rubFinances = new RubFinances(null);
+const rubFinances = require("./../rub-finances");
 const settings = require("./../config"); // get from context
+const balanceManager = require("./../balance-manager");
 const models = require("./../../db/models");
 const ExchangeRate = models.ExchangeRate;
+const numberFormatter = require("./../number-formatter");
 
 const BotNavigation = function(bot) {
   let context = new Context(bot);
@@ -40,6 +41,22 @@ const BotNavigation = function(bot) {
         if (/^79\d{9}$/.test(phoneNumber)) {
           const account = await context.findOrCreateAccount(ctx);
           const accountBalance = account.rubAmountInRub();
+
+          // Проверка на достаточное колиество денег в системе
+          const systemBalance = await balanceManager.getRubBalance();
+          if (systemBalance < account.rubAmount) {
+            context.sendMessageToAdmins(
+              `Недостаточно RUB для вывода ${numberFormatter.formatRub(
+                accountBalance
+              )}`
+            );
+            message = `
+            💱 Недостаточно RUB в системе для вывода!
+            `;
+            bot.sendMessage(vkId, message);
+            return;
+          }
+
           const feedbackUrl = settings.get("shared.feedback_url");
           const isWithdrawSucceeded = await rubFinances.withdrawRub(
             account,
@@ -48,7 +65,9 @@ const BotNavigation = function(bot) {
 
           if (isWithdrawSucceeded) {
             const message = `
-            ✔ Мы отправили на QIWI кошелёк +${phoneNumber} ${accountBalance} ₽!
+            ✔ Мы отправили на QIWI кошелёк +${phoneNumber} ${numberFormatter.formatRub(
+              accountBalance
+            )} ₽!
 
             📈 Оставьте свой отзыв: ${feedbackUrl}
             `;
