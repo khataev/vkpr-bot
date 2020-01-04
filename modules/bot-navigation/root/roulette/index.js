@@ -5,7 +5,7 @@ const MediumCoinOption = require("./medium-coin-option");
 const BackMenuOption = require("./../../back-menu-option");
 
 class RouletteOption extends MenuOption {
-  chatMessage(botCtx) {
+  chatMessage() {
     return `
     🎰 Добро пожаловать в раздел 'Рулетки'.
     📃 В данном разделе Вы можете приобрести различные рулетки с выигрышем в VK Coin!
@@ -28,7 +28,7 @@ class RouletteOption extends MenuOption {
     });
   }
 
-  menu(botCtx) {
+  menu() {
     return [
       new LowCoinOption(this.ctx, this),
       new MediumCoinOption(this.ctx, this),
