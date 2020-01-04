@@ -1,6 +1,6 @@
 const Markup = require("node-vk-bot-api/lib/markup");
 const MenuOption = require("./menu-option");
-//TODO: each menu has its own BAckMenu - this should go into roulette or become base class
+// TODO: each menu has its own BackMenu - this should go into roulette or become base class
 class BackMenuOption extends MenuOption {
   chatMessage(botCtx) {
     // return "📤 Назад";

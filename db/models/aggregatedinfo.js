@@ -1,4 +1,3 @@
-"use strict";
 module.exports = (sequelize, DataTypes) => {
   const AggregatedInfo = sequelize.define(
     "AggregatedInfo",
@@ -38,7 +37,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  AggregatedInfo.associate = function(models) {
+  // eslint-disable-next-line no-unused-vars
+  AggregatedInfo.associate = function associate(models) {
     // associations can be defined here
   };
   return AggregatedInfo;

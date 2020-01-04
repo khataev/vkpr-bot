@@ -1,4 +1,3 @@
-"use strict";
 module.exports = (sequelize, DataTypes) => {
   const Account = sequelize.define(
     "Account",
@@ -23,16 +22,17 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  Account.associate = function(models) {
+  // eslint-disable-next-line no-unused-vars
+  Account.associate = function associate(models) {
     // associations can be defined here
   };
   // В рублях
-  Account.prototype.rubAmountInRub = function() {
+  Account.prototype.rubAmountInRub = function rubAmountInRub() {
     return this.rubAmount / 100;
   };
 
   // В целых коинах
-  Account.prototype.coinAmountInCoin = function() {
+  Account.prototype.coinAmountInCoin = function coinAmountInCoin() {
     return this.coinAmount / 1000;
   };
 

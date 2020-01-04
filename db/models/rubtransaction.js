@@ -1,4 +1,3 @@
-"use strict";
 module.exports = (sequelize, DataTypes) => {
   const RubTransaction = sequelize.define(
     "RubTransaction",
@@ -19,7 +18,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  RubTransaction.associate = function(models) {
+  // eslint-disable-next-line no-unused-vars
+  RubTransaction.associate = function associate(models) {
     // associations can be defined here
   };
   return RubTransaction;
