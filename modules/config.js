@@ -178,7 +178,7 @@ const config = convict({
     log_level: {
       doc: "Log level",
       format: function check(val) {
-        regexp = /debug|info|warn|error|fatal/i;
+        const regexp = /debug|info|warn|error|fatal/i;
         if (!regexp.test(val)) {
           throw new Error(`Unpermitted log level: ${val}`);
         }
@@ -196,18 +196,18 @@ const config = convict({
 });
 
 // Load environment dependent configuration
-let env = config.get("env");
-config.loadFile("./config/" + env + ".json");
+const env = config.get("env");
+config.loadFile(`./config/ ${env}.json`);
 
 // Perform validation
 config.validate({ allowed: "strict" });
 
 // custom functions
-config.isProductionEnv = function() {
+config.isProductionEnv = function isProductionEnv() {
   return this.get("env") === "production";
 };
 
-config.isDevelopmentEnv = function() {
+config.isDevelopmentEnv = function isDevelopmentEnv() {
   return this.get("env") === "development";
 };
 
