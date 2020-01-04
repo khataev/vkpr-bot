@@ -1,21 +1,21 @@
 module.exports = (sequelize, DataTypes) => {
   const Account = sequelize.define(
-    "Account",
+    'Account',
     {
-      vkId: { field: "vk_id", type: DataTypes.INTEGER },
+      vkId: { field: 'vk_id', type: DataTypes.INTEGER },
       coinAmount: {
-        field: "coin_amount",
+        field: 'coin_amount',
         type: DataTypes.BIGINT,
         defaultValue: 0
       },
       // В копейках
       rubAmount: {
-        field: "rub_amount",
+        field: 'rub_amount',
         type: DataTypes.INTEGER,
         defaultValue: 0
       },
       isSubscribed: {
-        field: "is_subscribed",
+        field: 'is_subscribed',
         type: DataTypes.BOOLEAN,
         defaultValue: true
       }

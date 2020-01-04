@@ -1,29 +1,29 @@
-const qs = require("qs");
-const axios = require("axios");
+const qs = require('qs');
+const axios = require('axios');
 
-const constants = require("./constants");
-const settings = require("./config");
-const utils = require("./utils");
-const balanceManager = require("./balance-manager");
+const constants = require('./constants');
+const settings = require('./config');
+const utils = require('./utils');
+const balanceManager = require('./balance-manager');
 const {
   Account,
   AggregatedInfo,
   ExchangeRate,
   ExchangeTransaction,
   RubTransaction
-} = require("./../db/models");
+} = require('./../db/models');
 
 class RubFinances {
   getQiwiPaymentUrl(userId) {
-    const baseUrl = settings.get("credentials.qiwi.payment_url");
-    const accountNumber = settings.get("credentials.qiwi.account_number");
+    const baseUrl = settings.get('credentials.qiwi.payment_url');
+    const accountNumber = settings.get('credentials.qiwi.account_number');
 
     const params = qs.stringify({
-      currency: "RUB",
+      currency: 'RUB',
       amountFraction: 0,
       extra: { "'comment'": userId, "'account'": accountNumber },
       amountInteger: 5,
-      blocked: ["comment", "account"]
+      blocked: ['comment', 'account']
     });
 
     return `${baseUrl}?${params}`;
@@ -49,11 +49,11 @@ class RubFinances {
         }
       } = hookInfo;
 
-      if (type !== "IN") return true;
+      if (type !== 'IN') return true;
 
       await RubTransaction.create({ vkId, txnId, hookInfo });
 
-      if (status === "SUCCESS") {
+      if (status === 'SUCCESS') {
         await RubTransaction.sequelize.transaction({}, async transaction => {
           await RubTransaction.update(
             {
@@ -107,17 +107,17 @@ class RubFinances {
   }
 
   async withdrawRub(account, destinationPhoneNumber) {
-    const url = settings.get("credentials.qiwi.withdraw_url");
-    const accessToken = settings.get("credentials.qiwi.access_token");
+    const url = settings.get('credentials.qiwi.withdraw_url');
+    const accessToken = settings.get('credentials.qiwi.access_token');
     const transactionId = new Date().getTime();
-    const comment = "Выплата VK Coin Биржа https://vk.com/club189652443";
+    const comment = 'Выплата VK Coin Биржа https://vk.com/club189652443';
     const amount = account.rubAmount;
     const params = {
       id: transactionId.toString(),
-      sum: { amount: account.rubAmountInRub(), currency: "643" },
+      sum: { amount: account.rubAmountInRub(), currency: '643' },
       paymentMethod: {
-        type: "Account",
-        accountId: "643"
+        type: 'Account',
+        accountId: '643'
       },
       comment,
       fields: { account: `+${destinationPhoneNumber}` }

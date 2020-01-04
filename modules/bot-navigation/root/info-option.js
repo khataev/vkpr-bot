@@ -1,7 +1,7 @@
-const Markup = require("node-vk-bot-api/lib/markup");
-const MenuOption = require("../menu-option");
-const numberFormatter = require("./../../number-formatter");
-const { AggregatedInfo, ExchangeRate } = require("./../../../db/models");
+const Markup = require('node-vk-bot-api/lib/markup');
+const MenuOption = require('../menu-option');
+const numberFormatter = require('./../../number-formatter');
+const { AggregatedInfo, ExchangeRate } = require('./../../../db/models');
 
 class InfoOption extends MenuOption {
   async chatMessage() {
@@ -29,13 +29,13 @@ class InfoOption extends MenuOption {
   }
 
   get buttonMarkup() {
-    return Markup.button("📊 Курс / Информация", "secondary", {
+    return Markup.button('📊 Курс / Информация', 'secondary', {
       button: this.triggerButton
     });
   }
 
   get triggerButton() {
-    return "info_button";
+    return 'info_button';
   }
 }
 

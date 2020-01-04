@@ -1,25 +1,25 @@
-const RootOption = require("./root/index");
-const Context = require("./context");
-const rubFinances = require("./../rub-finances");
-const settings = require("./../config");
-const balanceManager = require("./../balance-manager");
-const { ExchangeRate } = require("./../../db/models");
-const numberFormatter = require("./../number-formatter");
-const eventEmitter = require("@modules/event-emitter");
+const RootOption = require('./root/index');
+const Context = require('./context');
+const rubFinances = require('./../rub-finances');
+const settings = require('./../config');
+const balanceManager = require('./../balance-manager');
+const { ExchangeRate } = require('./../../db/models');
+const numberFormatter = require('./../number-formatter');
+const eventEmitter = require('@modules/event-emitter');
 
 class BotNavigation {
   static initialize(bot) {
     const context = new Context(bot);
     const rootOption = new RootOption(context);
 
-    bot.command("начать", async ctx => {
+    bot.command('начать', async ctx => {
       ctx.reply(...(await rootOption.reply(ctx)));
       await context.findOrCreateAccount(ctx);
       rootOption.registerReplies(ctx);
     });
 
     // TODO: refactor
-    const adminId = settings.get("shared.admins")[0] || 0;
+    const adminId = settings.get('shared.admins')[0] || 0;
     rootOption.registerReplies({ message: { from_id: adminId } });
 
     // TODO: refactor
@@ -54,11 +54,11 @@ class BotNavigation {
               💱 Недостаточно RUB в системе для вывода!
               `;
               bot.sendMessage(vkId, message);
-              eventEmitter.emit("chattedContextHandlingDone");
+              eventEmitter.emit('chattedContextHandlingDone');
               return;
             }
 
-            const feedbackUrl = settings.get("shared.feedback_url");
+            const feedbackUrl = settings.get('shared.feedback_url');
             const isWithdrawSucceeded = await rubFinances.withdrawRub(account, phoneNumber);
 
             if (isWithdrawSucceeded) {
@@ -83,31 +83,31 @@ class BotNavigation {
 
             // ❗ Произошла ошибка при выводе средств, свяжитесь с администратором.
           } else {
-            bot.sendMessage(vkId, "Неверный формат телефона");
+            bot.sendMessage(vkId, 'Неверный формат телефона');
           }
         } else if (chattedContext.setExchangeRate) {
           let canProceed = false;
           const rawText = ctx && ctx.message && ctx.message.text;
           if (!rawText) {
-            bot.sendMessage(vkId, "Не передано значение курса");
+            bot.sendMessage(vkId, 'Не передано значение курса');
 
-            eventEmitter.emit("chattedContextHandlingDone");
+            eventEmitter.emit('chattedContextHandlingDone');
             return;
           }
 
-          const tokens = rawText.split("/");
-          if (!tokens.length === 2) bot.sendMessage(vkId, "Неверный формат курса");
+          const tokens = rawText.split('/');
+          if (!tokens.length === 2) bot.sendMessage(vkId, 'Неверный формат курса');
 
           try {
             const sellRate = parseInt(tokens[0], 10);
             const buyRate = parseInt(tokens[1], 10);
             if (Number.isNaN(sellRate) || Number.isNaN(buyRate))
-              bot.sendMessage(vkId, "Передано некорректное число");
+              bot.sendMessage(vkId, 'Передано некорректное число');
             else if (sellRate <= buyRate) {
               canProceed = true;
               bot.sendMessage(
                 vkId,
-                "Обычно курс продажи должен превышать курс покупки, иначе это экономически не выгодно"
+                'Обычно курс продажи должен превышать курс покупки, иначе это экономически не выгодно'
               );
             } else {
               canProceed = true;
@@ -115,12 +115,12 @@ class BotNavigation {
 
             if (canProceed) {
               const isSuccess = await ExchangeRate.setExchangeRate(sellRate, buyRate);
-              if (isSuccess) bot.sendMessage(vkId, "Курс успешно установлен");
-              else bot.sendMessage(vkId, "Произошла ошибка при установке курса");
+              if (isSuccess) bot.sendMessage(vkId, 'Курс успешно установлен');
+              else bot.sendMessage(vkId, 'Произошла ошибка при установке курса');
             }
           } catch (error) {
             console.error(error.message);
-            bot.sendMessage(vkId, "Произошла ошибка при установке курса");
+            bot.sendMessage(vkId, 'Произошла ошибка при установке курса');
           }
         }
 

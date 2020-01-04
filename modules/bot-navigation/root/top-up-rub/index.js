@@ -1,9 +1,9 @@
-const Markup = require("node-vk-bot-api/lib/markup");
-const settings = require("./../../../config");
-const MenuOption = require("../../menu-option");
-const CheckPaymentOption = require("./check-payment-option");
-const BackMenuOption = require("./back-menu-option");
-const rubFinances = require("./../../../rub-finances");
+const Markup = require('node-vk-bot-api/lib/markup');
+const settings = require('./../../../config');
+const MenuOption = require('../../menu-option');
+const CheckPaymentOption = require('./check-payment-option');
+const BackMenuOption = require('./back-menu-option');
+const rubFinances = require('./../../../rub-finances');
 
 class TopUpRubOption extends MenuOption {
   async chatMessage(botCtx) {
@@ -11,7 +11,7 @@ class TopUpRubOption extends MenuOption {
     // TODO: divide into 2 messages?
     const userId = this.ctx.getUserId(botCtx);
     const topUpUrl = await rubFinances.getShortQiwiPaymentUrl(userId);
-    const accountNumber = settings.get("credentials.qiwi.account_number");
+    const accountNumber = settings.get('credentials.qiwi.account_number');
 
     return `
     🔗 Для пополнения баланса, используйте данную ссылку: ${topUpUrl}
@@ -29,7 +29,7 @@ class TopUpRubOption extends MenuOption {
   }
 
   get buttonMarkup() {
-    return Markup.button("💶 Пополнить RUB", "positive", {
+    return Markup.button('💶 Пополнить RUB', 'positive', {
       button: this.triggerButton
     });
   }
@@ -39,7 +39,7 @@ class TopUpRubOption extends MenuOption {
   }
 
   get triggerButton() {
-    return "top_up_rub_button";
+    return 'top_up_rub_button';
   }
 }
 

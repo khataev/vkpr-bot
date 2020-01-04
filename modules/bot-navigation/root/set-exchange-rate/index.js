@@ -1,6 +1,6 @@
-const Markup = require("node-vk-bot-api/lib/markup");
-const MenuOption = require("../../menu-option");
-const BackMenuOption = require("./back-menu-option");
+const Markup = require('node-vk-bot-api/lib/markup');
+const MenuOption = require('../../menu-option');
+const BackMenuOption = require('./back-menu-option');
 
 class SetExchangeRateOption extends MenuOption {
   async chatMessage() {
@@ -19,7 +19,7 @@ class SetExchangeRateOption extends MenuOption {
   }
 
   forbiddenTransitionChatMessage() {
-    return "Данная функция доступна только администраторам";
+    return 'Данная функция доступна только администраторам';
   }
 
   async transitionAllowed(botCtx) {
@@ -27,7 +27,7 @@ class SetExchangeRateOption extends MenuOption {
   }
 
   get buttonMarkup() {
-    return Markup.button("💸 Установить курс обмена", "primary", {
+    return Markup.button('💸 Установить курс обмена', 'primary', {
       button: this.triggerButton
     });
   }
@@ -37,7 +37,7 @@ class SetExchangeRateOption extends MenuOption {
   }
 
   get triggerButton() {
-    return "set_exchange_rate_button";
+    return 'set_exchange_rate_button';
   }
 }
 

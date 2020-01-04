@@ -1,4 +1,4 @@
-const Markup = require("node-vk-bot-api/lib/markup");
+const Markup = require('node-vk-bot-api/lib/markup');
 
 class MenuOption {
   constructor(ctx, parent) {
@@ -11,11 +11,11 @@ class MenuOption {
   }
 
   async chatMessage() {
-    throw new Error("Must be implemented in child class");
+    throw new Error('Must be implemented in child class');
   }
 
   forbiddenTransitionChatMessage() {
-    throw new Error("Must be implemented in child class");
+    throw new Error('Must be implemented in child class');
   }
 
   async transitionAllowed() {
@@ -27,7 +27,7 @@ class MenuOption {
   beforeReply() {}
 
   get buttonMarkup() {
-    throw new Error("Must be implemented in child class");
+    throw new Error('Must be implemented in child class');
   }
 
   menu() {}
@@ -45,7 +45,7 @@ class MenuOption {
   }
 
   get triggerButton() {
-    throw new Error("Must be implemented in child class");
+    throw new Error('Must be implemented in child class');
   }
 
   registerReplies(botCtx) {

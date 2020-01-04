@@ -1,24 +1,24 @@
-const numeral = require("numeral");
+const numeral = require('numeral');
 
 class NumberFormatter {
   constructor() {
     this.locale = {
       delimiters: {
-        thousands: " ",
-        decimal: "."
+        thousands: ' ',
+        decimal: '.'
       }
     };
 
-    numeral.register("locale", "ru", this.locale);
-    numeral.locale("ru");
+    numeral.register('locale', 'ru', this.locale);
+    numeral.locale('ru');
   }
 
   formatCoin(number) {
-    return numeral(number).format("0,0.000");
+    return numeral(number).format('0,0.000');
   }
 
   formatRub(number) {
-    return numeral(number).format("0,0.00");
+    return numeral(number).format('0,0.00');
   }
 }
 

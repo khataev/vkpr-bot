@@ -1,20 +1,20 @@
-const axios = require("axios");
+const axios = require('axios');
 
-const constants = require("./constants");
-const settings = require("./config");
-const balanceManager = require("./balance-manager");
+const constants = require('./constants');
+const settings = require('./config');
+const balanceManager = require('./balance-manager');
 const {
   Account,
   AggregatedInfo,
   CoinTransaction,
   ExchangeRate,
   ExchangeTransaction
-} = require("../db/models");
+} = require('../db/models');
 
 class CoinFinances {
   getVkCoinPaymentUrl() {
-    const baseUrl = settings.get("credentials.vk_coin.payment_url");
-    const accountNumber = settings.get("credentials.vk_coin.account_number");
+    const baseUrl = settings.get('credentials.vk_coin.payment_url');
+    const accountNumber = settings.get('credentials.vk_coin.account_number');
     const max = 2000000000;
     const min = -2000000000;
     const randomNumber = Math.round(Math.random() * (max - min) + min);
@@ -61,9 +61,9 @@ class CoinFinances {
   // }
 
   async withdrawCoin(account) {
-    const url = settings.get("credentials.vk_coin.withdraw_url");
-    const accessToken = settings.get("credentials.vk_coin.access_token");
-    const merchantId = settings.get("credentials.vk_coin.account_number");
+    const url = settings.get('credentials.vk_coin.withdraw_url');
+    const accessToken = settings.get('credentials.vk_coin.access_token');
+    const merchantId = settings.get('credentials.vk_coin.account_number');
     const amount = account.coinAmount;
     const params = {
       merchantId,

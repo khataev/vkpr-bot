@@ -1,19 +1,19 @@
-const MenuOption = require("./../menu-option");
+const MenuOption = require('./../menu-option');
 // const RouletteOption = require("./roulette");
-const TopUpCoinOption = require("./top-up-coin-option");
-const TopUpRubOption = require("./top-up-rub");
-const WithdrawCoinOption = require("./withdraw-coin-option");
-const WithdrawRubOption = require("./withdraw-rub");
-const ExchangeCoinOption = require("./exchange-coin-option");
-const ExchangeRubOption = require("./exchange-rub-option");
-const BalanceCoinOption = require("./balance-option");
-const InfoOption = require("./info-option");
-const ReserveOption = require("./reserve-option");
-const SetExchangeRateOption = require("./set-exchange-rate");
+const TopUpCoinOption = require('./top-up-coin-option');
+const TopUpRubOption = require('./top-up-rub');
+const WithdrawCoinOption = require('./withdraw-coin-option');
+const WithdrawRubOption = require('./withdraw-rub');
+const ExchangeCoinOption = require('./exchange-coin-option');
+const ExchangeRubOption = require('./exchange-rub-option');
+const BalanceCoinOption = require('./balance-option');
+const InfoOption = require('./info-option');
+const ReserveOption = require('./reserve-option');
+const SetExchangeRateOption = require('./set-exchange-rate');
 
 class RootOption extends MenuOption {
   chatMessage() {
-    return "✌ Вы находитесь в главном меню.";
+    return '✌ Вы находитесь в главном меню.';
   }
 
   // TODO: do we need 2 params in ctor: (this.ctx, this)?
@@ -33,7 +33,7 @@ class RootOption extends MenuOption {
   }
 
   get triggerButton() {
-    return "root_button";
+    return 'root_button';
   }
 }
 

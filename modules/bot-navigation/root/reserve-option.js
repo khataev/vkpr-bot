@@ -1,10 +1,10 @@
-const Markup = require("node-vk-bot-api/lib/markup");
-const MenuOption = require("../menu-option");
-const { ExchangeRate } = require("./../../../db/models");
-const numberFormatter = require("./../../number-formatter");
-const balanceManager = require("./../../balance-manager");
-const rubFinances = require("./../../rub-finances");
-const coinFinances = require("./../../coin-finances");
+const Markup = require('node-vk-bot-api/lib/markup');
+const MenuOption = require('../menu-option');
+const { ExchangeRate } = require('./../../../db/models');
+const numberFormatter = require('./../../number-formatter');
+const balanceManager = require('./../../balance-manager');
+const rubFinances = require('./../../rub-finances');
+const coinFinances = require('./../../coin-finances');
 
 class ReserveOption extends MenuOption {
   async chatMessage() {
@@ -27,13 +27,13 @@ class ReserveOption extends MenuOption {
   }
 
   get buttonMarkup() {
-    return Markup.button("💸 Резерв", "primary", {
+    return Markup.button('💸 Резерв', 'primary', {
       button: this.triggerButton
     });
   }
 
   get triggerButton() {
-    return "reserve_button";
+    return 'reserve_button';
   }
 }
 

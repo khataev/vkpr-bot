@@ -1,4 +1,4 @@
-const DATE_FORMAT = "dd-LL-yyyy";
+const DATE_FORMAT = 'dd-LL-yyyy';
 
 module.exports = {
   DATE_FORMAT,

@@ -1,8 +1,8 @@
-const Markup = require("node-vk-bot-api/lib/markup");
-const MenuOption = require("../../menu-option");
-const LowCoinOption = require("./low-coin-option");
-const MediumCoinOption = require("./medium-coin-option");
-const BackMenuOption = require("./../../back-menu-option");
+const Markup = require('node-vk-bot-api/lib/markup');
+const MenuOption = require('../../menu-option');
+const LowCoinOption = require('./low-coin-option');
+const MediumCoinOption = require('./medium-coin-option');
+const BackMenuOption = require('./../../back-menu-option');
 
 class RouletteOption extends MenuOption {
   chatMessage() {
@@ -23,7 +23,7 @@ class RouletteOption extends MenuOption {
   }
 
   get buttonMarkup() {
-    return Markup.button("🎰 Рулетка", "secondary", {
+    return Markup.button('🎰 Рулетка', 'secondary', {
       button: this.triggerButton
     });
   }
@@ -37,7 +37,7 @@ class RouletteOption extends MenuOption {
   }
 
   get triggerButton() {
-    return "roulette";
+    return 'roulette';
   }
 }
 

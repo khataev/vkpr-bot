@@ -1,5 +1,5 @@
-const { Account, AggregatedInfo } = require("./../../db/models");
-const settings = require("./../config");
+const { Account, AggregatedInfo } = require('./../../db/models');
+const settings = require('./../config');
 
 class Context {
   constructor(bot) {
@@ -36,7 +36,7 @@ class Context {
   }
 
   isAdmin(botCtx) {
-    const admins = settings.get("shared.admins");
+    const admins = settings.get('shared.admins');
     return admins.includes(this.getUserId(botCtx).toString());
   }
 
@@ -51,9 +51,9 @@ class Context {
 
   findResponsibleItem(botCtx) {
     // console.log("Context#findResponsibleItem. botCtx:", botCtx);
-    console.log("Context#findResponsibleItem. payloadButton:", this.payloadButton(botCtx));
+    console.log('Context#findResponsibleItem. payloadButton:', this.payloadButton(botCtx));
     if (this.replies[this.payloadButton(botCtx)])
-      console.log("Context#findResponsibleItem. item found");
+      console.log('Context#findResponsibleItem. item found');
 
     return this.replies[this.payloadButton(botCtx)];
   }
@@ -69,7 +69,7 @@ class Context {
     }
 
     if (error) {
-      console.error("errored menuOption:", menuOption);
+      console.error('errored menuOption:', menuOption);
       throw new Error(error);
     }
 
@@ -78,7 +78,7 @@ class Context {
   }
 
   sendMessageToAdmins(text) {
-    const admins = settings.get("shared.admins");
+    const admins = settings.get('shared.admins');
     for (let index = 0; index < admins.length; index += 1) {
       const vkId = admins[index];
       this.bot.sendMessage(vkId, text);

@@ -1,9 +1,9 @@
-const Markup = require("node-vk-bot-api/lib/markup");
-const MenuOption = require("../menu-option");
-const coinFinances = require("./../../coin-finances");
-const settings = require("./../../config");
-const balanceManager = require("./../../balance-manager");
-const numberFormatter = require("./../../number-formatter");
+const Markup = require('node-vk-bot-api/lib/markup');
+const MenuOption = require('../menu-option');
+const coinFinances = require('./../../coin-finances');
+const settings = require('./../../config');
+const balanceManager = require('./../../balance-manager');
+const numberFormatter = require('./../../number-formatter');
 
 class WithdrawCoinOption extends MenuOption {
   async chatMessage(botCtx) {
@@ -11,7 +11,7 @@ class WithdrawCoinOption extends MenuOption {
     const accountBalance = account.coinAmountInCoin();
 
     // Проверка на 0
-    if (accountBalance === 0) return "💶 Ваш баланс равен 0 VK Coins.";
+    if (accountBalance === 0) return '💶 Ваш баланс равен 0 VK Coins.';
 
     // Проверка на достаточное колиество денег в системе
     const systemBalance = await balanceManager.getCoinBalance();
@@ -25,7 +25,7 @@ class WithdrawCoinOption extends MenuOption {
     }
 
     // Все хорошо
-    const feedbackUrl = settings.get("shared.feedback_url");
+    const feedbackUrl = settings.get('shared.feedback_url');
     const isWithdrawSucceeded = await coinFinances.withdrawCoin(account);
     let message;
     if (isWithdrawSucceeded) {
@@ -44,13 +44,13 @@ class WithdrawCoinOption extends MenuOption {
   }
 
   get buttonMarkup() {
-    return Markup.button("📤 Вывести VK Coin", "negative", {
+    return Markup.button('📤 Вывести VK Coin', 'negative', {
       button: this.triggerButton
     });
   }
 
   get triggerButton() {
-    return "withdraw_coin_button";
+    return 'withdraw_coin_button';
   }
 }
 

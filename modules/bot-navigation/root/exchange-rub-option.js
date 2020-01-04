@@ -1,7 +1,7 @@
-const Markup = require("node-vk-bot-api/lib/markup");
-const MenuOption = require("../menu-option");
-const rubFinances = require("./../../rub-finances");
-const numberFormatter = require("./../../number-formatter");
+const Markup = require('node-vk-bot-api/lib/markup');
+const MenuOption = require('../menu-option');
+const rubFinances = require('./../../rub-finances');
+const numberFormatter = require('./../../number-formatter');
 
 class ExchangeRubOption extends MenuOption {
   async chatMessage(botCtx) {
@@ -9,7 +9,7 @@ class ExchangeRubOption extends MenuOption {
     const currentRubAmount = account.rubAmountInRub();
     let message;
     if (account.rubAmount === 0) {
-      message = "❗ У Вас на балансе 0 RUB.";
+      message = '❗ У Вас на балансе 0 RUB.';
     } else if (await rubFinances.isEnoughCoinForExchange(account)) {
       const coins = await rubFinances.exchangeRubToCoins(account);
       message = `
@@ -26,13 +26,13 @@ class ExchangeRubOption extends MenuOption {
   }
 
   get buttonMarkup() {
-    return Markup.button("💱 Обменять RUB", "primary", {
+    return Markup.button('💱 Обменять RUB', 'primary', {
       button: this.triggerButton
     });
   }
 
   get triggerButton() {
-    return "exchange_rub_button";
+    return 'exchange_rub_button';
   }
 }
 

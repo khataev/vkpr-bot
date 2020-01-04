@@ -1,5 +1,5 @@
-const Markup = require("node-vk-bot-api/lib/markup");
-const MenuOption = require("../../menu-option");
+const Markup = require('node-vk-bot-api/lib/markup');
+const MenuOption = require('../../menu-option');
 
 class MediumCoinOption extends MenuOption {
   chatMessage() {
@@ -23,13 +23,13 @@ class MediumCoinOption extends MenuOption {
   }
 
   get buttonMarkup() {
-    return Markup.button("🤑 Medium Coin", "negative", {
+    return Markup.button('🤑 Medium Coin', 'negative', {
       button: this.triggerButton
     });
   }
 
   get triggerButton() {
-    return "medium_coin_button";
+    return 'medium_coin_button';
   }
 }
 
