@@ -197,7 +197,7 @@ const config = convict({
 
 // Load environment dependent configuration
 const env = config.get("env");
-config.loadFile(`./config/ ${env}.json`);
+config.loadFile(`./config/${env}.json`);
 
 // Perform validation
 config.validate({ allowed: "strict" });
