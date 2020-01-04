@@ -3,7 +3,7 @@ const MenuOption = require("../menu-option");
 const coinFinances = require("./../../coin-finances");
 
 class TopUpCoinOption extends MenuOption {
-  chatMessage(botCtx) {
+  chatMessage() {
     const url = coinFinances.getVkCoinPaymentUrl();
     return `
     🔗 Для пополнения баланса, используйте данную ссылку: ${url}
