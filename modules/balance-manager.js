@@ -26,7 +26,7 @@ class BalanceManager {
     const accessToken = settings.get("credentials.vk_coin.access_token");
     const merchantId = settings.get("credentials.vk_coin.account_number");
     const params = {
-      merchantId: merchantId,
+      merchantId,
       key: accessToken,
       userIds: [merchantId]
     };
