@@ -3,7 +3,7 @@ const MenuOption = require("../../menu-option");
 const BackMenuOption = require("./back-menu-option");
 
 class SetExchangeRateOption extends MenuOption {
-  async chatMessage(botCtx) {
+  async chatMessage() {
     return `
     Введите новый курс в формате XX/YY,
     где xx - курс Продажи, yy - курс Скупки (в копейках).
@@ -18,7 +18,7 @@ class SetExchangeRateOption extends MenuOption {
     };
   }
 
-  forbiddenTransitionChatMessage(botCtx) {
+  forbiddenTransitionChatMessage() {
     return "Данная функция доступна только администраторам";
   }
 
@@ -32,7 +32,7 @@ class SetExchangeRateOption extends MenuOption {
     });
   }
 
-  menu(botCtx) {
+  menu() {
     return [[new BackMenuOption(this.ctx, this)]];
   }
 
