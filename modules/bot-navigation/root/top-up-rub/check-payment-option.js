@@ -8,7 +8,7 @@ class CheckPaymentOption extends MenuOption {
     const [txnIds, totalIncome] = await rubFinances.checkIncomePayment(vkId);
     let message;
 
-    if (txnIds.length == 0) message = "❗ Мы не нашли новых платежей.";
+    if (txnIds.length === 0) message = "❗ Мы не нашли новых платежей.";
     else {
       message = `➕ На Ваш аккаунт было зачислено ${totalIncome} ₽ (ID транзакции: ${txnIds.join(
         ", "
