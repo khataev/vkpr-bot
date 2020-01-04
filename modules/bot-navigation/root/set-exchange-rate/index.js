@@ -18,6 +18,14 @@ class SetExchangeRateOption extends MenuOption {
     };
   }
 
+  forbiddenTransitionChatMessage(botCtx) {
+    return "Данная функция доступна только администраторам";
+  }
+
+  async transitionAllowed(botCtx) {
+    return this.ctx.isAdmin(botCtx);
+  }
+
   get buttonMarkup() {
     return Markup.button("💸 Установить курс обмена", "primary", {
       button: this.triggerButton
