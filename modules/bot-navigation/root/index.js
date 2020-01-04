@@ -12,7 +12,7 @@ const ReserveOption = require("./reserve-option");
 const SetExchangeRateOption = require("./set-exchange-rate");
 
 class RootOption extends MenuOption {
-  chatMessage(botCtx) {
+  chatMessage() {
     return "✌ Вы находитесь в главном меню.";
   }
 
@@ -21,20 +21,13 @@ class RootOption extends MenuOption {
     const menu = [
       // [new RouletteOption(this.ctx, this)],
       [new TopUpCoinOption(this.ctx, this), new TopUpRubOption(this.ctx, this)],
-      [
-        new WithdrawCoinOption(this.ctx, this),
-        new WithdrawRubOption(this.ctx, this)
-      ],
-      [
-        new ExchangeCoinOption(this.ctx, this),
-        new ExchangeRubOption(this.ctx, this)
-      ],
+      [new WithdrawCoinOption(this.ctx, this), new WithdrawRubOption(this.ctx, this)],
+      [new ExchangeCoinOption(this.ctx, this), new ExchangeRubOption(this.ctx, this)],
       [new BalanceCoinOption(this.ctx, this), new InfoOption(this.ctx, this)],
       [new ReserveOption(this.ctx, this)]
     ];
 
-    if (this.ctx.isAdmin(botCtx))
-      menu.push([new SetExchangeRateOption(this.ctx, this)]);
+    if (this.ctx.isAdmin(botCtx)) menu.push([new SetExchangeRateOption(this.ctx, this)]);
 
     return menu;
   }
