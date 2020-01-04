@@ -1,14 +1,13 @@
 const Markup = require("node-vk-bot-api/lib/markup");
 const MenuOption = require("../menu-option");
-const models = require("./../../../db/models");
-const ExchangeRate = models.ExchangeRate;
+const { ExchangeRate } = require("./../../../db/models");
 const numberFormatter = require("./../../number-formatter");
 const balanceManager = require("./../../balance-manager");
 const rubFinances = require("./../../rub-finances");
 const coinFinances = require("./../../coin-finances");
 
 class ReserveOption extends MenuOption {
-  async chatMessage(botCtx) {
+  async chatMessage() {
     const rate = await ExchangeRate.currentRate();
 
     const rubBalance = await balanceManager.getRubBalance();
@@ -19,9 +18,7 @@ class ReserveOption extends MenuOption {
 
     const coinBalance = await balanceManager.getCoinBalance();
     const coinBalanceStr = numberFormatter.formatCoin(coinBalance / 1000);
-    const rubEquivStr = numberFormatter.formatRub(
-      coinFinances.coinToRub(coinBalance, rate) / 100
-    );
+    const rubEquivStr = numberFormatter.formatRub(coinFinances.coinToRub(coinBalance, rate) / 100);
 
     return `
     💸 Резерв VK Coins: ${coinBalanceStr} (${rubEquivStr} ₽)
