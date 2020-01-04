@@ -8,7 +8,7 @@ const numberFormatter = require("./../number-formatter");
 const eventEmitter = require("@modules/event-emitter");
 
 class BotNavigation {
-  constructor(bot) {
+  static initialize(bot) {
     const context = new Context(bot);
     const rootOption = new RootOption(context);
 
