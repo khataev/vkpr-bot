@@ -2,13 +2,14 @@ const axios = require("axios");
 
 const constants = require("./constants");
 const settings = require("./config");
-const models = require("../db/models");
-const CoinTransaction = models.CoinTransaction;
-const Account = models.Account;
-const ExchangeRate = models.ExchangeRate;
-const AggregatedInfo = models.AggregatedInfo;
-const ExchangeTransaction = models.ExchangeTransaction;
 const balanceManager = require("./balance-manager");
+const {
+  Account,
+  AggregatedInfo,
+  CoinTransaction,
+  ExchangeRate,
+  ExchangeTransaction
+} = require("../db/models");
 
 class CoinFinances {
   getVkCoinPaymentUrl() {
@@ -26,9 +27,9 @@ class CoinFinances {
       const { id: txnId, amount, from_id: vkId } = hookInfo;
 
       await CoinTransaction.create({
-        vkId: vkId,
-        txnId: txnId,
-        hookInfo: hookInfo,
+        vkId,
+        txnId,
+        hookInfo,
         isChecked: true // HINT: пока нет функционала проверки платежа
       });
 
@@ -37,17 +38,14 @@ class CoinFinances {
           {
             isProcessed: true
           },
-          { where: { txnId: txnId }, transaction: transaction }
+          { where: { txnId }, transaction }
         );
 
-        await Account.increment(
-          { coinAmount: amount },
-          { where: { vkId: vkId }, transaction: transaction }
-        );
+        await Account.increment({ coinAmount: amount }, { where: { vkId }, transaction });
 
         await AggregatedInfo.increment(
           { payments: 1, coinsDeposited: amount },
-          { where: {}, transaction: transaction }
+          { where: {}, transaction }
         );
       });
 
@@ -68,7 +66,7 @@ class CoinFinances {
     const merchantId = settings.get("credentials.vk_coin.account_number");
     const amount = account.coinAmount;
     const params = {
-      merchantId: merchantId,
+      merchantId,
       key: accessToken,
       toId: account.vkId,
       amount: account.coinAmount
@@ -77,17 +75,16 @@ class CoinFinances {
     try {
       const response = await axios.post(url, params);
       if (response.data && response.data.error) {
+        // eslint-disable-next-line prefer-destructuring
         const code = response.data.error.code;
+        // eslint-disable-next-line prefer-destructuring
         const message = response.data.error.message;
         throw new Error(`code: ${code}, message: ${message}`);
       }
 
       await AggregatedInfo.sequelize.transaction({}, async transaction => {
-        await account.update({ coinAmount: 0 }, { transaction: transaction });
-        await AggregatedInfo.increment(
-          { coinsWithdrawed: amount },
-          { where: {}, transaction: transaction }
-        );
+        await account.update({ coinAmount: 0 }, { transaction });
+        await AggregatedInfo.increment({ coinsWithdrawed: amount }, { where: {}, transaction });
       });
 
       return true;
@@ -105,6 +102,7 @@ class CoinFinances {
   async isEnoughRubForExchange(account) {
     return true; // TODO
 
+    // eslint-disable-next-line no-unreachable
     const rate = await ExchangeRate.currentRate();
     const rubBalance = await balanceManager.getRubBalance();
     const rubs = this.coinToRub(account.coinAmount, rate);
@@ -114,7 +112,7 @@ class CoinFinances {
 
   async exchangeCoinsToRub(account) {
     const rate = await ExchangeRate.currentRate();
-    const coinAmount = account.coinAmount;
+    const { coinAmount } = account;
     const rubs = this.coinToRub(account.coinAmount, rate);
 
     await AggregatedInfo.sequelize.transaction({}, async transaction => {
@@ -122,19 +120,16 @@ class CoinFinances {
         coinAmount: -account.coinAmount,
         rubAmount: rubs
       });
-      await AggregatedInfo.increment(
-        { coinsExchanged: coinAmount },
-        { where: {}, transaction: transaction }
-      );
+      await AggregatedInfo.increment({ coinsExchanged: coinAmount }, { where: {}, transaction });
       await ExchangeTransaction.create(
         {
           vkId: account.vkId,
           type: constants.EXCHANGE_SELL_COIN,
           rate: rate.buyRate,
           rubAmount: rubs,
-          coinAmount: coinAmount
+          coinAmount
         },
-        { transaction: transaction }
+        { transaction }
       );
     });
     // HINT: copecks to rub (we should do it in specific standalone function)
