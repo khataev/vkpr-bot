@@ -7,22 +7,22 @@ class ExchangeCoinOption extends MenuOption {
   async chatMessage(botCtx) {
     const account = await this.ctx.findOrCreateAccount(botCtx);
     const currentCoinAmount = account.coinAmountInCoin();
-    if (account.coinAmount == 0) {
-      return "❗ У Вас на балансе 0 VK Coin.";
-    } else {
-      if (await coinFinances.isEnoughRubForExchange(account)) {
-        const rubs = await coinFinances.exchangeCoinsToRub(account);
-        return `
+    let message;
+    if (account.coinAmount === 0) {
+      message = "❗ У Вас на балансе 0 VK Coin.";
+    } else if (await coinFinances.isEnoughRubForExchange(account)) {
+      const rubs = await coinFinances.exchangeCoinsToRub(account);
+      message = `
         💱 Вы успешно обменяли ${numberFormatter.formatCoin(
           currentCoinAmount
         )} VK Coin на ${numberFormatter.formatRub(rubs)} RUB!
         `;
-      } else {
-        return `
+    } else {
+      message = `
         💱 Недостаточно RUB в системе для обмена!
         `;
-      }
     }
+    return message;
   }
 
   get buttonMarkup() {
