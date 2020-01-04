@@ -3,11 +3,11 @@ const MenuOption = require("../../menu-option");
 const BackMenuOption = require("./back-menu-option");
 
 class WithdrawRubOption extends MenuOption {
-  async chatMessage(botCtx) {
+  async chatMessage() {
     return "✔ Отлично, теперь введите номер QIWI кошелька в формате 79991111111";
   }
 
-  forbiddenTransitionChatMessage(botCtx) {
+  forbiddenTransitionChatMessage() {
     return "💶 Ваш баланс меньше 1 ₽, вывод на QIWI доступен от 1 ₽.";
   }
 
@@ -27,7 +27,7 @@ class WithdrawRubOption extends MenuOption {
     });
   }
 
-  menu(botCtx) {
+  menu() {
     return [[new BackMenuOption(this.ctx, this)]];
   }
 
