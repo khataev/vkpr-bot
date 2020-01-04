@@ -10,36 +10,33 @@ class MenuOption {
     return !this.parent;
   }
 
-  async chatMessage(botCtx) {
-    throw Error("Must be implemented in child class");
+  async chatMessage() {
+    throw new Error("Must be implemented in child class");
   }
 
-  forbiddenTransitionChatMessage(botCtx) {
-    throw Error("Must be implemented in child class");
+  forbiddenTransitionChatMessage() {
+    throw new Error("Must be implemented in child class");
   }
 
-  async transitionAllowed(botCtx) {
+  async transitionAllowed() {
     return true;
   }
 
-  async beforeProcess(botCtx) {}
-  async beforeReply(botCtx) {}
+  beforeProcess() {}
+
+  beforeReply() {}
 
   get buttonMarkup() {
-    throw Error("Must be implemented in child class");
+    throw new Error("Must be implemented in child class");
   }
 
-  menu(botCtx) {
-    return;
-  }
-
-  // get commandText() {
-  //   throw Error("Must be implemented in child class");
-  // }
+  menu() {}
 
   // TODO: rename to childMarkup
+  // TODO: refactor
   markup(botCtx) {
-    if (!this.menu(botCtx)) return;
+    if (!this.menu(botCtx)) return null;
+
     return Markup.keyboard(this.buildMarkup(this.menu(botCtx)));
   }
 
@@ -48,14 +45,8 @@ class MenuOption {
   }
 
   get triggerButton() {
-    throw Error("Must be implemented in child class");
+    throw new Error("Must be implemented in child class");
   }
-
-  // command() {
-  //   this.ctx.bot.command(this.command, botCtx => {
-  //     botCtx.reply(this.reply);
-  //   });
-  // }
 
   registerReplies(botCtx) {
     if (!this.isRoot) return;
