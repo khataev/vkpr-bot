@@ -1,7 +1,7 @@
 const Markup = require("node-vk-bot-api/lib/markup");
 const MenuOption = require("../menu-option");
 const coinFinances = require("./../../coin-finances");
-const settings = require("./../../config"); // get from context
+const settings = require("./../../config");
 const balanceManager = require("./../../balance-manager");
 const numberFormatter = require("./../../number-formatter");
 
@@ -17,9 +17,7 @@ class WithdrawCoinOption extends MenuOption {
     const systemBalance = await balanceManager.getCoinBalance();
     if (systemBalance < account.coinAmount) {
       this.ctx.sendMessageToAdmins(
-        `Недостаточно VK Coin для вывода ${numberFormatter.formatCoin(
-          accountBalance
-        )}`
+        `Недостаточно VK Coin для вывода ${numberFormatter.formatCoin(accountBalance)}`
       );
       return `
         💱 Недостаточно VK Coin в системе для вывода!
@@ -29,19 +27,20 @@ class WithdrawCoinOption extends MenuOption {
     // Все хорошо
     const feedbackUrl = settings.get("shared.feedback_url");
     const isWithdrawSucceeded = await coinFinances.withdrawCoin(account);
+    let message;
     if (isWithdrawSucceeded) {
-      return `
-        ✔ Мы отправили вам ${numberFormatter.formatCoin(
-          accountBalance
-        )} VK Coins!
+      message = `
+        ✔ Мы отправили вам ${numberFormatter.formatCoin(accountBalance)} VK Coins!
 
         📈 Оставьте свой отзыв: ${feedbackUrl}
         `;
     } else {
-      return `
+      message = `
         ❗ Произошла ошибка при выводе средств, свяжитесь с администратором.
         `;
     }
+
+    return message;
   }
 
   get buttonMarkup() {
