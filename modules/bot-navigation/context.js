@@ -1,6 +1,4 @@
-const models = require("./../../db/models");
-const Account = models.Account;
-const AggregatedInfo = models.AggregatedInfo;
+const { Account, AggregatedInfo } = require("./../../db/models");
 const settings = require("./../config");
 
 class Context {
@@ -19,19 +17,14 @@ class Context {
   }
 
   async findOrCreateAccount(botCtx) {
-    return (
-      (await this.hasAccount(botCtx)) || (await this.createAccount(botCtx))
-    );
+    return this.hasAccount(botCtx) || this.createAccount(botCtx);
   }
 
   async createAccount(botCtx) {
     const userId = this.getUserId(botCtx);
     let account;
     await Account.sequelize.transaction({}, async transaction => {
-      account = await Account.create(
-        { vkId: userId },
-        { transaction: transaction }
-      );
+      account = await Account.create({ vkId: userId }, { transaction });
       await AggregatedInfo.increment({ users: 1 }, { where: {} });
       console.debug(`Account for userId ${userId} created`);
     });
@@ -58,10 +51,7 @@ class Context {
 
   findResponsibleItem(botCtx) {
     // console.log("Context#findResponsibleItem. botCtx:", botCtx);
-    console.log(
-      "Context#findResponsibleItem. payloadButton:",
-      this.payloadButton(botCtx)
-    );
+    console.log("Context#findResponsibleItem. payloadButton:", this.payloadButton(botCtx));
     if (this.replies[this.payloadButton(botCtx)])
       console.log("Context#findResponsibleItem. item found");
 
@@ -87,11 +77,11 @@ class Context {
     this.replies[menuOption.triggerButton] = menuOption;
   }
 
-  async sendMessageToAdmins(text) {
+  sendMessageToAdmins(text) {
     const admins = settings.get("shared.admins");
-    for (let index = 0; index < admins.length; index++) {
+    for (let index = 0; index < admins.length; index += 1) {
       const vkId = admins[index];
-      await this.bot.sendMessage(vkId, text);
+      this.bot.sendMessage(vkId, text);
     }
   }
 }
