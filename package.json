@@ -12,7 +12,9 @@
     "db:migrate:undo": "node_modules/.bin/sequelize db:migrate:undo",
     "db:migrate:undo:all": "node_modules/.bin/sequelize db:migrate:undo:all",
     "db:seed:all": "node_modules/.bin/sequelize db:seed:all",
-    "db:seed:undo:all": "node_modules/.bin/sequelize db:seed:undo:all"
+    "db:seed:undo:all": "node_modules/.bin/sequelize db:seed:undo:all",
+    "eslint": "eslint .",
+    "eslint:fix": "eslint . --fix"
   },
   "keywords": [
     "exchange",
@@ -32,13 +34,20 @@
     "node-vk-bot-api": "^2.4.8",
     "numeral": "^2.0.6",
     "pg": "^7.14.0",
+    "qs": "^6.9.1",
     "sequelize": "^5.21.2"
   },
   "devDependencies": {
     "axios-mock-adapter": "^1.17.0",
     "chai": "^4.2.0",
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-import": "^2.19.1",
+    "eslint-plugin-prettier": "^3.1.2",
     "lolex": "^5.1.2",
     "mocha": "^7.0.0",
+    "prettier": "^1.19.1"
     "sequelize-cli": "^5.5.1",
     "sinon": "^8.0.4",
     "sinon-chai": "^3.4.0"
