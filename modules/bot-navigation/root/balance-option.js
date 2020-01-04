@@ -3,16 +3,14 @@ const MenuOption = require("../menu-option");
 const numberFormatter = require("./../../number-formatter");
 const rubFinances = require("./../../rub-finances");
 const coinFinances = require("./../../coin-finances");
-const models = require("./../../../db/models");
-const ExchangeRate = models.ExchangeRate;
+const { ExchangeRate } = require("./../../../db/models");
+
 class BalanceOption extends MenuOption {
   async chatMessage(botCtx) {
     const account = await this.ctx.findOrCreateAccount(botCtx);
     const rate = await ExchangeRate.currentRate();
 
-    const coinAmountStr = numberFormatter.formatCoin(
-      account.coinAmountInCoin()
-    );
+    const coinAmountStr = numberFormatter.formatCoin(account.coinAmountInCoin());
     const rubEquivAmountStr = numberFormatter.formatRub(
       coinFinances.coinToRub(account.coinAmount, rate) / 100
     );
