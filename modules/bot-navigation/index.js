@@ -50,9 +50,9 @@ class BotNavigation {
               context.sendMessageToAdmins(
                 `Недостаточно RUB для вывода ${numberFormatter.formatRub(accountBalance)}`
               );
-              message = `
-            💱 Недостаточно RUB в системе для вывода!
-            `;
+              const message = `
+              💱 Недостаточно RUB в системе для вывода!
+              `;
               bot.sendMessage(vkId, message);
               eventEmitter.emit("chattedContextHandlingDone");
               return;
