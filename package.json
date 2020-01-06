@@ -4,7 +4,7 @@
   "description": "VK Coin exchange bot",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha --exit --timeout 5000",
     "start": "node index.js",
     "db:drop": "node_modules/.bin/sequelize db:drop --url $DATABASE_URL",
     "db:create": "node_modules/.bin/sequelize db:create --url $DATABASE_URL",
@@ -33,5 +33,9 @@
     "pg": "^7.14.0",
     "sequelize": "^5.21.2",
     "sequelize-cli": "^5.5.1"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^7.0.0"
   }
 }

@@ -1,0 +1,39 @@
+{
+  "db": {
+    "username": "khataev",
+    "database": "vk_coin_exchange_bot_test"
+  },
+  "shared": {
+    "feedback_url": "https://vk.com/topic-xxxxxxxxx",
+    "admins": []
+  },
+  "credentials": {
+    "vk": {
+      "group_id": "1",
+      "secret": "1",
+      "utils_short_link_url": "https://api.vk.com/method/utils.getShortLink"
+    },
+    "bot": {
+      "access_token": "access_token",
+      "use_webhooks": true
+    },
+    "qiwi": {
+      "account_number": "79991111111",
+      "access_token": "access_token",
+      "payment_url": "https://qiwi.com/payment/form/99",
+      "withdraw_url": "https://edge.qiwi.com/sinap/api/v2/terms/99/payments",
+      "balance_url": "https://edge.qiwi.com/funding-sources/v2/persons"
+    },
+    "vk_coin": {
+      "account_number": "577777777",
+      "access_token": "access_token",
+      "payment_url": "https://vk.com/coin",
+      "withdraw_url": "https://coin-without-bugs.vkforms.ru/merchant/send",
+      "balance_url": "https://coin-without-bugs.vkforms.ru/merchant/score/"
+    }
+  },
+  "debug": {
+    "log_level": "warn",
+    "url": "http://localhost:9001"
+  }
+}
