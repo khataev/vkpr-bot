@@ -12,7 +12,9 @@
     "db:migrate:undo": "node_modules/.bin/sequelize db:migrate:undo --url $DATABASE_URL",
     "db:migrate:undo:all": "node_modules/.bin/sequelize db:migrate:undo:all --url $DATABASE_URL",
     "db:seed:all": "node_modules/.bin/sequelize db:seed:all --url $DATABASE_URL",
-    "db:seed:undo:all": "node_modules/.bin/sequelize db:seed:undo:all --url $DATABASE_URL"
+    "db:seed:undo:all": "node_modules/.bin/sequelize db:seed:undo:all --url $DATABASE_URL",
+    "db:test:create": "node_modules/.bin/sequelize db:create",
+    "db:test:migrate": "node_modules/.bin/sequelize db:migrate"
   },
   "keywords": [
     "exchange",

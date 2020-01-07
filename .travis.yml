@@ -1,16 +1,22 @@
 language: node_js
 
 node_js:
-  - "8"
-  - "9"
   - "10"
   - "11"
+
+services:
+  - postgresql
 
 stages:
   - test
 
-test:
-  stage: test
-  script:
-    - npm i
-    - npm test
+before_script:
+  - export NODE_ENV=test
+  - npm run db:test:create
+  - npm run db:test:migrate
+  # - psql -c 'create database vk_coin_exchange_bot_test;' -U postgres
+# test:
+#   stage: test
+#   script:
+#     - npm i
+#     - npm test

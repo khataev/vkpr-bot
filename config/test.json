@@ -1,6 +1,6 @@
 {
   "db": {
-    "username": "khataev",
+    "username": "postgres",
     "database": "vk_coin_exchange_bot_test"
   },
   "shared": {
