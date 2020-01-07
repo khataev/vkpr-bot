@@ -12,11 +12,5 @@ stages:
 
 before_script:
   - export NODE_ENV=test
-  - npm run db:test:create
-  - npm run db:test:migrate
-  # - psql -c 'create database vk_coin_exchange_bot_test;' -U postgres
-# test:
-#   stage: test
-#   script:
-#     - npm i
-#     - npm test
+  - npm run db:create
+  - npm run db:migrate

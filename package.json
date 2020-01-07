@@ -6,15 +6,13 @@
   "scripts": {
     "test": "mocha --recursive --exit --timeout 5000",
     "start": "node index.js",
-    "db:drop": "node_modules/.bin/sequelize db:drop --url $DATABASE_URL",
-    "db:create": "node_modules/.bin/sequelize db:create --url $DATABASE_URL",
-    "db:migrate": "node_modules/.bin/sequelize db:migrate --url $DATABASE_URL",
-    "db:migrate:undo": "node_modules/.bin/sequelize db:migrate:undo --url $DATABASE_URL",
-    "db:migrate:undo:all": "node_modules/.bin/sequelize db:migrate:undo:all --url $DATABASE_URL",
-    "db:seed:all": "node_modules/.bin/sequelize db:seed:all --url $DATABASE_URL",
-    "db:seed:undo:all": "node_modules/.bin/sequelize db:seed:undo:all --url $DATABASE_URL",
-    "db:test:create": "node_modules/.bin/sequelize db:create",
-    "db:test:migrate": "node_modules/.bin/sequelize db:migrate"
+    "db:drop": "node_modules/.bin/sequelize db:drop",
+    "db:create": "node_modules/.bin/sequelize db:create",
+    "db:migrate": "node_modules/.bin/sequelize db:migrate",
+    "db:migrate:undo": "node_modules/.bin/sequelize db:migrate:undo",
+    "db:migrate:undo:all": "node_modules/.bin/sequelize db:migrate:undo:all",
+    "db:seed:all": "node_modules/.bin/sequelize db:seed:all",
+    "db:seed:undo:all": "node_modules/.bin/sequelize db:seed:undo:all"
   },
   "keywords": [
     "exchange",
@@ -34,12 +32,12 @@
     "node-vk-bot-api": "^2.4.8",
     "numeral": "^2.0.6",
     "pg": "^7.14.0",
-    "sequelize": "^5.21.2",
-    "sequelize-cli": "^5.5.1"
+    "sequelize": "^5.21.2"
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^7.0.0"
+    "mocha": "^7.0.0",
+    "sequelize-cli": "^5.5.1"
   },
   "_moduleAliases": {
     "@root": ".",
