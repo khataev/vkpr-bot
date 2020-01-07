@@ -41,7 +41,10 @@
   },
   "_moduleAliases": {
     "@root": ".",
+    "@test": "test",
     "@modules": "modules",
+    "@models": "db/models",
+    "@bot-navigation": "modules/bot-navigation",
     "@menu-root": "modules/bot-navigation/root"
   }
 }
