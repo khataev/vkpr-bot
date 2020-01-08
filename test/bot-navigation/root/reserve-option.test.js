@@ -16,6 +16,7 @@ const dbSetup = async () => {
 };
 const dbCleanup = async () => {
   await ExchangeRate.destroy({ where: {}, truncate: true });
+  sinon.restore();
 };
 
 describe("Balance Menu Option", () => {
