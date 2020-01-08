@@ -35,6 +35,7 @@
     "sequelize": "^5.21.2"
   },
   "devDependencies": {
+    "axios-mock-adapter": "^1.17.0",
     "chai": "^4.2.0",
     "lolex": "^5.1.2",
     "mocha": "^7.0.0",
