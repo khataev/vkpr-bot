@@ -1,7 +1,7 @@
 // TODO: refactor
 const axios = require("axios");
 const MockAdapter = require("axios-mock-adapter");
-const mock = new MockAdapter(axios);
+let mock;
 const settings = require("@modules/config");
 
 const { describe, it } = require("mocha");
@@ -19,7 +19,8 @@ describe("Rub Finances", function() {
     let account;
     let url;
 
-    const dbSetup = async function() {
+    const setup = async function() {
+      mock = new MockAdapter(axios);
       url = settings.get("credentials.qiwi.withdraw_url");
       await AggregatedInfo.create({});
       account = await Account.create({
@@ -28,15 +29,15 @@ describe("Rub Finances", function() {
         coinAmount: 2000000000
       });
     };
-    const dbCleanup = async function() {
+    const cleanup = async function() {
       await AggregatedInfo.destroy({ where: {}, truncate: true });
       await Account.destroy({ where: {}, truncate: true });
 
-      mock.reset();
+      mock.restore();
     };
 
-    beforeEach(dbSetup);
-    afterEach(dbCleanup);
+    beforeEach(setup);
+    afterEach(cleanup);
 
     it("successful", async function() {
       mock.onPost(url).reply(200, {});
@@ -58,7 +59,7 @@ describe("Rub Finances", function() {
   describe("exchangeRubToCoins", function() {
     let account;
 
-    const dbSetup = async function() {
+    const setup = async function() {
       await AggregatedInfo.create({});
       await ExchangeRate.setExchangeRate(100, 50);
       account = await Account.create({
@@ -67,7 +68,7 @@ describe("Rub Finances", function() {
         coinAmount: 2000000000
       });
     };
-    const dbCleanup = async function() {
+    const cleanup = async function() {
       await AggregatedInfo.destroy({
         where: {},
         truncate: true
@@ -86,8 +87,8 @@ describe("Rub Finances", function() {
       });
     };
 
-    beforeEach(dbSetup);
-    afterEach(dbCleanup);
+    beforeEach(setup);
+    afterEach(cleanup);
 
     it("successful", async () => {
       const result = await rubFinances.exchangeRubToCoins(account);
