@@ -93,7 +93,12 @@ const BotNavigation = function(bot) {
       } else if (chattedContext.setExchangeRate) {
         let canProceed = false;
         const rawText = ctx && ctx.message && ctx.message.text;
-        if (!rawText) bot.sendMessage(vkId, "Не передано значение курса");
+        if (!rawText) {
+          bot.sendMessage(vkId, "Не передано значение курса");
+
+          eventEmitter.emit("chattedContextHandlingDone");
+          return;
+        }
 
         const tokens = rawText.split("/");
         if (!tokens.length === 2)
@@ -129,7 +134,6 @@ const BotNavigation = function(bot) {
       }
 
       eventEmitter.emit("chattedContextHandlingDone");
-
       return;
     }
 
