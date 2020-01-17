@@ -17,8 +17,7 @@ const sandbox = sinon.createSandbox();
 const userId = 1;
 chai.use(sinonChai);
 
-const { turnOffLogging } = require("@test/helpers/logging");
-const { emit } = require("@test/helpers/messaging");
+const { turnOffLogging, emit } = require("@test/helpers");
 
 describe("Set exchange", () => {
   async function setup() {
