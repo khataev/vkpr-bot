@@ -40,7 +40,8 @@
     "lolex": "^5.1.2",
     "mocha": "^7.0.0",
     "sequelize-cli": "^5.5.1",
-    "sinon": "^8.0.4"
+    "sinon": "^8.0.4",
+    "sinon-chai": "^3.4.0"
   },
   "_moduleAliases": {
     "@root": ".",

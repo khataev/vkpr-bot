@@ -8,8 +8,8 @@ const bot = new VkBot({
   confirmation: settings.get("credentials.vk.confirmation")
 });
 const context = new Context(bot);
-const dummyBotCtx = function dummyBotCtx(userId) {
+function dummyBotCtx(userId) {
   return { message: { from_id: userId } };
-};
+}
 
 module.exports = { bot, context, dummyBotCtx };

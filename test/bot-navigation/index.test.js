@@ -2,7 +2,7 @@ const { describe, it } = require("mocha");
 const sinon = require("sinon");
 const chai = require("chai");
 const expect = chai.expect;
-// const sinonChai = require("sinon-chai");
+const sinonChai = require("sinon-chai");
 const { Account } = require("@models");
 const BotNavigation = require("@bot-navigation");
 const balanceManager = require("@modules/balance-manager");
@@ -17,35 +17,11 @@ const TOKEN = "1234"; // HINT: token is not important now
 const bot = new VkBot(TOKEN);
 const sandbox = sinon.createSandbox();
 
-const setup = async function() {
-  const fakeRubBalance = sinon.fake.resolves(systemBalance);
-  sinon.replace(balanceManager, "getRubBalance", fakeRubBalance);
-
-  const store = new Map();
-  store.set(`${userId}`, {
-    chattedContext: { chatAllowed: true, withdrawRub: true }
-  });
-
-  const session = new Session({
-    store: store,
-    getSessionKey: () => {
-      return `${userId}`;
-    }
-  });
-
-  bot.use(session.middleware());
-  nav = new BotNavigation(bot);
-};
-const cleanup = async function() {
-  bot.middlewares = [];
-  await Account.destroy({ where: {}, truncate: true });
-  sinon.restore();
-  sandbox.restore();
-};
 const Context = require("node-vk-bot-api/lib/context");
 const userId = 1;
+chai.use(sinonChai);
 
-const emit = (type, message) => {
+function emit(type, message) {
   bot.next(
     new Context(
       {
@@ -66,9 +42,39 @@ const emit = (type, message) => {
       bot
     )
   );
-};
+}
+
+const { turnOffLogging } = require("@test/helpers/logging");
 
 describe("Withdraw Rub Menu Option", () => {
+  async function setup() {
+    turnOffLogging();
+
+    const fakeRubBalance = sinon.fake.resolves(systemBalance);
+    sinon.replace(balanceManager, "getRubBalance", fakeRubBalance);
+
+    const store = new Map();
+    store.set(`${userId}`, {
+      chattedContext: { chatAllowed: true, withdrawRub: true }
+    });
+
+    const session = new Session({
+      store: store,
+      getSessionKey: () => {
+        return `${userId}`;
+      }
+    });
+
+    bot.use(session.middleware());
+    nav = new BotNavigation(bot);
+  }
+  async function cleanup() {
+    bot.middlewares = [];
+    await Account.destroy({ where: {}, truncate: true });
+    sinon.restore();
+    sandbox.restore();
+  }
+
   beforeEach(setup);
   afterEach(cleanup);
 
@@ -121,7 +127,7 @@ describe("Withdraw Rub Menu Option", () => {
 
     eventEmitter.once("chattedContextHandlingDone", () => {
       expect(rubFinances.withdrawRub).to.have.been.calledOnceWith(
-        sinon.match.typeOf(Account),
+        sinon.match.instanceOf(Account),
         "79991111111"
       );
     });
