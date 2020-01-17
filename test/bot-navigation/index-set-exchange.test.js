@@ -14,36 +14,11 @@ const TOKEN = "1234"; // HINT: token is not important now
 const bot = new VkBot(TOKEN);
 const sandbox = sinon.createSandbox();
 
-const Context = require("node-vk-bot-api/lib/context");
 const userId = 1;
 chai.use(sinonChai);
 
-function emit(type, message) {
-  bot.next(
-    new Context(
-      // TODO: move to common library (fixtures)
-      {
-        type,
-        object: {
-          from_id: 1,
-          // TODO: move to 5.103
-          text: message, // HINT: for api below 5.103
-          message: {
-            text: message
-          },
-          client_info: {
-            keyboard: true
-          }
-        },
-        group_id: 1,
-        event_id: "1234567890"
-      },
-      bot
-    )
-  );
-}
-
 const { turnOffLogging } = require("@test/helpers/logging");
+const { emit } = require("@test/helpers/messaging");
 
 describe("Set exchange", () => {
   async function setup() {
@@ -91,7 +66,7 @@ describe("Set exchange", () => {
     const type = "message_new";
     const message = null;
 
-    emit(type, message);
+    emit(bot, type, message);
   });
 
   it("fails because of wrong format", done => {
@@ -106,7 +81,7 @@ describe("Set exchange", () => {
     const type = "message_new";
     const message = "123";
 
-    emit(type, message);
+    emit(bot, type, message);
   });
 
   function setup1() {
@@ -140,7 +115,7 @@ describe("Set exchange", () => {
     const type = "message_new";
     const message = "123/124";
 
-    emit(type, message);
+    emit(bot, type, message);
   });
 
   it("succeedes", done => {
@@ -161,7 +136,7 @@ describe("Set exchange", () => {
     const type = "message_new";
     const message = "124/123";
 
-    emit(type, message);
+    emit(bot, type, message);
   });
 
   function setup2() {
@@ -189,6 +164,6 @@ describe("Set exchange", () => {
     const type = "message_new";
     const message = "124/123";
 
-    emit(type, message);
+    emit(bot, type, message);
   });
 });

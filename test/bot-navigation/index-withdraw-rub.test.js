@@ -17,34 +17,11 @@ const TOKEN = "1234"; // HINT: token is not important now
 const bot = new VkBot(TOKEN);
 const sandbox = sinon.createSandbox();
 
-const Context = require("node-vk-bot-api/lib/context");
 const userId = 1;
 chai.use(sinonChai);
 
-function emit(type, message) {
-  bot.next(
-    new Context(
-      {
-        type,
-        object: {
-          from_id: 1,
-          text: message, // HINT: for api below 5.103
-          message: {
-            text: message
-          },
-          client_info: {
-            keyboard: true
-          }
-        },
-        group_id: 1,
-        event_id: "1234567890"
-      },
-      bot
-    )
-  );
-}
-
 const { turnOffLogging } = require("@test/helpers/logging");
+const { emit } = require("@test/helpers/messaging");
 
 describe("Withdraw Rub Menu Option", () => {
   async function setup() {
@@ -98,7 +75,7 @@ describe("Withdraw Rub Menu Option", () => {
     const type = "message_new";
     const message = "79991111111";
 
-    emit(type, message);
+    emit(bot, type, message);
   });
 
   async function setup1() {
@@ -123,14 +100,14 @@ describe("Withdraw Rub Menu Option", () => {
     const type = "message_new";
     const message = "79991111111";
 
-    emit(type, message);
-
     eventEmitter.once("chattedContextHandlingDone", () => {
       expect(rubFinances.withdrawRub).to.have.been.calledOnceWith(
         sinon.match.instanceOf(Account),
         "79991111111"
       );
     });
+
+    emit(bot, type, message);
   });
 
   async function setup2() {
@@ -153,8 +130,6 @@ describe("Withdraw Rub Menu Option", () => {
     const type = "message_new";
     const message = "79991111111";
 
-    emit(type, message);
-
     eventEmitter.once("chattedContextHandlingDone", async () => {
       const expectedMessage = `
             💱 Недостаточно RUB в системе для вывода!
@@ -163,6 +138,8 @@ describe("Withdraw Rub Menu Option", () => {
       expect(rubFinances.withdrawRub).to.not.have.been.called;
       expect(bot.sendMessage).to.have.been.calledOnceWith(1, expectedMessage);
     });
+
+    emit(bot, type, message);
   });
 
   async function setup3() {
@@ -188,8 +165,6 @@ describe("Withdraw Rub Menu Option", () => {
     const type = "message_new";
     const message = "79991111111";
 
-    emit(type, message);
-
     eventEmitter.once("chattedContextHandlingDone", async () => {
       const expectedMessage = `
             ❗ Произошла ошибка при выводе средств, свяжитесь с администратором.
@@ -198,6 +173,8 @@ describe("Withdraw Rub Menu Option", () => {
       expect(rubFinances.withdrawRub).to.have.been.called;
       expect(bot.sendMessage).to.have.been.calledOnceWith(1, expectedMessage);
     });
+
+    emit(bot, type, message);
   });
 
   function setup4() {
@@ -214,13 +191,13 @@ describe("Withdraw Rub Menu Option", () => {
     const type = "message_new";
     const message = "7999111111";
 
-    emit(type, message);
-
     eventEmitter.once("chattedContextHandlingDone", async () => {
       const expectedMessage = "Неверный формат телефона";
 
       expect(rubFinances.withdrawRub).to.not.have.been.called;
       expect(bot.sendMessage).to.have.been.calledOnceWith(1, expectedMessage);
     });
+
+    emit(bot, type, message);
   });
 });
