@@ -5,17 +5,17 @@ const BalanceOption = require("@menu-root/balance-option");
 const { context, dummyBotCtx } = require("@test/helpers/setup-context");
 const balanceOption = new BalanceOption(context, {});
 const botCtx = dummyBotCtx(1);
-const dbSetup = async () => {
+const setup = async () => {
   await ExchangeRate.setExchangeRate(100, 50);
 };
-const dbCleanup = async () => {
+const cleanup = async () => {
   await ExchangeRate.destroy({ where: {}, truncate: true });
   await Account.destroy({ where: {}, truncate: true });
 };
 
 describe("Balance Menu Option", () => {
-  beforeEach(dbSetup);
-  afterEach(dbCleanup);
+  beforeEach(setup);
+  afterEach(cleanup);
 
   it("creates account if it absent", async () => {
     // TODO: rename chatMessage to 'action'

@@ -1,0 +1,220 @@
+const { describe, it } = require("mocha");
+const sinon = require("sinon");
+const chai = require("chai");
+const expect = chai.expect;
+// const sinonChai = require("sinon-chai");
+const { Account } = require("@models");
+const BotNavigation = require("@bot-navigation");
+const balanceManager = require("@modules/balance-manager");
+const rubFinances = require("@modules/rub-finances");
+const VkBot = require("node-vk-bot-api");
+const Session = require("node-vk-bot-api/lib/session");
+
+// TODO: get rid of event emitter
+const eventEmitter = require("@modules/event-emitter");
+const systemBalance = 123;
+const TOKEN = "1234"; // HINT: token is not important now
+const bot = new VkBot(TOKEN);
+const sandbox = sinon.createSandbox();
+
+const setup = async function() {
+  const fakeRubBalance = sinon.fake.resolves(systemBalance);
+  sinon.replace(balanceManager, "getRubBalance", fakeRubBalance);
+
+  const store = new Map();
+  store.set(`${userId}`, {
+    chattedContext: { chatAllowed: true, withdrawRub: true }
+  });
+
+  const session = new Session({
+    store: store,
+    getSessionKey: () => {
+      return `${userId}`;
+    }
+  });
+
+  bot.use(session.middleware());
+  nav = new BotNavigation(bot);
+};
+const cleanup = async function() {
+  bot.middlewares = [];
+  await Account.destroy({ where: {}, truncate: true });
+  sinon.restore();
+  sandbox.restore();
+};
+const Context = require("node-vk-bot-api/lib/context");
+const userId = 1;
+
+const emit = (type, message) => {
+  bot.next(
+    new Context(
+      {
+        type,
+        object: {
+          from_id: 1,
+          text: message, // HINT: for api below 5.103
+          message: {
+            text: message
+          },
+          client_info: {
+            keyboard: true
+          }
+        },
+        group_id: 1,
+        event_id: "1234567890"
+      },
+      bot
+    )
+  );
+};
+
+describe("Withdraw Rub Menu Option", () => {
+  beforeEach(setup);
+  afterEach(cleanup);
+
+  function setup0() {
+    const fakeWithdrawRub = sinon.fake.resolves(true);
+    sinon.replace(rubFinances, "withdrawRub", fakeWithdrawRub);
+
+    const fakeSendMessage = sinon.fake.returns(null);
+    sinon.replace(bot, "sendMessage", fakeSendMessage);
+  }
+
+  it("creates account if it is absent", done => {
+    setup0();
+
+    eventEmitter.once("chattedContextHandlingDone", async () => {
+      const account = await Account.findOne({ where: { vkId: userId } });
+      expect(account.vkId).to.be.equal(userId);
+      done();
+    });
+
+    const type = "message_new";
+    const message = "79991111111";
+
+    emit(type, message);
+  });
+
+  async function setup1() {
+    sandbox.spy(rubFinances, "withdrawRub");
+
+    const fakeWithdrawRub = sinon.fake.resolves(true);
+    sinon.replace(rubFinances, "withdrawRub", fakeWithdrawRub);
+
+    const fakeSendMessage = sinon.fake.returns(null);
+    sinon.replace(bot, "sendMessage", fakeSendMessage);
+
+    const account = await Account.create({
+      vkId: userId,
+      rubAmount: systemBalance - 1,
+      coinAmount: 0
+    });
+  }
+
+  it("successfully withdraws", async () => {
+    await setup1();
+
+    const type = "message_new";
+    const message = "79991111111";
+
+    emit(type, message);
+
+    eventEmitter.once("chattedContextHandlingDone", () => {
+      expect(rubFinances.withdrawRub).to.have.been.calledOnceWith(
+        sinon.match.typeOf(Account),
+        "79991111111"
+      );
+    });
+  });
+
+  async function setup2() {
+    sandbox.spy(rubFinances, "withdrawRub");
+    sandbox.spy(bot, "sendMessage");
+
+    const fakeSendMessage = sinon.fake.returns(null);
+    sinon.replace(bot, "sendMessage", fakeSendMessage);
+
+    await Account.create({
+      vkId: userId,
+      rubAmount: systemBalance + 1,
+      coinAmount: 0
+    });
+  }
+
+  it("fails due to lack of system reserve", async () => {
+    await setup2();
+
+    const type = "message_new";
+    const message = "79991111111";
+
+    emit(type, message);
+
+    eventEmitter.once("chattedContextHandlingDone", async () => {
+      const expectedMessage = `
+            💱 Недостаточно RUB в системе для вывода!
+            `;
+
+      expect(rubFinances.withdrawRub).to.not.have.been.called;
+      expect(bot.sendMessage).to.have.been.calledOnceWith(1, expectedMessage);
+    });
+  });
+
+  async function setup3() {
+    sandbox.spy(rubFinances, "withdrawRub");
+    sandbox.spy(bot, "sendMessage");
+
+    const fakeSendMessage = sinon.fake.returns(null);
+    sinon.replace(bot, "sendMessage", fakeSendMessage);
+
+    const fakeWithdrawRub = sinon.fake.resolves(false);
+    sinon.replace(rubFinances, "withdrawRub", fakeWithdrawRub);
+
+    await Account.create({
+      vkId: userId,
+      rubAmount: systemBalance - 1,
+      coinAmount: 0
+    });
+  }
+
+  it("fails due some error", async () => {
+    await setup3();
+
+    const type = "message_new";
+    const message = "79991111111";
+
+    emit(type, message);
+
+    eventEmitter.once("chattedContextHandlingDone", async () => {
+      const expectedMessage = `
+            ❗ Произошла ошибка при выводе средств, свяжитесь с администратором.
+            `;
+
+      expect(rubFinances.withdrawRub).to.have.been.called;
+      expect(bot.sendMessage).to.have.been.calledOnceWith(1, expectedMessage);
+    });
+  });
+
+  function setup4() {
+    sandbox.spy(rubFinances, "withdrawRub");
+    sandbox.spy(bot, "sendMessage");
+
+    const fakeSendMessage = sinon.fake.returns(null);
+    sinon.replace(bot, "sendMessage", fakeSendMessage);
+  }
+
+  it("fails due invalid phone", async () => {
+    setup4();
+
+    const type = "message_new";
+    const message = "7999111111";
+
+    emit(type, message);
+
+    eventEmitter.once("chattedContextHandlingDone", async () => {
+      const expectedMessage = "Неверный формат телефона";
+
+      expect(rubFinances.withdrawRub).to.not.have.been.called;
+      expect(bot.sendMessage).to.have.been.calledOnceWith(1, expectedMessage);
+    });
+  });
+});
