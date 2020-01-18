@@ -3,8 +3,8 @@ const path = require('path');
 const Sequelize = require('sequelize');
 const settings = require('./../../modules/config');
 
-const env = process.env.NODE_ENV || 'development';
-const config = require('./../../config/database')[env];
+// const env = settings.get("env");
+const config = require('./../../config/database');
 
 const db = {};
 const basename = path.basename(__filename);
@@ -20,7 +20,7 @@ if (logLevel === 'debug') {
   sequelizeOptions.logging = false;
 }
 let sequelize;
-if (typeof config === String) sequelize = new Sequelize(config, sequelizeOptions);
+if (typeof config === 'string') sequelize = new Sequelize(config, sequelizeOptions);
 else sequelize = new Sequelize(config);
 
 fs.readdirSync(__dirname)

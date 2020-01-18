@@ -11,13 +11,15 @@ class Context {
     return false;
   }
 
+  // TODO: rename to account()
   hasAccount(botCtx) {
     const userId = this.getUserId(botCtx);
     return Account.findOne({ where: { vkId: userId } });
   }
 
   async findOrCreateAccount(botCtx) {
-    return this.hasAccount(botCtx) || this.createAccount(botCtx);
+    // eslint-disable-next-line no-return-await
+    return (await this.hasAccount(botCtx)) || (await this.createAccount(botCtx));
   }
 
   async createAccount(botCtx) {

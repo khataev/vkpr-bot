@@ -1,27 +1,22 @@
 // TODO: refactor
-const axios = require("axios");
-const MockAdapter = require("axios-mock-adapter");
+const axios = require('axios');
+const MockAdapter = require('axios-mock-adapter');
 let mock;
-const settings = require("@modules/config");
+const settings = require('@modules/config');
 
-const { describe, it } = require("mocha");
-const { expect } = require("chai");
-const {
-  Account,
-  AggregatedInfo,
-  ExchangeTransaction,
-  ExchangeRate
-} = require("@models");
-const rubFinances = require("@modules/rub-finances");
+const { describe, it } = require('mocha');
+const { expect } = require('chai');
+const { Account, AggregatedInfo, ExchangeTransaction, ExchangeRate } = require('@models');
+const rubFinances = require('@modules/rub-finances');
 
-describe("Rub Finances", function() {
-  describe("withdrawRub", async function() {
+describe('Rub Finances', function() {
+  describe('withdrawRub', async function() {
     let account;
     let url;
 
     const setup = async function() {
       mock = new MockAdapter(axios);
-      url = settings.get("credentials.qiwi.withdraw_url");
+      url = settings.get('credentials.qiwi.withdraw_url');
       await AggregatedInfo.create({});
       account = await Account.create({
         vkId: 1,
@@ -39,7 +34,7 @@ describe("Rub Finances", function() {
     beforeEach(setup);
     afterEach(cleanup);
 
-    it("successful", async function() {
+    it('successful', async function() {
       mock.onPost(url).reply(200, {});
       const result = await rubFinances.withdrawRub(account);
       await account.reload();
@@ -47,7 +42,7 @@ describe("Rub Finances", function() {
       expect(account.rubAmount).to.be.equal(0);
     });
 
-    it("error", async function() {
+    it('error', async function() {
       mock.onPost(url).reply(422, {});
       const result = await rubFinances.withdrawRub(account);
       await account.reload();
@@ -56,7 +51,7 @@ describe("Rub Finances", function() {
     });
   });
 
-  describe("exchangeRubToCoins", function() {
+  describe('exchangeRubToCoins', function() {
     let account;
 
     const setup = async function() {
@@ -90,12 +85,12 @@ describe("Rub Finances", function() {
     beforeEach(setup);
     afterEach(cleanup);
 
-    it("successful", async () => {
+    it('successful', async () => {
       const result = await rubFinances.exchangeRubToCoins(account);
       await account.reload();
       expect(result).to.be.equal(1000000);
       expect(account.rubAmount).to.be.equal(0);
-      expect(account.coinAmount).to.be.equal("3000000000");
+      expect(account.coinAmount).to.be.equal('3000000000');
     });
   });
 });
