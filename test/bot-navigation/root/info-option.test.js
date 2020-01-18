@@ -3,7 +3,9 @@ const lolex = require("lolex");
 const { expect } = require("chai");
 const { AggregatedInfo, ExchangeRate } = require("@models");
 const InfoOption = require("@menu-root/info-option");
-const { context, dummyBotCtx } = require("@test/helpers/setup-context");
+const {
+  SetupContext: { context, dummyBotCtx }
+} = require("@test/helpers");
 const infoOption = new InfoOption(context, {});
 const botCtx = dummyBotCtx(1);
 const date = new Date(1997, 4, 19);

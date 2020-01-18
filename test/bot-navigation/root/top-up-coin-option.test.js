@@ -2,7 +2,9 @@ const { describe, it } = require("mocha");
 const sinon = require("sinon");
 const { expect } = require("chai");
 const TopUpOption = require("@menu-root/top-up-coin-option");
-const { context, dummyBotCtx } = require("@test/helpers/setup-context");
+const {
+  SetupContext: { context, dummyBotCtx }
+} = require("@test/helpers");
 const topUpOption = new TopUpOption(context, {});
 const coinFinances = require("@modules/coin-finances");
 const botCtx = dummyBotCtx(1);

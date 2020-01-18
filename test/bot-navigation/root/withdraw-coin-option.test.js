@@ -3,7 +3,9 @@ const sinon = require("sinon");
 const { expect } = require("chai");
 const { Account } = require("@models");
 const WithdrawOption = require("@menu-root/withdraw-coin-option");
-const { context, dummyBotCtx } = require("@test/helpers/setup-context");
+const {
+  SetupContext: { context, dummyBotCtx }
+} = require("@test/helpers");
 const withdrawOption = new WithdrawOption(context, {});
 const balanceManager = require("@modules/balance-manager");
 const coinFinances = require("@modules/coin-finances");

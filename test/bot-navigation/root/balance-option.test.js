@@ -2,7 +2,9 @@ const { describe, it } = require("mocha");
 const { expect } = require("chai");
 const { Account, ExchangeRate } = require("@models");
 const BalanceOption = require("@menu-root/balance-option");
-const { context, dummyBotCtx } = require("@test/helpers/setup-context");
+const {
+  SetupContext: { context, dummyBotCtx }
+} = require("@test/helpers");
 const balanceOption = new BalanceOption(context, {});
 const botCtx = dummyBotCtx(1);
 const setup = async () => {

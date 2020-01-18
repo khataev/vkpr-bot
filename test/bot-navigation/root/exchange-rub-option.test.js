@@ -2,7 +2,9 @@ const { describe, it } = require("mocha");
 const { expect } = require("chai");
 const { Account, ExchangeRate } = require("@models");
 const ExchangeOption = require("@menu-root/exchange-rub-option");
-const { context, dummyBotCtx } = require("@test/helpers/setup-context");
+const {
+  SetupContext: { context, dummyBotCtx }
+} = require("@test/helpers");
 const exchangeOption = new ExchangeOption(context, {});
 const botCtx = dummyBotCtx(1);
 const dbSetup = async () => {

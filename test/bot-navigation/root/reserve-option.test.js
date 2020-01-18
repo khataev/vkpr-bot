@@ -3,7 +3,9 @@ const sinon = require("sinon");
 const { expect } = require("chai");
 const { ExchangeRate } = require("@models");
 const ReserveOption = require("@menu-root/reserve-option");
-const { context, dummyBotCtx } = require("@test/helpers/setup-context");
+const {
+  SetupContext: { context, dummyBotCtx }
+} = require("@test/helpers");
 const reserveOption = new ReserveOption(context, {});
 const balanceManager = require("@modules/balance-manager");
 const botCtx = dummyBotCtx(1);
