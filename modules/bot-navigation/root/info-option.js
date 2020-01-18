@@ -9,9 +9,10 @@ class InfoOption extends MenuOption {
   async chatMessage(botCtx) {
     const rate = await ExchangeRate.currentRate();
     const info = await AggregatedInfo.findOne({});
-    const now = new Date();
+    const now = new Date(); // TODO: use luxon
     return `
-    📊 Действительный курс на ${now.getDate()}.${now.getMonth()}.${now.getFullYear()}:
+    📊 Действительный курс на ${now.getDate()}.${now.getMonth() +
+      1}.${now.getFullYear()}:
     💲 Продажа VKCoin: 1.000.000 - ${rate.sellRate}коп.
     💱 Скупка VKCoin: 1.000.000 - ${rate.buyRate}коп.
 

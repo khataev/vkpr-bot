@@ -6,6 +6,7 @@ const balanceManager = require("./../balance-manager");
 const models = require("./../../db/models");
 const ExchangeRate = models.ExchangeRate;
 const numberFormatter = require("./../number-formatter");
+const eventEmitter = require("@modules/event-emitter");
 
 const BotNavigation = function(bot) {
   let context = new Context(bot);
@@ -22,6 +23,7 @@ const BotNavigation = function(bot) {
   rootOption.registerReplies({ message: { from_id: adminId } });
 
   // TODO: refactor
+  // TODO: get rid of anonymous callback in favour of named function
   bot.on(async ctx => {
     // HINT: beforeReply FIRST (maybe could improve?)
     // in order to cancel chat (back button)
@@ -54,6 +56,7 @@ const BotNavigation = function(bot) {
             💱 Недостаточно RUB в системе для вывода!
             `;
             bot.sendMessage(vkId, message);
+            eventEmitter.emit("chattedContextHandlingDone");
             return;
           }
 
@@ -90,7 +93,12 @@ const BotNavigation = function(bot) {
       } else if (chattedContext.setExchangeRate) {
         let canProceed = false;
         const rawText = ctx && ctx.message && ctx.message.text;
-        if (!rawText) bot.sendMessage(vkId, "Не передано значение курса");
+        if (!rawText) {
+          bot.sendMessage(vkId, "Не передано значение курса");
+
+          eventEmitter.emit("chattedContextHandlingDone");
+          return;
+        }
 
         const tokens = rawText.split("/");
         if (!tokens.length === 2)
@@ -125,6 +133,7 @@ const BotNavigation = function(bot) {
         }
       }
 
+      eventEmitter.emit("chattedContextHandlingDone");
       return;
     }
 
@@ -140,6 +149,7 @@ const BotNavigation = function(bot) {
       // HINT: negative scenario could be played via negative reply?
       bot.sendMessage(vkId, menuItem.forbiddenTransitionChatMessage(ctx));
     }
+    eventEmitter.emit("menuItemHandlingDone");
   });
 
   // debugging

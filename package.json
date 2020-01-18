@@ -4,15 +4,15 @@
   "description": "VK Coin exchange bot",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha --recursive --exit --timeout 5000",
     "start": "node index.js",
-    "db:drop": "node_modules/.bin/sequelize db:drop --url $DATABASE_URL",
-    "db:create": "node_modules/.bin/sequelize db:create --url $DATABASE_URL",
-    "db:migrate": "node_modules/.bin/sequelize db:migrate --url $DATABASE_URL",
-    "db:migrate:undo": "node_modules/.bin/sequelize db:migrate:undo --url $DATABASE_URL",
-    "db:migrate:undo:all": "node_modules/.bin/sequelize db:migrate:undo:all --url $DATABASE_URL",
-    "db:seed:all": "node_modules/.bin/sequelize db:seed:all --url $DATABASE_URL",
-    "db:seed:undo:all": "node_modules/.bin/sequelize db:seed:undo:all --url $DATABASE_URL"
+    "db:drop": "node_modules/.bin/sequelize db:drop",
+    "db:create": "node_modules/.bin/sequelize db:create",
+    "db:migrate": "node_modules/.bin/sequelize db:migrate",
+    "db:migrate:undo": "node_modules/.bin/sequelize db:migrate:undo",
+    "db:migrate:undo:all": "node_modules/.bin/sequelize db:migrate:undo:all",
+    "db:seed:all": "node_modules/.bin/sequelize db:seed:all",
+    "db:seed:undo:all": "node_modules/.bin/sequelize db:seed:undo:all"
   },
   "keywords": [
     "exchange",
@@ -28,10 +28,27 @@
     "convict": "^4.4.1",
     "express": "^4.16.4",
     "luxon": "^1.11.2",
+    "module-alias": "^2.2.2",
     "node-vk-bot-api": "^2.4.8",
     "numeral": "^2.0.6",
     "pg": "^7.14.0",
-    "sequelize": "^5.21.2",
-    "sequelize-cli": "^5.5.1"
+    "sequelize": "^5.21.2"
+  },
+  "devDependencies": {
+    "axios-mock-adapter": "^1.17.0",
+    "chai": "^4.2.0",
+    "lolex": "^5.1.2",
+    "mocha": "^7.0.0",
+    "sequelize-cli": "^5.5.1",
+    "sinon": "^8.0.4",
+    "sinon-chai": "^3.4.0"
+  },
+  "_moduleAliases": {
+    "@root": ".",
+    "@test": "test",
+    "@modules": "modules",
+    "@models": "db/models",
+    "@bot-navigation": "modules/bot-navigation",
+    "@menu-root": "modules/bot-navigation/root"
   }
 }

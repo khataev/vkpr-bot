@@ -1,17 +1,16 @@
 language: node_js
 
 node_js:
-  - "8"
-  - "9"
   - "10"
   - "11"
+
+services:
+  - postgresql
 
 stages:
   - test
 
-test:
-  stage: test
-  script:
-    - npm i
-    - npm run eslint
-    - npm test
+before_script:
+  - export NODE_ENV=test
+  - npm run db:create
+  - npm run db:migrate

@@ -4,9 +4,9 @@ const fs = require("fs");
 const path = require("path");
 const Sequelize = require("sequelize");
 const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || "development";
 const settings = require("./../../modules/config");
-const config = require("./../../config/database")[env];
+// const env = settings.get("env");
+const config = require("./../../config/database");
 const db = {};
 
 const log_level = settings.get("debug.log_level");
@@ -19,7 +19,7 @@ if (log_level == "debug") {
   sequelizeOptions.logging = false;
 }
 let sequelize;
-if (process.env.NODE_ENV === "production")
+if (typeof config === String)
   sequelize = new Sequelize(config, sequelizeOptions);
 else sequelize = new Sequelize(config);
 
