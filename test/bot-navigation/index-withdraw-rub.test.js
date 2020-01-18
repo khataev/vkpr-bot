@@ -9,8 +9,6 @@ const rubFinances = require('@modules/rub-finances');
 const VkBot = require('node-vk-bot-api');
 // const Session = require('node-vk-bot-api/lib/session');
 
-// TODO: get rid of event emitter
-const eventEmitter = require('@modules/event-emitter');
 const systemBalance = 123;
 const TOKEN = '1234'; // HINT: token is not important now
 const bot = new VkBot(TOKEN);
@@ -26,30 +24,19 @@ const { vkApiContext } = require('@test/fixtures');
 let mainHandler;
 let ctx;
 
-const session = {
-  chattedContext: { chatAllowed: true, withdrawRub: true }
-};
+let session;
 
 describe('Withdraw Rub Menu Option', () => {
   async function setup() {
     turnOffLogging();
 
+    session = {
+      chattedContext: { chatAllowed: true, withdrawRub: true }
+    };
+
     const fakeRubBalance = sinon.fake.resolves(systemBalance);
     sinon.replace(balanceManager, 'getRubBalance', fakeRubBalance);
 
-    // const store = new Map();
-    // store.set(`${userId}`, {
-    //   chattedContext: { chatAllowed: true, withdrawRub: true }
-    // });
-
-    // const session = new Session({
-    //   store,
-    //   getSessionKey: () => {
-    //     return `${userId}`;
-    //   }
-    // });
-
-    // bot.use(session.middleware());
     mainHandler = setupHandlers(bot).mainHandler;
   }
   async function cleanup() {
@@ -70,22 +57,18 @@ describe('Withdraw Rub Menu Option', () => {
     sinon.replace(bot, 'sendMessage', fakeSendMessage);
   }
 
-  it('creates account if it is absent', done => {
+  it('creates account if it is absent', async () => {
     setup0();
-
-    eventEmitter.once('chattedContextHandlingDone', async () => {
-      const account = await Account.findOne({ where: { vkId: userId } });
-      console.log(account.vkId);
-      expect(account.vkId).to.be.equal(userId);
-      done();
-    });
 
     const type = 'message_new';
     const message = '79991111111';
 
     // emit(bot, type, message);
     ctx = vkApiContext(bot, session, type, message);
-    mainHandler(ctx);
+    await mainHandler(ctx);
+
+    const account = await Account.findOne({ where: { vkId: userId } });
+    expect(account.vkId).to.be.equal(userId);
   });
 
   async function setup1() {
@@ -110,16 +93,13 @@ describe('Withdraw Rub Menu Option', () => {
     const type = 'message_new';
     const message = '79991111111';
 
-    eventEmitter.once('chattedContextHandlingDone', () => {
-      expect(rubFinances.withdrawRub).to.have.been.calledOnceWith(
-        sinon.match.instanceOf(Account),
-        '79991111111'
-      );
-    });
-
-    // emit(bot, type, message);
     ctx = vkApiContext(bot, session, type, message);
-    mainHandler(ctx);
+    await mainHandler(ctx);
+
+    expect(rubFinances.withdrawRub).to.have.been.calledOnceWith(
+      sinon.match.instanceOf(Account),
+      '79991111111'
+    );
   });
 
   async function setup2() {
@@ -142,18 +122,14 @@ describe('Withdraw Rub Menu Option', () => {
     const type = 'message_new';
     const message = '79991111111';
 
-    eventEmitter.once('chattedContextHandlingDone', async () => {
-      const expectedMessage = `
-      💱 Недостаточно RUB в системе для вывода!
-      `;
-
-      expect(rubFinances.withdrawRub).to.not.have.been.called();
-      expect(bot.sendMessage).to.have.been.calledOnceWith(1, expectedMessage);
-    });
-
-    // emit(bot, type, message);
     ctx = vkApiContext(bot, session, type, message);
-    mainHandler(ctx);
+    await mainHandler(ctx);
+
+    const expectedMessage = `
+              💱 Недостаточно RUB в системе для вывода!
+              `;
+    expect(rubFinances.withdrawRub).to.not.have.been.called;
+    expect(bot.sendMessage).to.have.been.calledOnceWith(1, expectedMessage);
   });
 
   async function setup3() {
@@ -179,18 +155,14 @@ describe('Withdraw Rub Menu Option', () => {
     const type = 'message_new';
     const message = '79991111111';
 
-    eventEmitter.once('chattedContextHandlingDone', async () => {
-      const expectedMessage = `
+    ctx = vkApiContext(bot, session, type, message);
+    await mainHandler(ctx);
+
+    const expectedMessage = `
             ❗ Произошла ошибка при выводе средств, свяжитесь с администратором.
             `;
-
-      expect(rubFinances.withdrawRub).to.have.been.called;
-      expect(bot.sendMessage).to.have.been.calledOnceWith(1, expectedMessage);
-    });
-
-    // emit(bot, type, message);
-    ctx = vkApiContext(bot, session, type, message);
-    mainHandler(ctx);
+    expect(rubFinances.withdrawRub).to.have.been.called;
+    expect(bot.sendMessage).to.have.been.calledOnceWith(1, expectedMessage);
   });
 
   function setup4() {
@@ -207,15 +179,11 @@ describe('Withdraw Rub Menu Option', () => {
     const type = 'message_new';
     const message = '7999111111';
 
-    eventEmitter.once('chattedContextHandlingDone', async () => {
-      const expectedMessage = 'Неверный формат телефона';
-
-      expect(rubFinances.withdrawRub).to.not.have.been.called;
-      expect(bot.sendMessage).to.have.been.calledOnceWith(1, expectedMessage);
-    });
-
-    // emit(bot, type, message);
     ctx = vkApiContext(bot, session, type, message);
-    mainHandler(ctx);
+    await mainHandler(ctx);
+
+    const expectedMessage = 'Неверный формат телефона';
+    expect(rubFinances.withdrawRub).to.not.have.been.called;
+    expect(bot.sendMessage).to.have.been.calledOnceWith(1, expectedMessage);
   });
 });

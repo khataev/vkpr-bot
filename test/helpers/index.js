@@ -1,5 +1,4 @@
-const { turnOffLogging } = require("./logging");
-const { emit } = require("./messaging");
-const SetupContext = require("./setup-context");
+const { turnOffLogging } = require('./logging');
+const SetupContext = require('./setup-context');
 
-module.exports = { turnOffLogging, emit, SetupContext };
+module.exports = { turnOffLogging, SetupContext };

@@ -5,7 +5,6 @@ const settings = require('./../config');
 const balanceManager = require('./../balance-manager');
 const { ExchangeRate } = require('./../../db/models');
 const numberFormatter = require('./../number-formatter');
-const eventEmitter = require('@modules/event-emitter');
 
 function setupHandlers(bot) {
   const context = new Context(bot);
@@ -25,7 +24,6 @@ function setupHandlers(bot) {
     },
 
     // TODO: refactor
-    // TODO: get rid of anonymous callback in favour of named function
     async mainHandler(ctx) {
       // HINT: beforeReply FIRST (maybe could improve?)
       // in order to cancel chat (back button)
@@ -56,7 +54,6 @@ function setupHandlers(bot) {
               💱 Недостаточно RUB в системе для вывода!
               `;
               bot.sendMessage(vkId, message);
-              eventEmitter.emit('chattedContextHandlingDone');
               return;
             }
 
@@ -92,8 +89,6 @@ function setupHandlers(bot) {
           const rawText = ctx && ctx.message && ctx.message.text;
           if (!rawText) {
             bot.sendMessage(vkId, 'Не передано значение курса');
-
-            eventEmitter.emit('chattedContextHandlingDone');
             return;
           }
 
@@ -125,8 +120,6 @@ function setupHandlers(bot) {
             bot.sendMessage(vkId, 'Произошла ошибка при установке курса');
           }
         }
-
-        eventEmitter.emit('chattedContextHandlingDone');
         return;
       }
 
@@ -142,7 +135,6 @@ function setupHandlers(bot) {
         // HINT: negative scenario could be played via negative reply?
         bot.sendMessage(vkId, menuItem.forbiddenTransitionChatMessage(ctx));
       }
-      eventEmitter.emit('menuItemHandlingDone');
     }
   };
 }
