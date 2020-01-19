@@ -1,7 +1,10 @@
 {
   "extends": ["airbnb-base", "plugin:prettier/recommended"],
-  "plugins": ["prettier"],
+  "plugins": ["prettier", "chai-friendly"],
   "rules": {
+    "func-names": "off",
+    "no-unused-expressions": "off",
+    "chai-friendly/no-unused-expressions": "error",
     "prettier/prettier": ["error"],
     "no-console": "off",
     "class-methods-use-this": "off",
@@ -11,5 +14,18 @@
         "props": false
       }
     ]
+  },
+  "settings": {
+    "import/resolver": {
+      "alias": {
+        "map": [
+          ["@root", "."],
+          ["@test", "./test"],
+          ["modules", "./modules"],
+          ["@bot-navigation", "./modules/bot-navigation"],
+          ["@menu-root", "./modules/bot-navigation/root"]
+        ]
+      }
+    }
   }
 }
