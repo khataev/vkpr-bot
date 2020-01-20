@@ -1,4 +1,4 @@
-require("module-alias/register");
+require('module-alias/register');
 const express = require('express');
 const bodyParser = require('body-parser');
 

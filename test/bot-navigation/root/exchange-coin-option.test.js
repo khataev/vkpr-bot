@@ -5,6 +5,7 @@ const ExchangeOption = require('@menu-root/exchange-coin-option');
 const {
   SetupContext: { context, dummyBotCtx }
 } = require('@test/helpers');
+
 const exchangeOption = new ExchangeOption(context, {});
 const botCtx = dummyBotCtx(1);
 const dbSetup = async () => {

@@ -1,7 +1,8 @@
 const { describe, it } = require('mocha');
 const sinon = require('sinon');
 const chai = require('chai');
-const expect = chai.expect;
+
+const { expect } = chai;
 const sinonChai = require('sinon-chai');
 const { Account } = require('@models');
 const balanceManager = require('@modules/balance-manager');
@@ -21,6 +22,7 @@ chai.use(sinonChai);
 
 const { turnOffLogging } = require('@test/helpers');
 const { vkApiContext } = require('@test/fixtures');
+
 let mainHandler;
 let ctx;
 

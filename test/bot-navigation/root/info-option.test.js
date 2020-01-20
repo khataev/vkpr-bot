@@ -1,11 +1,12 @@
-const { describe, it } = require("mocha");
-const lolex = require("lolex");
-const { expect } = require("chai");
-const { AggregatedInfo, ExchangeRate } = require("@models");
-const InfoOption = require("@menu-root/info-option");
+const { describe, it } = require('mocha');
+const lolex = require('lolex');
+const { expect } = require('chai');
+const { AggregatedInfo, ExchangeRate } = require('@models');
+const InfoOption = require('@menu-root/info-option');
 const {
   SetupContext: { context, dummyBotCtx }
-} = require("@test/helpers");
+} = require('@test/helpers');
+
 const infoOption = new InfoOption(context, {});
 const botCtx = dummyBotCtx(1);
 const date = new Date(1997, 4, 19);
@@ -20,11 +21,11 @@ const dbCleanup = async () => {
   await AggregatedInfo.destroy({ where: {}, truncate: true });
 };
 
-describe("Info Menu Option", () => {
+describe('Info Menu Option', () => {
   beforeEach(dbSetup);
   afterEach(dbCleanup);
 
-  it("returns correct info", async () => {
+  it('returns correct info', async () => {
     expectedResult = `
     📊 Действительный курс на 19.5.1997:
     💲 Продажа VKCoin: 1.000.000 - 100коп.

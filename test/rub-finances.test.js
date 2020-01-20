@@ -1,6 +1,7 @@
 // TODO: refactor
 const axios = require('axios');
 const MockAdapter = require('axios-mock-adapter');
+
 let mock;
 const settings = require('@modules/config');
 
