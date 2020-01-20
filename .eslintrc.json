@@ -21,10 +21,18 @@
         "map": [
           ["@root", "."],
           ["@test", "./test"],
+          ["@models", "./db/models"],
           ["modules", "./modules"],
           ["@bot-navigation", "./modules/bot-navigation"],
-          ["@menu-root", "./modules/bot-navigation/root"]
-        ]
+          ["@menu-root", "./modules/bot-navigation/root"],
+          // aliases, I wish to get rid of
+          ["@modules/balance-manager", "./modules/balance-manager"],
+          ["@modules/coin-finances", "./modules/coin-finances"],
+          ["@modules/config", "./modules/config"],
+          ["@modules/rub-finances", "./modules/rub-finances"],
+          ["@menu-root/balance-option", "./menu-root/balance-option"]
+        ],
+        "extensions": [".ts", ".js", ".jsx", ".json"]
       }
     }
   }
