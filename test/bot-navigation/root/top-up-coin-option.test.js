@@ -10,20 +10,22 @@ const topUpOption = new TopUpOption(context, {});
 const coinFinances = require('@modules/coin-finances');
 
 const botCtx = dummyBotCtx(1);
-const dbSetup = async () => {
+const setup = async () => {
   const fakeVkPaymentUrl = sinon.fake.returns('http://top-up-url.com');
   sinon.replace(coinFinances, 'getVkCoinPaymentUrl', fakeVkPaymentUrl);
 };
-const dbCleanup = async () => {
+const cleanup = async () => {
   sinon.restore();
 };
 
 describe('Top Up Coin Menu Option', () => {
-  beforeEach(dbSetup);
-  afterEach(dbCleanup);
+  // eslint-disable-next-line no-undef
+  beforeEach(setup);
+  // eslint-disable-next-line no-undef
+  afterEach(cleanup);
 
   it('returns correct balance', async () => {
-    expectedResult = `
+    const expectedResult = `
     🔗 Для пополнения баланса, используйте данную ссылку: http://top-up-url.com
     `;
     const result = await topUpOption.chatMessage(botCtx);

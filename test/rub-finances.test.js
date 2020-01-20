@@ -11,11 +11,11 @@ const { Account, AggregatedInfo, ExchangeTransaction, ExchangeRate } = require('
 const rubFinances = require('@modules/rub-finances');
 
 describe('Rub Finances', function() {
-  describe('withdrawRub', async function() {
+  describe('withdrawRub', function() {
     let account;
     let url;
 
-    const setup = async function() {
+    async function setup() {
       mock = new MockAdapter(axios);
       url = settings.get('credentials.qiwi.withdraw_url');
       await AggregatedInfo.create({});
@@ -24,15 +24,17 @@ describe('Rub Finances', function() {
         rubAmount: 100,
         coinAmount: 2000000000
       });
-    };
-    const cleanup = async function() {
+    }
+    async function cleanup() {
       await AggregatedInfo.destroy({ where: {}, truncate: true });
       await Account.destroy({ where: {}, truncate: true });
 
       mock.restore();
-    };
+    }
 
+    // eslint-disable-next-line no-undef
     beforeEach(setup);
+    // eslint-disable-next-line no-undef
     afterEach(cleanup);
 
     it('successful', async function() {
@@ -55,7 +57,7 @@ describe('Rub Finances', function() {
   describe('exchangeRubToCoins', function() {
     let account;
 
-    const setup = async function() {
+    async function setup() {
       await AggregatedInfo.create({});
       await ExchangeRate.setExchangeRate(100, 50);
       account = await Account.create({
@@ -63,8 +65,8 @@ describe('Rub Finances', function() {
         rubAmount: 100,
         coinAmount: 2000000000
       });
-    };
-    const cleanup = async function() {
+    }
+    async function cleanup() {
       await AggregatedInfo.destroy({
         where: {},
         truncate: true
@@ -81,9 +83,11 @@ describe('Rub Finances', function() {
         where: {},
         truncate: true
       });
-    };
+    }
 
+    // eslint-disable-next-line no-undef
     beforeEach(setup);
+    // eslint-disable-next-line no-undef
     afterEach(cleanup);
 
     it('successful', async () => {

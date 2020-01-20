@@ -11,11 +11,11 @@ const { Account, AggregatedInfo, ExchangeTransaction, ExchangeRate } = require('
 const coinFinances = require('@modules/coin-finances');
 
 describe('Coin Finances', function() {
-  describe('withdrawCoin', async function() {
+  describe('withdrawCoin', function() {
     let account;
     let url;
 
-    const setup = async function() {
+    async function setup() {
       url = settings.get('credentials.vk_coin.withdraw_url');
       mock = new MockAdapter(axios);
       await AggregatedInfo.create({});
@@ -24,15 +24,20 @@ describe('Coin Finances', function() {
         rubAmount: 100,
         coinAmount: 2000000000
       });
-    };
-    const cleanup = async function() {
-      await AggregatedInfo.destroy({ where: {}, truncate: true });
+    }
+    async function cleanup() {
+      await AggregatedInfo.destroy({
+        where: {},
+        truncate: true
+      });
       await Account.destroy({ where: {}, truncate: true });
 
       mock.restore();
-    };
+    }
 
+    // eslint-disable-next-line no-undef
     beforeEach(setup);
+    // eslint-disable-next-line no-undef
     afterEach(cleanup);
 
     it('successful', async function() {
@@ -44,7 +49,9 @@ describe('Coin Finances', function() {
     });
 
     it('error', async function() {
-      mock.onPost(url).reply(200, { error: { code: 'code', message: 'message' } });
+      mock.onPost(url).reply(200, {
+        error: { code: 'code', message: 'message' }
+      });
       const result = await coinFinances.withdrawCoin(account);
       await account.reload();
       expect(result).to.be.equal(false);
@@ -55,7 +62,7 @@ describe('Coin Finances', function() {
   describe('exchangeCoinsToRub', function() {
     let account;
 
-    const setup = async function() {
+    async function setup() {
       await AggregatedInfo.create({});
       await ExchangeRate.setExchangeRate(100, 50);
       account = await Account.create({
@@ -63,8 +70,8 @@ describe('Coin Finances', function() {
         rubAmount: 100,
         coinAmount: 2000000000
       });
-    };
-    const cleanup = async function() {
+    }
+    async function cleanup() {
       await AggregatedInfo.destroy({
         where: {},
         truncate: true
@@ -81,9 +88,11 @@ describe('Coin Finances', function() {
         where: {},
         truncate: true
       });
-    };
+    }
 
+    // eslint-disable-next-line no-undef
     beforeEach(setup);
+    // eslint-disable-next-line no-undef
     afterEach(cleanup);
 
     it('successful', async () => {

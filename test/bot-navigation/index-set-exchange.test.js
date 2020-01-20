@@ -39,7 +39,9 @@ describe('Set exchange', () => {
     sandbox.restore();
   }
 
+  // eslint-disable-next-line no-undef
   beforeEach(setup);
+  // eslint-disable-next-line no-undef
   afterEach(cleanup);
 
   function setup0() {
@@ -95,9 +97,9 @@ describe('Set exchange', () => {
 
     const expectedMessage1 =
       'Обычно курс продажи должен превышать курс покупки, иначе это экономически не выгодно';
-    expect(bot.sendMessage).to.have.been.calledWith(1, expectedMessage1);
+    expect(bot.sendMessage).to.have.been.calledWith(userId, expectedMessage1);
     const expectedMessage2 = 'Курс успешно установлен';
-    expect(bot.sendMessage).to.have.been.calledWith(1, expectedMessage2);
+    expect(bot.sendMessage).to.have.been.calledWith(userId, expectedMessage2);
     expect(ExchangeRate.setExchangeRate).to.have.been.calledOnceWith(123, 124);
   });
 
@@ -111,7 +113,7 @@ describe('Set exchange', () => {
     await mainHandler(ctx);
 
     const expectedMessage = 'Курс успешно установлен';
-    expect(bot.sendMessage).to.have.been.calledOnceWith(1, expectedMessage);
+    expect(bot.sendMessage).to.have.been.calledOnceWith(userId, expectedMessage);
     expect(ExchangeRate.setExchangeRate).to.have.been.calledOnceWith(124, 123);
   });
 
@@ -134,7 +136,7 @@ describe('Set exchange', () => {
     await mainHandler(ctx);
 
     const expectedMessage = 'Произошла ошибка при установке курса';
-    expect(bot.sendMessage).to.have.been.calledOnceWith(1, expectedMessage);
+    expect(bot.sendMessage).to.have.been.calledOnceWith(userId, expectedMessage);
     expect(ExchangeRate.setExchangeRate).to.have.been.calledOnceWith(124, 123);
   });
 });

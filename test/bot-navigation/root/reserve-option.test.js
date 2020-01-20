@@ -11,24 +11,26 @@ const reserveOption = new ReserveOption(context, {});
 const balanceManager = require('@modules/balance-manager');
 
 const botCtx = dummyBotCtx(1);
-const dbSetup = async () => {
+const setup = async () => {
   await ExchangeRate.setExchangeRate(100, 50);
   const fakeCoinBalance = sinon.fake.resolves(2000000000);
   const fakeRubBalance = sinon.fake.resolves(250);
   sinon.replace(balanceManager, 'getCoinBalance', fakeCoinBalance);
   sinon.replace(balanceManager, 'getRubBalance', fakeRubBalance);
 };
-const dbCleanup = async () => {
+const cleanup = async () => {
   await ExchangeRate.destroy({ where: {}, truncate: true });
   sinon.restore();
 };
 
 describe('Balance Menu Option', () => {
-  beforeEach(dbSetup);
-  afterEach(dbCleanup);
+  // eslint-disable-next-line no-undef
+  beforeEach(setup);
+  // eslint-disable-next-line no-undef
+  afterEach(cleanup);
 
   it('returns correct balance', async () => {
-    expectedResult = `
+    const expectedResult = `
     💸 Резерв VK Coins: 2 000 000.000 (1.00 ₽)
     💸 Резерв QIWI: 2.50 ₽ (2 500 000.000 VK Coins)
     `;

@@ -1,8 +1,7 @@
 const Context = require('node-vk-bot-api/lib/context');
 
 function ctx(bot, session, type, message) {
-  const ctx = new Context(
-    // TODO: move to common library (fixtures)
+  const context = new Context(
     {
       type,
       object: {
@@ -21,9 +20,9 @@ function ctx(bot, session, type, message) {
     },
     bot
   );
-  ctx.session = session;
+  context.session = session;
 
-  return ctx;
+  return context;
 }
 
 module.exports = ctx;

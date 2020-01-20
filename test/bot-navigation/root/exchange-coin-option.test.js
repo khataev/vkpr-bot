@@ -8,21 +8,25 @@ const {
 
 const exchangeOption = new ExchangeOption(context, {});
 const botCtx = dummyBotCtx(1);
-const dbSetup = async () => {
+const setup = async () => {
   await ExchangeRate.setExchangeRate(100, 50);
 };
-const dbCleanup = async () => {
+const cleanup = async () => {
   await ExchangeRate.destroy({ where: {}, truncate: true });
   await Account.destroy({ where: {}, truncate: true });
 };
 
 describe('Exchange Coin Menu Option', () => {
-  beforeEach(dbSetup);
-  afterEach(dbCleanup);
+  // eslint-disable-next-line no-undef
+  beforeEach(setup);
+  // eslint-disable-next-line no-undef
+  afterEach(cleanup);
 
   it('creates account if it absent', async () => {
     await exchangeOption.chatMessage(botCtx);
-    const account = await Account.findOne({ where: { vkId: 1 } });
+    const account = await Account.findOne({
+      where: { vkId: 1 }
+    });
     expect(account.vkId).to.be.equal(1);
   });
 

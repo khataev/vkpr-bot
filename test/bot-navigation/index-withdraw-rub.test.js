@@ -33,7 +33,10 @@ describe('Withdraw Rub Menu Option', () => {
     turnOffLogging();
 
     session = {
-      chattedContext: { chatAllowed: true, withdrawRub: true }
+      chattedContext: {
+        chatAllowed: true,
+        withdrawRub: true
+      }
     };
 
     const fakeRubBalance = sinon.fake.resolves(systemBalance);
@@ -48,7 +51,9 @@ describe('Withdraw Rub Menu Option', () => {
     sandbox.restore();
   }
 
+  // eslint-disable-next-line no-undef
   beforeEach(setup);
+  // eslint-disable-next-line no-undef
   afterEach(cleanup);
 
   function setup0() {
@@ -69,7 +74,9 @@ describe('Withdraw Rub Menu Option', () => {
     ctx = vkApiContext(bot, session, type, message);
     await mainHandler(ctx);
 
-    const account = await Account.findOne({ where: { vkId: userId } });
+    const account = await Account.findOne({
+      where: { vkId: userId }
+    });
     expect(account.vkId).to.be.equal(userId);
   });
 
@@ -131,7 +138,7 @@ describe('Withdraw Rub Menu Option', () => {
               💱 Недостаточно RUB в системе для вывода!
               `;
     expect(rubFinances.withdrawRub).to.not.have.been.called;
-    expect(bot.sendMessage).to.have.been.calledOnceWith(1, expectedMessage);
+    expect(bot.sendMessage).to.have.been.calledOnceWith(userId, expectedMessage);
   });
 
   async function setup3() {
@@ -164,7 +171,7 @@ describe('Withdraw Rub Menu Option', () => {
             ❗ Произошла ошибка при выводе средств, свяжитесь с администратором.
             `;
     expect(rubFinances.withdrawRub).to.have.been.called;
-    expect(bot.sendMessage).to.have.been.calledOnceWith(1, expectedMessage);
+    expect(bot.sendMessage).to.have.been.calledOnceWith(userId, expectedMessage);
   });
 
   function setup4() {
@@ -186,6 +193,6 @@ describe('Withdraw Rub Menu Option', () => {
 
     const expectedMessage = 'Неверный формат телефона';
     expect(rubFinances.withdrawRub).to.not.have.been.called;
-    expect(bot.sendMessage).to.have.been.calledOnceWith(1, expectedMessage);
+    expect(bot.sendMessage).to.have.been.calledOnceWith(userId, expectedMessage);
   });
 });

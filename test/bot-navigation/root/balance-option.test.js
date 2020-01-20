@@ -17,7 +17,9 @@ const cleanup = async () => {
 };
 
 describe('Balance Menu Option', () => {
+  // eslint-disable-next-line no-undef
   beforeEach(setup);
+  // eslint-disable-next-line no-undef
   afterEach(cleanup);
 
   it('creates account if it absent', async () => {
@@ -28,7 +30,7 @@ describe('Balance Menu Option', () => {
   });
 
   it('returns correct balance', async () => {
-    expectedResult = `
+    const expectedResult = `
     💰 Ваш баланс:
     ➕ 2 000 000.000 VK Coins (1.00 ₽)
     ➕ 1.00 ₽ (1 000 000.000 VK Coins)
