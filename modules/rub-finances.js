@@ -145,6 +145,10 @@ class RubFinances {
     return Math.floor((rubAmount / rate.sellRate) * rate.coinAmount);
   }
 
+  rubToCoinsReserve(rubAmount, rate) {
+    return Math.floor((rubAmount / rate.buyRate) * rate.coinAmount);
+  }
+
   async isEnoughCoinForExchange(account) {
     return true; // TODO
 

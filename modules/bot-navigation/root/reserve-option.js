@@ -13,12 +13,14 @@ class ReserveOption extends MenuOption {
     const rubBalance = await balanceManager.getRubBalance();
     const rubBalanceStr = numberFormatter.formatRub(rubBalance / 100);
     const coinEquivStr = numberFormatter.formatCoin(
-      rubFinances.rubToCoins(rubBalance, rate) / 1000
+      rubFinances.rubToCoinsReserve(rubBalance, rate) / 1000
     );
 
     const coinBalance = await balanceManager.getCoinBalance();
     const coinBalanceStr = numberFormatter.formatCoin(coinBalance / 1000);
-    const rubEquivStr = numberFormatter.formatRub(coinFinances.coinToRub(coinBalance, rate) / 100);
+    const rubEquivStr = numberFormatter.formatRub(
+      coinFinances.coinToRubReserve(coinBalance, rate) / 100
+    );
 
     return `
     💸 Резерв VK Coins: ${coinBalanceStr} (${rubEquivStr} ₽)

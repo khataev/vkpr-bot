@@ -99,6 +99,10 @@ class CoinFinances {
     return Math.floor((coinAmount / rate.coinAmount) * rate.buyRate);
   }
 
+  coinToRubReserve(coinAmount, rate) {
+    return Math.floor((coinAmount / rate.coinAmount) * rate.sellRate);
+  }
+
   async isEnoughRubForExchange(account) {
     return true; // TODO
 

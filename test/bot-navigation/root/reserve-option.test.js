@@ -31,8 +31,8 @@ describe('Balance Menu Option', () => {
 
   it('returns correct balance', async () => {
     const expectedResult = `
-    💸 Резерв VK Coins: 2 000 000.000 (1.00 ₽)
-    💸 Резерв QIWI: 2.50 ₽ (2 500 000.000 VK Coins)
+    💸 Резерв VK Coins: 2 000 000.000 (2.00 ₽)
+    💸 Резерв QIWI: 2.50 ₽ (5 000 000.000 VK Coins)
     `;
     const result = await reserveOption.chatMessage(botCtx);
     expect(result.trim()).to.be.equal(expectedResult.trim());
