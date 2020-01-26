@@ -1,5 +1,5 @@
-const Markup = require("node-vk-bot-api/lib/markup");
-const MenuOption = require("./../../menu-option");
+const Markup = require('node-vk-bot-api/lib/markup');
+const MenuOption = require('./../../menu-option');
 
 class BackMenuOption extends MenuOption {
   chatMessage(botCtx) {
@@ -18,14 +18,14 @@ class BackMenuOption extends MenuOption {
 
   // TODO: refactor
   get buttonMarkup() {
-    return Markup.button("✌ Назад", "primary", {
+    return Markup.button('✌ Назад', 'primary', {
       button: this.triggerButton
     });
   }
 
   // TODO: possibly, need to override (for different back buttons)
   get triggerButton() {
-    return "return_to_root_1_button";
+    return 'return_to_root_1_button';
   }
 }
 

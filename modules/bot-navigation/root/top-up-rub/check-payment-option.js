@@ -1,6 +1,6 @@
-const Markup = require("node-vk-bot-api/lib/markup");
-const MenuOption = require("../../menu-option");
-const rubFinances = require("./../../../rub-finances");
+const Markup = require('node-vk-bot-api/lib/markup');
+const MenuOption = require('../../menu-option');
+const rubFinances = require('./../../../rub-finances');
 
 class CheckPaymentOption extends MenuOption {
   async chatMessage(botCtx) {
@@ -8,10 +8,10 @@ class CheckPaymentOption extends MenuOption {
     const [txnIds, totalIncome] = await rubFinances.checkIncomePayment(vkId);
     let message;
 
-    if (txnIds.length == 0) message = "❗ Мы не нашли новых платежей.";
+    if (txnIds.length === 0) message = '❗ Мы не нашли новых платежей.';
     else {
       message = `➕ На Ваш аккаунт было зачислено ${totalIncome} ₽ (ID транзакции: ${txnIds.join(
-        ", "
+        ', '
       )})`;
     }
 
@@ -19,13 +19,13 @@ class CheckPaymentOption extends MenuOption {
   }
 
   get buttonMarkup() {
-    return Markup.button("➕ Проверить оплату", "primary", {
+    return Markup.button('➕ Проверить оплату', 'primary', {
       button: this.triggerButton
     });
   }
 
   get triggerButton() {
-    return "check_payment_button";
+    return 'check_payment_button';
   }
 }
 

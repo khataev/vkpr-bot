@@ -1,94 +1,89 @@
-const qs = require("qs");
-const axios = require("axios");
+const qs = require('qs');
+const axios = require('axios');
 
-const constants = require("./constants");
-const settings = require("./config");
-const models = require("./../db/models");
-const utils = require("./utils");
-const RubTransaction = models.RubTransaction;
-const Account = models.Account;
-const ExchangeRate = models.ExchangeRate;
-const AggregatedInfo = models.AggregatedInfo;
-const ExchangeTransaction = models.ExchangeTransaction;
-const balanceManager = require("./balance-manager");
+const constants = require('./constants');
+const settings = require('./config');
+const utils = require('./utils');
+const balanceManager = require('./balance-manager');
+const {
+  Account,
+  AggregatedInfo,
+  ExchangeRate,
+  ExchangeTransaction,
+  RubTransaction
+} = require('./../db/models');
 
 class RubFinances {
   getQiwiPaymentUrl(userId) {
-    const baseUrl = settings.get("credentials.qiwi.payment_url");
-    const accountNumber = settings.get("credentials.qiwi.account_number");
+    const baseUrl = settings.get('credentials.qiwi.payment_url');
+    const accountNumber = settings.get('credentials.qiwi.account_number');
 
     const params = qs.stringify({
-      currency: "RUB",
+      currency: 'RUB',
       amountFraction: 0,
       extra: { "'comment'": userId, "'account'": accountNumber },
       amountInteger: 5,
-      blocked: ["comment", "account"]
+      blocked: ['comment', 'account']
     });
 
     return `${baseUrl}?${params}`;
   }
 
-  async getShortQiwiPaymentUrl(userId) {
+  getShortQiwiPaymentUrl(userId) {
     const url = this.getQiwiPaymentUrl(userId);
-    return await utils.shortenUrl(url);
+    return utils.shortenUrl(url);
   }
 
   async processWebHook(hookInfo) {
     const { test } = hookInfo;
-    if (test) {
-      return true;
-    } else {
-      try {
-        const {
-          payment: {
-            type,
-            status,
-            txnId,
-            comment: vkId,
-            sum: { amount }
-          }
-        } = hookInfo;
+    if (test) return true;
 
-        if (type !== "IN") return;
-
-        await RubTransaction.create({
-          vkId: vkId,
-          txnId: txnId,
-          hookInfo: hookInfo
-        });
-
-        if (status === "SUCCESS") {
-          await RubTransaction.sequelize.transaction({}, async transaction => {
-            await RubTransaction.update(
-              {
-                isProcessed: true
-              },
-              { where: { txnId: txnId }, transaction: transaction }
-            );
-
-            await Account.increment(
-              { rubAmount: Math.floor(amount * 100) },
-              { where: { vkId: vkId }, transaction: transaction }
-            );
-
-            await AggregatedInfo.increment(
-              { payments: 1, rubDeposited: amount * 100 },
-              { where: {}, transaction: transaction }
-            );
-          });
+    try {
+      const {
+        payment: {
+          type,
+          status,
+          txnId,
+          comment: vkId,
+          sum: { amount }
         }
+      } = hookInfo;
 
-        return true;
-      } catch (error) {
-        console.error(`RUB webhook handler error. ${error.message}`);
+      if (type !== 'IN') return true;
 
-        return false;
+      await RubTransaction.create({ vkId, txnId, hookInfo });
+
+      if (status === 'SUCCESS') {
+        await RubTransaction.sequelize.transaction({}, async transaction => {
+          await RubTransaction.update(
+            {
+              isProcessed: true
+            },
+            { where: { txnId }, transaction }
+          );
+
+          await Account.increment(
+            { rubAmount: Math.floor(amount * 100) },
+            { where: { vkId }, transaction }
+          );
+
+          await AggregatedInfo.increment(
+            { payments: 1, rubDeposited: amount * 100 },
+            { where: {}, transaction }
+          );
+        });
       }
+
+      return true;
+    } catch (error) {
+      console.error(`RUB webhook handler error. ${error.message}`);
+
+      return false;
     }
   }
 
   async checkIncomePayment(vkId) {
-    const filter = { vkId: vkId, isProcessed: true, isChecked: false };
+    const filter = { vkId, isProcessed: true, isChecked: false };
     const transactions = await RubTransaction.findAll({
       where: filter
     });
@@ -112,19 +107,19 @@ class RubFinances {
   }
 
   async withdrawRub(account, destinationPhoneNumber) {
-    const url = settings.get("credentials.qiwi.withdraw_url");
-    const accessToken = settings.get("credentials.qiwi.access_token");
+    const url = settings.get('credentials.qiwi.withdraw_url');
+    const accessToken = settings.get('credentials.qiwi.access_token');
     const transactionId = new Date().getTime();
-    const comment = "Выплата VK Coin Биржа https://vk.com/club189652443";
+    const comment = 'Выплата VK Coin Биржа https://vk.com/club189652443';
     const amount = account.rubAmount;
     const params = {
       id: transactionId.toString(),
-      sum: { amount: account.rubAmountInRub(), currency: "643" },
+      sum: { amount: account.rubAmountInRub(), currency: '643' },
       paymentMethod: {
-        type: "Account",
-        accountId: "643"
+        type: 'Account',
+        accountId: '643'
       },
-      comment: comment,
+      comment,
       fields: { account: `+${destinationPhoneNumber}` }
     };
 
@@ -134,11 +129,8 @@ class RubFinances {
       });
 
       await AggregatedInfo.sequelize.transaction({}, async transaction => {
-        await account.update({ rubAmount: 0 }, { transaction: transaction });
-        await AggregatedInfo.increment(
-          { rubWithdrawed: amount },
-          { where: {}, transaction: transaction }
-        );
+        await account.update({ rubAmount: 0 }, { transaction });
+        await AggregatedInfo.increment({ rubWithdrawed: amount }, { where: {}, transaction });
       });
 
       return true;
@@ -153,12 +145,17 @@ class RubFinances {
     return Math.floor((rubAmount / rate.sellRate) * rate.coinAmount);
   }
 
+  rubToCoinsReserve(rubAmount, rate) {
+    return Math.floor((rubAmount / rate.buyRate) * rate.coinAmount);
+  }
+
   async isEnoughCoinForExchange(account) {
     return true; // TODO
 
+    // eslint-disable-next-line no-unreachable
     const rate = await ExchangeRate.currentRate();
     const coinBalance = await balanceManager.getCoinBalance();
-    const coins = this.rubToCoins(rubAmount, rate);
+    const coins = this.rubToCoins(account.rubAmount, rate);
 
     return coinBalance >= coins;
   }
@@ -166,7 +163,7 @@ class RubFinances {
   async exchangeRubToCoins(account) {
     const rate = await ExchangeRate.currentRate();
 
-    const rubAmount = account.rubAmount;
+    const { rubAmount } = account;
     const coins = this.rubToCoins(rubAmount, rate);
 
     await AggregatedInfo.sequelize.transaction({}, async transaction => {
@@ -174,19 +171,16 @@ class RubFinances {
         rubAmount: -account.rubAmount,
         coinAmount: coins
       });
-      await AggregatedInfo.increment(
-        { rubExchanged: rubAmount },
-        { where: {}, transaction: transaction }
-      );
+      await AggregatedInfo.increment({ rubExchanged: rubAmount }, { where: {}, transaction });
       await ExchangeTransaction.create(
         {
           vkId: account.vkId,
           type: constants.EXCHANGE_BUY_COIN,
           rate: rate.sellRate,
-          rubAmount: rubAmount,
+          rubAmount,
           coinAmount: coins
         },
-        { transaction: transaction }
+        { transaction }
       );
     });
     // HINT: coin copecks to whole coins

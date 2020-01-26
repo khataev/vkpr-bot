@@ -1,18 +1,16 @@
-const Markup = require("node-vk-bot-api/lib/markup");
-const MenuOption = require("../menu-option");
-const numberFormatter = require("./../../number-formatter");
-const rubFinances = require("./../../rub-finances");
-const coinFinances = require("./../../coin-finances");
-const models = require("./../../../db/models");
-const ExchangeRate = models.ExchangeRate;
+const Markup = require('node-vk-bot-api/lib/markup');
+const MenuOption = require('../menu-option');
+const numberFormatter = require('./../../number-formatter');
+const rubFinances = require('./../../rub-finances');
+const coinFinances = require('./../../coin-finances');
+const { ExchangeRate } = require('./../../../db/models');
+
 class BalanceOption extends MenuOption {
   async chatMessage(botCtx) {
     const account = await this.ctx.findOrCreateAccount(botCtx);
     const rate = await ExchangeRate.currentRate();
 
-    const coinAmountStr = numberFormatter.formatCoin(
-      account.coinAmountInCoin()
-    );
+    const coinAmountStr = numberFormatter.formatCoin(account.coinAmountInCoin());
     const rubEquivAmountStr = numberFormatter.formatRub(
       coinFinances.coinToRub(account.coinAmount, rate) / 100
     );
@@ -30,13 +28,13 @@ class BalanceOption extends MenuOption {
   }
 
   get buttonMarkup() {
-    return Markup.button("💰 Баланс", "secondary", {
+    return Markup.button('💰 Баланс', 'secondary', {
       button: this.triggerButton
     });
   }
 
   get triggerButton() {
-    return "balance_button";
+    return 'balance_button';
   }
 }
 

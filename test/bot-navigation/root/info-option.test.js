@@ -1,31 +1,34 @@
-const { describe, it } = require("mocha");
-const lolex = require("lolex");
-const { expect } = require("chai");
-const { AggregatedInfo, ExchangeRate } = require("@models");
-const InfoOption = require("@menu-root/info-option");
+const { describe, it } = require('mocha');
+const lolex = require('lolex');
+const { expect } = require('chai');
+const { AggregatedInfo, ExchangeRate } = require('@models');
+const InfoOption = require('@menu-root/info-option');
 const {
   SetupContext: { context, dummyBotCtx }
-} = require("@test/helpers");
+} = require('@test/helpers');
+
 const infoOption = new InfoOption(context, {});
 const botCtx = dummyBotCtx(1);
 const date = new Date(1997, 4, 19);
 let clock;
-const dbSetup = async () => {
+const setup = async () => {
   clock = lolex.install({ now: date });
   await ExchangeRate.setExchangeRate(100, 50);
 };
-const dbCleanup = async () => {
+const cleanup = async () => {
   clock.uninstall();
   await ExchangeRate.destroy({ where: {}, truncate: true });
   await AggregatedInfo.destroy({ where: {}, truncate: true });
 };
 
-describe("Info Menu Option", () => {
-  beforeEach(dbSetup);
-  afterEach(dbCleanup);
+describe('Info Menu Option', () => {
+  // eslint-disable-next-line no-undef
+  beforeEach(setup);
+  // eslint-disable-next-line no-undef
+  afterEach(cleanup);
 
-  it("returns correct info", async () => {
-    expectedResult = `
+  it('returns correct info', async () => {
+    const expectedResult = `
     📊 Действительный курс на 19.5.1997:
     💲 Продажа VKCoin: 1.000.000 - 100коп.
     💱 Скупка VKCoin: 1.000.000 - 50коп.

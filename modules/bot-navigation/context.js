@@ -1,7 +1,5 @@
-const models = require("./../../db/models");
-const Account = models.Account;
-const AggregatedInfo = models.AggregatedInfo;
-const settings = require("./../config");
+const { Account, AggregatedInfo } = require('./../../db/models');
+const settings = require('./../config');
 
 class Context {
   constructor(bot) {
@@ -13,25 +11,22 @@ class Context {
     return false;
   }
 
+  // TODO: rename to account()
   hasAccount(botCtx) {
     const userId = this.getUserId(botCtx);
     return Account.findOne({ where: { vkId: userId } });
   }
 
   async findOrCreateAccount(botCtx) {
-    return (
-      (await this.hasAccount(botCtx)) || (await this.createAccount(botCtx))
-    );
+    // eslint-disable-next-line no-return-await
+    return (await this.hasAccount(botCtx)) || (await this.createAccount(botCtx));
   }
 
   async createAccount(botCtx) {
     const userId = this.getUserId(botCtx);
     let account;
     await Account.sequelize.transaction({}, async transaction => {
-      account = await Account.create(
-        { vkId: userId },
-        { transaction: transaction }
-      );
+      account = await Account.create({ vkId: userId }, { transaction });
       await AggregatedInfo.increment({ users: 1 }, { where: {} });
       console.debug(`Account for userId ${userId} created`);
     });
@@ -43,7 +38,7 @@ class Context {
   }
 
   isAdmin(botCtx) {
-    const admins = settings.get("shared.admins");
+    const admins = settings.get('shared.admins');
     return admins.includes(this.getUserId(botCtx).toString());
   }
 
@@ -58,12 +53,9 @@ class Context {
 
   findResponsibleItem(botCtx) {
     // console.log("Context#findResponsibleItem. botCtx:", botCtx);
-    console.log(
-      "Context#findResponsibleItem. payloadButton:",
-      this.payloadButton(botCtx)
-    );
+    console.log('Context#findResponsibleItem. payloadButton:', this.payloadButton(botCtx));
     if (this.replies[this.payloadButton(botCtx)])
-      console.log("Context#findResponsibleItem. item found");
+      console.log('Context#findResponsibleItem. item found');
 
     return this.replies[this.payloadButton(botCtx)];
   }
@@ -79,7 +71,7 @@ class Context {
     }
 
     if (error) {
-      console.error("errored menuOption:", menuOption);
+      console.error('errored menuOption:', menuOption);
       throw new Error(error);
     }
 
@@ -87,11 +79,11 @@ class Context {
     this.replies[menuOption.triggerButton] = menuOption;
   }
 
-  async sendMessageToAdmins(text) {
-    const admins = settings.get("shared.admins");
-    for (let index = 0; index < admins.length; index++) {
+  sendMessageToAdmins(text) {
+    const admins = settings.get('shared.admins');
+    for (let index = 0; index < admins.length; index += 1) {
       const vkId = admins[index];
-      await this.bot.sendMessage(vkId, text);
+      this.bot.sendMessage(vkId, text);
     }
   }
 }

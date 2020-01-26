@@ -1,11 +1,11 @@
-const Markup = require("node-vk-bot-api/lib/markup");
-const MenuOption = require("../../menu-option");
-const LowCoinOption = require("./low-coin-option");
-const MediumCoinOption = require("./medium-coin-option");
-const BackMenuOption = require("./../../back-menu-option");
+const Markup = require('node-vk-bot-api/lib/markup');
+const MenuOption = require('../../menu-option');
+const LowCoinOption = require('./low-coin-option');
+const MediumCoinOption = require('./medium-coin-option');
+const BackMenuOption = require('./../../back-menu-option');
 
 class RouletteOption extends MenuOption {
-  chatMessage(botCtx) {
+  chatMessage() {
     return `
     🎰 Добро пожаловать в раздел 'Рулетки'.
     📃 В данном разделе Вы можете приобрести различные рулетки с выигрышем в VK Coin!
@@ -23,12 +23,12 @@ class RouletteOption extends MenuOption {
   }
 
   get buttonMarkup() {
-    return Markup.button("🎰 Рулетка", "secondary", {
+    return Markup.button('🎰 Рулетка', 'secondary', {
       button: this.triggerButton
     });
   }
 
-  menu(botCtx) {
+  menu() {
     return [
       new LowCoinOption(this.ctx, this),
       new MediumCoinOption(this.ctx, this),
@@ -37,7 +37,7 @@ class RouletteOption extends MenuOption {
   }
 
   get triggerButton() {
-    return "roulette";
+    return 'roulette';
   }
 }
 
