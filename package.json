@@ -1,6 +1,6 @@
 {
   "name": "vkcoin-exchange-bot",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "VK Coin exchange bot",
   "main": "index.js",
   "scripts": {
