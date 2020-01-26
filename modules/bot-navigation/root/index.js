@@ -10,6 +10,9 @@ const BalanceCoinOption = require('./balance-option');
 const InfoOption = require('./info-option');
 const ReserveOption = require('./reserve-option');
 const SetExchangeRateOption = require('./set-exchange-rate');
+const SendMesage = require('./send-message');
+// TODO: import instead of require?
+// move all menu requirements to separate file?
 
 class RootOption extends MenuOption {
   chatMessage() {
@@ -27,7 +30,10 @@ class RootOption extends MenuOption {
       [new ReserveOption(this.ctx, this)]
     ];
 
-    if (this.ctx.isAdmin(botCtx)) menu.push([new SetExchangeRateOption(this.ctx, this)]);
+    if (this.ctx.isAdmin(botCtx)) {
+      menu.push([new SetExchangeRateOption(this.ctx, this)]);
+      menu.push([new SendMesage(this.ctx, this)]);
+    }
 
     return menu;
   }

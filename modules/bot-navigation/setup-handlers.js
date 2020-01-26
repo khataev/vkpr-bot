@@ -3,7 +3,11 @@ const Context = require('./context');
 const rubFinances = require('./../rub-finances');
 const settings = require('./../config');
 const balanceManager = require('./../balance-manager');
-const { ExchangeRate } = require('./../../db/models');
+const {
+  Account,
+  ExchangeRate,
+  Sequelize: { Op }
+} = require('./../../db/models');
 const numberFormatter = require('./../number-formatter');
 
 function setupHandlers(bot) {
@@ -118,6 +122,27 @@ function setupHandlers(bot) {
           } catch (error) {
             console.error(error.message);
             bot.sendMessage(vkId, 'Произошла ошибка при установке курса');
+          }
+        } else if (chattedContext.sendMessage) {
+          const text = ctx && ctx.message && ctx.message.text;
+          if (text) {
+            console.log(ctx);
+
+            const members = await Account.findAll({
+              where: { vkId: { [Op.ne]: ctx.message.from_id }, isSubscribed: true }
+              // where: { vkId: ctx.message.from_id, isSubscribed: true }
+            }).map(account => account.vkId);
+
+            // const members = [35549534, 48809904];
+            // const members = [570306734];
+
+            console.log('members', members);
+
+            try {
+              await bot.sendMessage(members, text);
+            } catch (e) {
+              console.error(e.message);
+            }
           }
         }
         return;
