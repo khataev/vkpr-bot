@@ -45,7 +45,7 @@ class RubFinances {
           status,
           txnId,
           comment: vkId,
-          sum: { amount }
+          sum: { amount, currency }
         }
       } = hookInfo;
 
@@ -53,7 +53,7 @@ class RubFinances {
 
       await RubTransaction.create({ vkId, txnId, hookInfo });
 
-      if (status === 'SUCCESS') {
+      if (status === 'SUCCESS' && currency === 643) {
         await RubTransaction.sequelize.transaction({}, async transaction => {
           await RubTransaction.update(
             {
