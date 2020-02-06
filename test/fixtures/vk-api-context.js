@@ -1,14 +1,13 @@
 const Context = require('node-vk-bot-api/lib/context');
 
-function ctx(bot, session, type, message) {
+function ctx(bot, session, type, message, from_id = 1) {
   const context = new Context(
     {
       type,
+      // HINT: for api from 5.103
       object: {
-        from_id: 1,
-        // TODO: move to 5.103
-        text: message, // HINT: for api below 5.103
         message: {
+          from_id,
           text: message
         },
         client_info: {
